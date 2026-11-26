@@ -1,0 +1,141 @@
+{
+ "id": 75,
+ "computed_at": "2026-11-26 22:15",
+ "source": "311_requests_2020_present.parquet",
+ "metrics": [
+  {
+   "label": "PLUTO 자료",
+   "value": "아직 없음",
+   "help": "건물 용도·세대 수·건축연도(BBL)"
+  },
+  {
+   "label": "장소 유형 종류",
+   "value": "155가지",
+   "help": "311 Location Type 열"
+  },
+  {
+   "label": "주거 관련 표기",
+   "value": "15가지",
+   "help": "같은 뜻이 여러 이름으로 적혀 있다"
+  }
+ ],
+ "charts": [
+  {
+   "title": "주거 관련 장소 유형 표기 상위 10",
+   "kind": "barh",
+   "x": "민원",
+   "y": "주거 관련 장소 유형",
+   "rows": [
+    {
+     "주거 관련 장소 유형": "RESIDENTIAL BUILDING",
+     "민원": 907789
+    },
+    {
+     "주거 관련 장소 유형": "Residential Building/House",
+     "민원": 456856
+    },
+    {
+     "주거 관련 장소 유형": "3+ Family Apt. Building",
+     "민원": 14187
+    },
+    {
+     "주거 관련 장소 유형": "Residential Building",
+     "민원": 13283
+    },
+    {
+     "주거 관련 장소 유형": "3+ Family Apartment Building",
+     "민원": 11129
+    },
+    {
+     "주거 관련 장소 유형": "1-2 Family Dwelling",
+     "민원": 8154
+    },
+    {
+     "주거 관련 장소 유형": "Residential",
+     "민원": 5454
+    },
+    {
+     "주거 관련 장소 유형": "3+ Family Mixed Use Building",
+     "민원": 2696
+    },
+    {
+     "주거 관련 장소 유형": "1-2 Family Mixed Use Building",
+     "민원": 990
+    },
+    {
+     "주거 관련 장소 유형": "Residential Property",
+     "민원": 743
+    }
+   ],
+   "caption": "'3+ Family Apt. Building'과 '3+ Family Apartment Building'처럼 같은 뜻이 다른 이름으로 들어온다. 311 열만으로는 건물 종류를 깨끗하게 가르기 어렵다."
+  }
+ ],
+ "tables": [
+  {
+   "title": "장소 유형 상위 15",
+   "rows": [
+    {
+     "장소 유형(Location Type)": "Street/Sidewalk",
+     "민원": 1201771
+    },
+    {
+     "장소 유형(Location Type)": "RESIDENTIAL BUILDING",
+     "민원": 907789
+    },
+    {
+     "장소 유형(Location Type)": "Residential Building/House",
+     "민원": 456856
+    },
+    {
+     "장소 유형(Location Type)": "Street",
+     "민원": 366885
+    },
+    {
+     "장소 유형(Location Type)": "Sidewalk",
+     "민원": 205516
+    },
+    {
+     "장소 유형(Location Type)": "Store/Commercial",
+     "민원": 54829
+    },
+    {
+     "장소 유형(Location Type)": "Park",
+     "민원": 33072
+    },
+    {
+     "장소 유형(Location Type)": "Club/Bar/Restaurant",
+     "민원": 25752
+    },
+    {
+     "장소 유형(Location Type)": "Business",
+     "민원": 19677
+    },
+    {
+     "장소 유형(Location Type)": "Park/Playground",
+     "민원": 16503
+    },
+    {
+     "장소 유형(Location Type)": "Restaurant/Bar/Deli/Bakery",
+     "민원": 15608
+    },
+    {
+     "장소 유형(Location Type)": "3+ Family Apt. Building",
+     "민원": 14187
+    },
+    {
+     "장소 유형(Location Type)": "Residential Building",
+     "민원": 13283
+    },
+    {
+     "장소 유형(Location Type)": "3+ Family Apartment Building",
+     "민원": 11129
+    },
+    {
+     "장소 유형(Location Type)": "Subway",
+     "민원": 11081
+    }
+   ]
+  }
+ ],
+ "numbers": {}
+}

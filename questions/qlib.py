@@ -137,7 +137,10 @@ def chart(spec: dict, y: str | None = None) -> alt.Chart:
             color=alt.Color(color, scale=palette, sort=order, legend=alt.Legend(orient="top", title=None)),
             order=alt.Order("_o"), tooltip=[alt.Tooltip(c) for c in df.columns if c != "_o"])
     elif kind == "scatter":  # Tract 산점도. trend=True면 LOESS 추세선을 겹친다.
-        enc = dict(x=alt.X(x, title=x, scale=alt.Scale(zero=False)), y=alt.Y(y, title=y), tooltip=tip)
+        # log_x/log_y: 인구 12명 ~ 수만 명, 민원율 수십 ~ 수만 건처럼 범위가 넓을 때 로그 축
+        xs = alt.Scale(type="log") if spec.get("log_x") else alt.Scale(zero=False)
+        ys = alt.Scale(type="log") if spec.get("log_y") else alt.Undefined
+        enc = dict(x=alt.X(x, title=x, scale=xs), y=alt.Y(y, title=y, scale=ys), tooltip=tip)
         if color:
             enc["color"] = alt.Color(color, scale=palette, legend=alt.Legend(orient="top", title=None))
         pts = alt.Chart(df).mark_circle(size=14, opacity=0.35) if color \

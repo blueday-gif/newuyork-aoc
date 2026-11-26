@@ -1,0 +1,80 @@
+{
+ "id": 76,
+ "computed_at": "2026-11-26 22:15",
+ "source": "311_requests_2020_present.parquet",
+ "metrics": [
+  {
+   "label": "세금 체납 목록",
+   "value": "아직 없음",
+   "help": "DOF Tax Lien Sale 목록(BBL)"
+  },
+  {
+   "label": "불법 개조 의심 민원",
+   "value": "16,547건",
+   "help": "세부 유형에 'Illegal Conversion'"
+  },
+  {
+   "label": "가장 많은 자치구",
+   "value": "퀸스",
+   "help": "10만 명당"
+  }
+ ],
+ "charts": [
+  {
+   "title": "자치구별 불법 개조 의심 민원",
+   "kind": "bar",
+   "x": "자치구",
+   "y": "10만 명당 불법 개조 민원",
+   "alt_y": "민원",
+   "rows": [
+    {
+     "자치구": "브롱크스",
+     "10만 명당 불법 개조 민원": 115.2,
+     "민원": 1618
+    },
+    {
+     "자치구": "브루클린",
+     "10만 명당 불법 개조 민원": 132.8,
+     "민원": 3495
+    },
+    {
+     "자치구": "맨해튼",
+     "10만 명당 불법 개조 민원": 62.2,
+     "민원": 1014
+    },
+    {
+     "자치구": "퀸스",
+     "10만 명당 불법 개조 민원": 412.9,
+     "민원": 9593
+    },
+    {
+     "자치구": "스태튼아일랜드",
+     "10만 명당 불법 개조 민원": 166.9,
+     "민원": 826
+    }
+   ],
+   "sort": "-y",
+   "caption": "지하실·차고를 몰래 주거로 바꾸거나 한 집을 여러 칸으로 쪼갠 경우다. 체납·저당 정보와 겹치면 위험 건물을 더 잘 고를 수 있다."
+  }
+ ],
+ "tables": [
+  {
+   "title": "불법 개조 세부 유형",
+   "rows": [
+    {
+     "세부 유형": "Illegal Conversion Of Residential Building/Space",
+     "민원": 16303
+    },
+    {
+     "세부 유형": "Illegal Conversion Of Commercial Bldg/Space To Other Uses",
+     "민원": 224
+    },
+    {
+     "세부 유형": "Illegal Conversion Of Manufacturing/Industrial Space",
+     "민원": 20
+    }
+   ]
+  }
+ ],
+ "numbers": {}
+}

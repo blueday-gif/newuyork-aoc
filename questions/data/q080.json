@@ -1,0 +1,94 @@
+{
+ "id": 80,
+ "computed_at": "2026-11-26 22:28",
+ "source": "311_requests_2020_present.parquet",
+ "metrics": [
+  {
+   "label": "흡연·전자담배 민원",
+   "value": "8,223건",
+   "help": "Allowed in Smoke Free Area 8,059 · Sign Inadequate 127 · Workplace Policy Not Provided or Inadequate 20"
+  },
+  {
+   "label": "금연구역 흡연",
+   "value": "8,059건"
+  },
+  {
+   "label": "가장 많은 자치구",
+   "value": "맨해튼",
+   "help": "10만 명당"
+  }
+ ],
+ "charts": [
+  {
+   "title": "흡연 민원이 들어온 장소 유형",
+   "kind": "barh",
+   "x": "민원",
+   "y": "장소 유형",
+   "rows": [
+    {
+     "장소 유형": "Residential Building",
+     "민원": 7040
+    },
+    {
+     "장소 유형": "Restaurant/Bar/Deli/Bakery",
+     "민원": 414
+    },
+    {
+     "장소 유형": "Commercial Building",
+     "민원": 298
+    },
+    {
+     "장소 유형": "Other",
+     "민원": 275
+    },
+    {
+     "장소 유형": "Homeless Shelter",
+     "민원": 40
+    },
+    {
+     "장소 유형": "School - K-12 Public",
+     "민원": 36
+    },
+    {
+     "장소 유형": "Airport or Train/Bus Station",
+     "민원": 33
+    },
+    {
+     "장소 유형": "Government Building",
+     "민원": 32
+    }
+   ]
+  },
+  {
+   "title": "자치구별 10만 명당",
+   "kind": "bar",
+   "x": "자치구",
+   "y": "10만 명당",
+   "rows": [
+    {
+     "자치구": "브롱크스",
+     "10만 명당": 110.8
+    },
+    {
+     "자치구": "브루클린",
+     "10만 명당": 103.0
+    },
+    {
+     "자치구": "맨해튼",
+     "10만 명당": 133.2
+    },
+    {
+     "자치구": "퀸스",
+     "10만 명당": 61.0
+    },
+    {
+     "자치구": "스태튼아일랜드",
+     "10만 명당": 74.4
+    }
+   ],
+   "sort": "-y"
+  }
+ ],
+ "tables": [],
+ "numbers": {}
+}

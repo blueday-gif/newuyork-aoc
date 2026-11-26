@@ -1,0 +1,270 @@
+{
+ "id": 94,
+ "computed_at": "2026-11-26 22:35",
+ "source": "311_requests_2020_present.parquet",
+ "metrics": [
+  {
+   "label": "하수도 옛 이름 마지막",
+   "value": "2026-07-29"
+  },
+  {
+   "label": "옛 이름만 세면",
+   "value": "22,364건",
+   "help": "그 뒤로는 0"
+  },
+  {
+   "label": "두 이름 합",
+   "value": "34,648건",
+   "help": "실제 하수도 민원"
+  }
+ ],
+ "charts": [
+  {
+   "title": "같은 해 안에서 바뀐 유형 이름(하수도)",
+   "kind": "line",
+   "x": "월",
+   "y": "민원",
+   "color": "유형",
+   "rows": [
+    {
+     "월": "2025-11-01",
+     "유형": "하수도 · 옛 이름(Sewer)",
+     "민원": 2057
+    },
+    {
+     "월": "2025-11-01",
+     "유형": "하수도 · 새 이름(Sewer Maintenance)",
+     "민원": 7
+    },
+    {
+     "월": "2025-12-01",
+     "유형": "하수도 · 옛 이름(Sewer)",
+     "민원": 1996
+    },
+    {
+     "월": "2025-12-01",
+     "유형": "하수도 · 새 이름(Sewer Maintenance)",
+     "민원": 12
+    },
+    {
+     "월": "2026-01-01",
+     "유형": "하수도 · 옛 이름(Sewer)",
+     "민원": 1548
+    },
+    {
+     "월": "2026-01-01",
+     "유형": "하수도 · 새 이름(Sewer Maintenance)",
+     "민원": 13
+    },
+    {
+     "월": "2026-02-01",
+     "유형": "하수도 · 옛 이름(Sewer)",
+     "민원": 1763
+    },
+    {
+     "월": "2026-02-01",
+     "유형": "하수도 · 새 이름(Sewer Maintenance)",
+     "민원": 30
+    },
+    {
+     "월": "2026-03-01",
+     "유형": "하수도 · 옛 이름(Sewer)",
+     "민원": 3040
+    },
+    {
+     "월": "2026-03-01",
+     "유형": "하수도 · 새 이름(Sewer Maintenance)",
+     "민원": 59
+    },
+    {
+     "월": "2026-04-01",
+     "유형": "하수도 · 옛 이름(Sewer)",
+     "민원": 1952
+    },
+    {
+     "월": "2026-04-01",
+     "유형": "하수도 · 새 이름(Sewer Maintenance)",
+     "민원": 82
+    },
+    {
+     "월": "2026-05-01",
+     "유형": "하수도 · 옛 이름(Sewer)",
+     "민원": 4335
+    },
+    {
+     "월": "2026-05-01",
+     "유형": "하수도 · 새 이름(Sewer Maintenance)",
+     "민원": 151
+    },
+    {
+     "월": "2026-06-01",
+     "유형": "하수도 · 옛 이름(Sewer)",
+     "민원": 2696
+    },
+    {
+     "월": "2026-06-01",
+     "유형": "하수도 · 새 이름(Sewer Maintenance)",
+     "민원": 197
+    },
+    {
+     "월": "2026-07-01",
+     "유형": "하수도 · 옛 이름(Sewer)",
+     "민원": 2977
+    },
+    {
+     "월": "2026-07-01",
+     "유형": "하수도 · 새 이름(Sewer Maintenance)",
+     "민원": 1461
+    },
+    {
+     "월": "2026-08-01",
+     "유형": "하수도 · 옛 이름(Sewer)",
+     "민원": 0
+    },
+    {
+     "월": "2026-08-01",
+     "유형": "하수도 · 새 이름(Sewer Maintenance)",
+     "민원": 5060
+    },
+    {
+     "월": "2026-09-01",
+     "유형": "하수도 · 옛 이름(Sewer)",
+     "민원": 0
+    },
+    {
+     "월": "2026-09-01",
+     "유형": "하수도 · 새 이름(Sewer Maintenance)",
+     "민원": 3121
+    },
+    {
+     "월": "2026-10-01",
+     "유형": "하수도 · 옛 이름(Sewer)",
+     "민원": 0
+    },
+    {
+     "월": "2026-10-01",
+     "유형": "하수도 · 새 이름(Sewer Maintenance)",
+     "민원": 2091
+    }
+   ],
+   "point": true,
+   "caption": "옛 이름의 선이 갑자기 끊기고 새 이름의 선이 이어받는다. 옛 이름만 세면 '하수도 민원이 사라졌다'는 오보가 된다."
+  }
+ ],
+ "tables": [
+  {
+   "title": "옛 이름과 새 이름의 월별 건수",
+   "rows": [
+    {
+     "월": "2025-11-01",
+     "상수도 · 새 이름(Water Maintenance)": 17,
+     "상수도 · 옛 이름(Water System)": 3542,
+     "유해 물질 · 새 이름(Hazardous Material)": 0,
+     "유해 물질 · 옛 이름(Hazardous Materials)": 147,
+     "하수도 · 새 이름(Sewer Maintenance)": 7,
+     "하수도 · 옛 이름(Sewer)": 2057
+    },
+    {
+     "월": "2025-12-01",
+     "상수도 · 새 이름(Water Maintenance)": 19,
+     "상수도 · 옛 이름(Water System)": 4184,
+     "유해 물질 · 새 이름(Hazardous Material)": 0,
+     "유해 물질 · 옛 이름(Hazardous Materials)": 123,
+     "하수도 · 새 이름(Sewer Maintenance)": 12,
+     "하수도 · 옛 이름(Sewer)": 1996
+    },
+    {
+     "월": "2026-01-01",
+     "상수도 · 새 이름(Water Maintenance)": 28,
+     "상수도 · 옛 이름(Water System)": 6289,
+     "유해 물질 · 새 이름(Hazardous Material)": 1,
+     "유해 물질 · 옛 이름(Hazardous Materials)": 115,
+     "하수도 · 새 이름(Sewer Maintenance)": 13,
+     "하수도 · 옛 이름(Sewer)": 1548
+    },
+    {
+     "월": "2026-02-01",
+     "상수도 · 새 이름(Water Maintenance)": 30,
+     "상수도 · 옛 이름(Water System)": 7986,
+     "유해 물질 · 새 이름(Hazardous Material)": 0,
+     "유해 물질 · 옛 이름(Hazardous Materials)": 109,
+     "하수도 · 새 이름(Sewer Maintenance)": 30,
+     "하수도 · 옛 이름(Sewer)": 1763
+    },
+    {
+     "월": "2026-03-01",
+     "상수도 · 새 이름(Water Maintenance)": 64,
+     "상수도 · 옛 이름(Water System)": 5450,
+     "유해 물질 · 새 이름(Hazardous Material)": 5,
+     "유해 물질 · 옛 이름(Hazardous Materials)": 209,
+     "하수도 · 새 이름(Sewer Maintenance)": 59,
+     "하수도 · 옛 이름(Sewer)": 3040
+    },
+    {
+     "월": "2026-04-01",
+     "상수도 · 새 이름(Water Maintenance)": 70,
+     "상수도 · 옛 이름(Water System)": 5653,
+     "유해 물질 · 새 이름(Hazardous Material)": 3,
+     "유해 물질 · 옛 이름(Hazardous Materials)": 179,
+     "하수도 · 새 이름(Sewer Maintenance)": 82,
+     "하수도 · 옛 이름(Sewer)": 1952
+    },
+    {
+     "월": "2026-05-01",
+     "상수도 · 새 이름(Water Maintenance)": 174,
+     "상수도 · 옛 이름(Water System)": 6247,
+     "유해 물질 · 새 이름(Hazardous Material)": 7,
+     "유해 물질 · 옛 이름(Hazardous Materials)": 252,
+     "하수도 · 새 이름(Sewer Maintenance)": 151,
+     "하수도 · 옛 이름(Sewer)": 4335
+    },
+    {
+     "월": "2026-06-01",
+     "상수도 · 새 이름(Water Maintenance)": 299,
+     "상수도 · 옛 이름(Water System)": 8854,
+     "유해 물질 · 새 이름(Hazardous Material)": 32,
+     "유해 물질 · 옛 이름(Hazardous Materials)": 208,
+     "하수도 · 새 이름(Sewer Maintenance)": 197,
+     "하수도 · 옛 이름(Sewer)": 2696
+    },
+    {
+     "월": "2026-07-01",
+     "상수도 · 새 이름(Water Maintenance)": 2164,
+     "상수도 · 옛 이름(Water System)": 15989,
+     "유해 물질 · 새 이름(Hazardous Material)": 119,
+     "유해 물질 · 옛 이름(Hazardous Materials)": 140,
+     "하수도 · 새 이름(Sewer Maintenance)": 1461,
+     "하수도 · 옛 이름(Sewer)": 2977
+    },
+    {
+     "월": "2026-08-01",
+     "상수도 · 새 이름(Water Maintenance)": 8925,
+     "상수도 · 옛 이름(Water System)": 0,
+     "유해 물질 · 새 이름(Hazardous Material)": 229,
+     "유해 물질 · 옛 이름(Hazardous Materials)": 0,
+     "하수도 · 새 이름(Sewer Maintenance)": 5060,
+     "하수도 · 옛 이름(Sewer)": 0
+    },
+    {
+     "월": "2026-09-01",
+     "상수도 · 새 이름(Water Maintenance)": 5381,
+     "상수도 · 옛 이름(Water System)": 0,
+     "유해 물질 · 새 이름(Hazardous Material)": 262,
+     "유해 물질 · 옛 이름(Hazardous Materials)": 0,
+     "하수도 · 새 이름(Sewer Maintenance)": 3121,
+     "하수도 · 옛 이름(Sewer)": 0
+    },
+    {
+     "월": "2026-10-01",
+     "상수도 · 새 이름(Water Maintenance)": 5158,
+     "상수도 · 옛 이름(Water System)": 0,
+     "유해 물질 · 새 이름(Hazardous Material)": 242,
+     "유해 물질 · 옛 이름(Hazardous Materials)": 0,
+     "하수도 · 새 이름(Sewer Maintenance)": 2091,
+     "하수도 · 옛 이름(Sewer)": 0
+    }
+   ]
+  }
+ ],
+ "numbers": {}
+}

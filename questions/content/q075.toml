@@ -1,0 +1,38 @@
+concepts = ["data_join", "bbl", "taxonomy_change", "compare_like"]
+related = [16, 20, 72]
+join_status = "방법만 정리함. PLUTO(건물 용도·세대 수·건축연도)를 아직 붙이지 않았다."
+
+background = """
+#### 질문
+같은 동네에서도 대형 임대 건물과 단독주택의 민원은 어떻게 다를까? 건물 단위 분석의 표준 질문이다.
+
+#### 311만으로는 왜 어려운가
+311에는 '장소 유형'(Location Type) 열이 있다. 그런데 같은 뜻이 여러 이름으로 들어온다.
+- 'RESIDENTIAL BUILDING'(90.8만 건), 'Residential Building/House'(45.7만 건), 'Residential Building', 'Residential'
+- '3+ Family Apt. Building'과 '3+ Family Apartment Building'
+- '1-2 Family Dwelling'
+
+장소 유형은 155가지, 주거 관련 표기만 15가지다. 기관마다 접수 양식이 달라서 생긴 일이다.
+그리고 가장 큰 두 칸('RESIDENTIAL BUILDING', 'Residential Building/House')은 건물 크기를 말해 주지 않는다.
+
+#### PLUTO를 붙이면
+PLUTO는 뉴욕시 모든 필지의 건물 정보(용도, 주거 세대 수, 층수, 건축연도, 소유 형태)를 BBL로 제공한다.
+311 민원의 BBL에 PLUTO를 붙이면 '1–2세대 주택', '3–5세대', '6세대 이상', '50세대 이상'처럼 건물을 깨끗하게 나눌 수 있다.
+"""
+
+method = """
+**지금 한 것**: 311 장소 유형의 종류와 주거 관련 표기 상위 10개를 셌다.
+
+**결합 방법(다음 단계)**
+1. NYC 계획국의 PLUTO를 받는다(BBL, BldgClass, UnitsRes, YearBuilt, CT2020).
+2. 311 민원의 BBL에 붙인다. 연결률(BBL이 맞은 비율)을 적는다.
+3. 같은 Tract 안에서 건물 규모별 세대당 민원(분야별)을 비교한다.
+"""
+
+caveats = """
+- 길·보도에서 난 민원(불법주차, 소음 일부)은 건물 BBL과 상관없다. 주거 민원(HPD)부터 시작한다.
+"""
+
+[[sources]]
+title = "NYC Department of City Planning — PLUTO"
+url = "https://www.nyc.gov/site/planning/data-maps/open-data/dwn-pluto-mappluto.page"
