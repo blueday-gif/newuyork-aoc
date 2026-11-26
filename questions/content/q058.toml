@@ -1,0 +1,38 @@
+concepts = ["weather_join", "reported_vs_occurred", "proxy"]
+related = [57, 56]
+join_status = "방법만 정리함. NOAA 일별 기온(열대야 표시)을 아직 붙이지 않았다."
+
+background = """
+#### 질문
+폭염일에 정전과 소화전 열기 민원이 함께 늘어날까? 그리고 그 피해는 '열 취약성 지수'가 예측한 동네에서 일어날까?
+
+#### 두 가지 신호
+- **정전**: 에어컨 사용이 몰리면 건물이나 동네 전력이 끊긴다. 311의 주거 정전(ELECTRIC · POWER OUTAGE, HPD)은 6–8월에 2,547건이다.
+- **소화전 열림**: 더위를 식히려고 소화전을 여는 일이 많다. 수압이 떨어져 화재 진압과 급수에 문제가 생긴다. 6–8월에 12,582건이다.
+
+#### 열 취약성 지수(HVI)
+뉴욕시는 동네마다 열 취약성 지수(기온, 녹지, 에어컨 보급, 소득, 인종)를 만든다.
+2026년 arXiv 논문은 이 지수가 **실제 피해**(정전, 의료 이용 등)를 잘 맞히지 못한다고 지적했다.
+311 정전·소화전 민원을 HVI와 나란히 놓으면 비슷한 검증을 해 볼 수 있다.
+
+#### 기온을 붙이면
+NOAA 최저기온이 20°C를 넘는 날(열대야)을 표시하고, 그날과 그렇지 않은 날의 두 민원을 비교한다.
+"""
+
+method = """
+**지금 한 것**: 2026-06-01 ~ 08-31 하루 단위로 주거 정전(ELECTRIC · POWER OUTAGE), 소화전 열림(Water System·Water Maintenance 중 'Hydrant Running' 세부 유형)을 셌다.
+
+**결합 방법(다음 단계)**
+1. NOAA 센트럴파크 일별 TMIN을 받아 20°C 초과일을 표시한다.
+2. 열대야 날과 아닌 날의 하루 평균 민원을 비교한다.
+3. 정전 민원을 Tract에 붙여 HVI(시 보건국 공개)와 비교한다.
+"""
+
+caveats = """
+- 대규모 정전은 전력회사(Con Edison)에 신고하므로 311 정전 민원은 일부만 잡힌다.
+- 소화전 민원은 '열려 있다'는 신고라서 실제로 열린 소화전 수와 다르다.
+"""
+
+[[sources]]
+title = "NYC 보건국 Environment & Health Data Portal — Heat Vulnerability Index"
+url = "https://a816-dohbesp.nyc.gov/IndicatorPublic/"

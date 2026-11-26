@@ -152,7 +152,10 @@ def chart(spec: dict, y: str | None = None) -> alt.Chart:
             x=xt, y=alt.Y(y, stack=True, title=y),
             color=alt.Color(color, scale=palette, legend=alt.Legend(orient="top", title=None)), tooltip=tip)
     else:  # line
-        enc = dict(x=alt.X(x, title=None if is_date else x), y=alt.Y(y, title=y), tooltip=tip)
+        # 글자 범주(D1…D10, Q1…Q5)는 가나다순이 아니라 자료에 나온 순서대로 놓는다(D10이 D1 옆에 오지 않게).
+        is_text = not is_date and not pd.api.types.is_numeric_dtype(df[x])
+        xe = alt.X(x, title=x, sort=None, axis=alt.Axis(labelAngle=0)) if is_text else alt.X(x, title=None if is_date else x)
+        enc = dict(x=xe, y=alt.Y(y, title=y), tooltip=tip)
         if color:
             enc["color"] = alt.Color(color, scale=palette, legend=alt.Legend(orient="top", title=None))
         mark = dict(point=spec.get("point", False), strokeWidth=2)
