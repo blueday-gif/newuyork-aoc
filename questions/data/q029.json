@@ -1,0 +1,110 @@
+{
+ "id": 29,
+ "computed_at": "2026-11-26 21:11",
+ "source": "311_requests_2020_present.parquet",
+ "metrics": [
+  {
+   "label": "불법주차 민원",
+   "value": "618,157건"
+  },
+  {
+   "label": "버스 관련 세부 유형",
+   "value": "5,514건",
+   "help": "무단 버스 정차, 정류장 표지 등"
+  },
+  {
+   "label": "'버스 전용차로 막음' 유형",
+   "value": "없음",
+   "help": "이 자료에는 전용차로 세부 유형이 없다. 전용차로 위반은 주로 카메라로 단속된다"
+  }
+ ],
+ "charts": [
+  {
+   "title": "불법주차 세부 유형 상위 12개",
+   "kind": "barh",
+   "x": "민원",
+   "y": "세부 유형",
+   "rows": [
+    {
+     "세부 유형": "Blocked Hydrant",
+     "민원": 172748
+    },
+    {
+     "세부 유형": "Posted Parking Sign Violation",
+     "민원": 150174
+    },
+    {
+     "세부 유형": "Blocked Sidewalk",
+     "민원": 87721
+    },
+    {
+     "세부 유형": "Commercial Overnight Parking",
+     "민원": 43156
+    },
+    {
+     "세부 유형": "Blocked Crosswalk",
+     "민원": 39006
+    },
+    {
+     "세부 유형": "Double Parked Blocking Traffic",
+     "민원": 33956
+    },
+    {
+     "세부 유형": "Parking Permit Improper Use",
+     "민원": 25572
+    },
+    {
+     "세부 유형": "Blocked Bike Lane",
+     "민원": 19646
+    },
+    {
+     "세부 유형": "Double Parked Blocking Vehicle",
+     "민원": 18101
+    },
+    {
+     "세부 유형": "License Plate Obscured",
+     "민원": 13084
+    },
+    {
+     "세부 유형": "Paper License Plates",
+     "민원": 5645
+    },
+    {
+     "세부 유형": "Unauthorized Bus Layover",
+     "민원": 4440
+    }
+   ],
+   "caption": "소화전·표지판 위반·보도 막음이 대부분이다. 버스와 직접 관련된 것은 '무단 버스 정차'뿐이다."
+  },
+  {
+   "title": "버스와 관련된 311 유형",
+   "kind": "barh",
+   "x": "민원",
+   "y": "유형",
+   "rows": [
+    {
+     "유형": "Illegal Parking · Unauthorized Bus Layover",
+     "민원": 4440
+    },
+    {
+     "유형": "Street Sign - Damaged · Bus Stop",
+     "민원": 438
+    },
+    {
+     "유형": "Bus Stop Shelter Placement · New Bus Stop Shelter Placement",
+     "민원": 334
+    },
+    {
+     "유형": "Street Sign - Missing · Bus Stop",
+     "민원": 165
+    },
+    {
+     "유형": "Street Sign - Dangling · Bus Stop",
+     "민원": 137
+    }
+   ]
+  }
+ ],
+ "tables": [],
+ "numbers": {}
+}

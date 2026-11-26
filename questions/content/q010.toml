@@ -1,0 +1,32 @@
+concepts = ["taxonomy_change", "reported_vs_occurred", "same_period"]
+related = [8, 11, 77]
+
+background = """
+#### '사회적 무질서' 민원
+Data Collaborative for Justice(DCJ, 2019)는 노숙·구걸·낙서·공공 음주처럼 "질서"와 관련된 311 민원이
+전체의 2% 미만이라고 정리했다. 경찰의 질서 유지 단속과 311 신고가 어떻게 겹치는지 보려는 연구였다.
+
+#### 지금은
+여덟 유형을 묶으면 3.18%(125,892건)다. 야영지 47,369건, 노숙인 지원 34,414건, 낙서 17,274건 순이다.
+노숙 관련 두 유형이 전체의 3분의 2를 차지한다.
+
+#### 비교할 때 조심할 점
+2018년과 지금은 311 유형 목록이 다르다. 'Encampment'처럼 나중에 생기거나 이름이 바뀐 유형이 있다.
+DCJ가 어떤 유형을 묶었는지와 우리가 묶은 여덟 유형이 정확히 같지 않으면, 2%와 3.18%의 차이 일부는 **분류 차이**다.
+"""
+
+method = """
+1. 여덟 유형을 묶었다: Encampment, Homeless Person Assistance, Graffiti, Panhandling, Drug Activity, Drinking, Urinating in Public, Disorderly Youth.
+2. 비중 = 여덟 유형 합 ÷ 전체 민원(3,963,959건).
+3. 월별 비중 = 그달 여덟 유형 ÷ 그달 전체.
+"""
+
+caveats = """
+- 어떤 유형을 '무질서'로 묶을지는 연구자의 선택이다. 묶음을 바꾸면 비중도 바뀐다.
+- 비중은 분모의 영향을 받는다. 폭설이 있던 2월은 눈 민원이 전체를 부풀려 비중이 1.1%로 떨어졌다. 월별 비교에는 건수도 같이 본다.
+- 노숙인 지원 신고는 도움 요청일 수도 있다. 모두 '무질서'로 보는 것은 해석에 주의가 필요하다.
+"""
+
+[[sources]]
+title = "DCJ Justice Data Brief"
+url = "https://datacollaborativeforjustice.org/wp-content/uploads/2020/04/DCJ-Justice-Data-Brief.pdf"

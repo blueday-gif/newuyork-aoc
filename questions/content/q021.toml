@@ -1,0 +1,38 @@
+concepts = ["rent_stabilization", "data_join", "reported_vs_occurred"]
+related = [15, 22, 24]
+join_status = "311에는 공실 정보가 없다. HCR 등록 자료 등 외부 자료가 필요하다. 이 문항은 해설만 있다."
+
+background = """
+#### '공실로 묶어 두기'(warehousing)란
+안정화 아파트가 비었을 때 집주인이 새 세입자를 받지 않고 비워 두는 것을 말한다.
+임대료 인상이 묶이면 수리비를 들여 다시 세를 놓는 것보다 비워 두는 편이 낫다고 판단할 수 있다.
+IBO·RGB 보고서에도 빈 안정화 아파트가 늘었다는 언급이 있다.
+
+#### 311로는 왜 볼 수 없나
+311은 **사람이 사는 곳에서 생긴 문제**를 신고한다. 빈 아파트에서는 신고할 사람이 없다.
+오히려 공실이 늘면 그 건물의 민원은 **줄어든다**. 민원 감소를 '관리 개선'으로 읽으면 정반대 결론이 나온다.
+
+#### 필요한 자료
+- **HCR 연간 등록**: 안정화 아파트는 해마다 주 정부(HCR)에 등록되며 공실 여부가 표시된다. 공개 범위는 제한적이다.
+- **IBO·RGB 보고서**: 안정화 재고와 공실 추정치를 정리한다.
+- **간접 지표**: 건물 세대 수(PLUTO) 대비 311 민원의 급감 같은 신호를 후보로 쓸 수 있다.
+"""
+
+method = """
+**결합 방법(다음 단계)**
+1. IBO 2026년 5월 보고서의 안정화 재고·공실 수치를 표로 옮긴다.
+2. 공개된 범위의 HCR 등록 자료를 건물(BBL) 단위로 정리한다.
+3. 공실이 늘어난 건물의 311 민원 추이를 동결 전후로 그려, '민원 감소'가 공실 때문인지 확인한다.
+"""
+
+caveats = """
+- 공실 증가는 동결 이전부터 있던 흐름일 수 있다. 시점을 나눠 봐야 한다.
+"""
+
+[[sources]]
+title = "IBO — 안정화 주택 재고 분석(2026-05)"
+url = "https://www.ibo.nyc.gov/assets/ibo/downloads/pdf/housing-and-buildings/2026/2026-may-segments-of-the-rent-stabilized-housing-stock.pdf"
+
+[[sources]]
+title = "The Real Deal — 집주인 소송"
+url = "https://therealdeal.com/new-york/2026/07/22/landlords-sue-rgb-over-mamdanis-rent-freeze/"

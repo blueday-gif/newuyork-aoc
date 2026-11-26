@@ -1,0 +1,39 @@
+concepts = ["per_capita", "reported_vs_occurred", "admin_closed"]
+related = [2, 3, 55]
+
+background = """
+#### 2026년 2월 폭설
+2월 22일 저녁부터 뉴욕에 큰 눈이 내렸다. 23일과 24일 이틀 동안 311 접수가 평소 겨울
+하루 평균(약 1.1만 건)의 1.4–2배로 뛰었고, 24일은 1년 중 접수가 가장 많은 날이 됐다(→ 55번).
+
+#### 누가 눈을 치우나
+뉴욕시 제설은 **위생국(DSNY)**이 맡는다. 제설차는 간선도로·버스 노선·병원 앞 같은
+우선 도로부터 돌고, 좁은 주택가 골목은 나중에 온다. 보도는 건물 소유자가 치워야 한다.
+311의 'Snow or Ice' 민원은 대부분 "우리 길이 아직 안 치워졌다"는 신고다.
+
+#### 왜 스태튼아일랜드인가
+스태튼아일랜드는 다섯 자치구 중 인구가 가장 적지만(약 49만 명) 단독주택과 자가용 비율이
+가장 높고, 막다른 길과 언덕길이 많다. 차가 없으면 움직이기 어려운 동네라서
+"길이 막혔다"는 체감이 크다. Vital City 기사는 이 점과 함께 제설 순서의 형평성을 다뤘다.
+"""
+
+method = """
+1. 311 원본에서 `Problem = "Snow or Ice"`, 접수일이 2026-02-23인 행을 고른다.
+2. 자치구별로 센다. 자치구가 'Unspecified'인 행은 뺀다.
+3. 분모는 ACS 2024 5개년 자치구 인구다. **건수 ÷ 인구 × 100,000**.
+4. 같은 방법으로 2/16–3/8 하루 단위 추이를 그린다.
+"""
+
+caveats = """
+- 인구당 비율은 "사람 수가 같다면"을 가정한다. 눈 민원에는 **도로 길이**나 **주택 수**가 더 맞는 분모일 수 있다.
+- 신고가 많다는 것은 "더 늦게 치웠다"일 수도, "더 많이 기대했다"일 수도 있다. 311만으로는 가를 수 없다.
+- 처리시간을 근거로 "어디를 먼저 치웠다"고 말하면 안 된다(→ 3번).
+"""
+
+[[sources]]
+title = "Vital City — For Whom the Plows Come"
+url = "https://www.vitalcitynyc.org/snow-complaints-staten-island-nyc/"
+
+[[sources]]
+title = "ABC7 — 폭설 뒤 스태튼아일랜드"
+url = "https://abc7ny.com/post/nyc-sanitation-crews-struggling-dig-staten-island-following-winter-blizzard-school-attendance-low-tuesday/18645575/"
