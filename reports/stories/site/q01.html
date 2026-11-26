@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>폭설과 스태튼아일랜드</title>
+
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@500;700&family=Noto+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: 질문 카드 1장 = 세로 한 줄 읽기. 기사 → 데이터 → 통계 기초(합치기, 회귀) → 함정 → 직접 해보기 순서가 곧 학습 순서다. */
+:root {
+  --bg: #f6f8fa;          /* 눈 온 아침의 차가운 흰색 */
+  --surface: #ffffff;
+  --ink: #0f1a24;
+  --ink-2: #4a5866;
+  --muted: #7d8a96;
+  --rule: #dfe5ea;
+  --grid: #e8ecef;
+  --axis: #b9c3cb;
+  --accent: #c8501f;      /* 제설차 주황 — 스태튼아일랜드 */
+  --accent-soft: #fbe9e1;
+  --s-si: #eb6834;        /* 시리즈: 스태튼아일랜드 */
+  --s-rest: #2a78d6;      /* 시리즈: 나머지 4개 자치구 */
+  --tip-bg: #0f1a24;
+  --tip-ink: #f6f8fa;
+  --code-bg: #eef2f5;
+  --font-display: "IBM Plex Sans KR", "Noto Sans KR", system-ui, sans-serif;
+  --font-body: "Noto Sans KR", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e141a; --surface: #151d25; --ink: #eef2f5; --ink-2: #b4bfc9; --muted: #85929e;
+    --rule: #26313b; --grid: #1f2830; --axis: #3a4652; --accent: #f0814f; --accent-soft: #2c1d16;
+    --s-si: #d95926; --s-rest: #3987e5; --tip-bg: #eef2f5; --tip-ink: #0e141a; --code-bg: #1b252e;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e141a; --surface: #151d25; --ink: #eef2f5; --ink-2: #b4bfc9; --muted: #85929e;
+  --rule: #26313b; --grid: #1f2830; --axis: #3a4652; --accent: #f0814f; --accent-soft: #2c1d16;
+  --s-si: #d95926; --s-rest: #3987e5; --tip-bg: #eef2f5; --tip-ink: #0e141a; --code-bg: #1b252e;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.75; }
+.wrap { max-width: 760px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 40px 72px; display: flex; flex-direction: column; gap: 56px; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; line-height: 1.3; }
+h1 { font-size: clamp(28px, 5.4vw, 40px); font-weight: 700; letter-spacing: -0.01em; }
+h2 { font-size: 23px; font-weight: 700; }
+h3 { font-size: 17px; font-weight: 700; }
+p { margin: 0; }
+a { color: var(--accent); text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.eyebrow { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+section { display: flex; flex-direction: column; gap: 16px; }
+.sec-head { display: flex; flex-direction: column; gap: 6px; padding-top: 20px; border-top: 1px solid var(--rule); }
+.lede { color: var(--ink-2); font-size: 17px; }
+
+/* 머리 */
+header { display: flex; flex-direction: column; gap: 18px; }
+.qtag { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.chip { font-family: var(--font-mono); font-size: 12px; padding: 3px 9px; border-radius: 999px; border: 1px solid var(--rule); color: var(--ink-2); background: var(--surface); }
+.answer { display: grid; grid-template-columns: auto auto 1fr; gap: 4px 20px; align-items: end; padding: 20px 0 4px; }
+.answer .big { font-family: var(--font-mono); font-size: clamp(44px, 10vw, 68px); line-height: 1; font-weight: 500; }
+.answer .big.si { color: var(--accent); }
+.answer .lbl { font-size: 13px; color: var(--ink-2); line-height: 1.4; }
+.answer .vs { font-family: var(--font-mono); color: var(--muted); font-size: 22px; align-self: center; }
+.ans-row { display: flex; flex-direction: column; gap: 6px; }
+.ans-text { min-width: 0; }
+@media (max-width: 560px) { .answer { grid-template-columns: auto auto; } .ans-text { grid-column: 1 / -1; } .answer .vs { display: none; } }
+
+/* 기사 카드 */
+.article { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 20px 22px; display: flex; flex-direction: column; gap: 12px; }
+.article .src { font-size: 13px; color: var(--muted); }
+.article ul { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }
+.quote { border-left: 3px solid var(--accent); padding-left: 14px; color: var(--ink-2); font-size: 15px; }
+
+/* 차트 */
+.chart { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 16px 16px 10px; display: flex; flex-direction: column; gap: 8px; position: relative; }
+.chart .ct { font-weight: 700; font-size: 15px; }
+.chart .cs { font-size: 13px; color: var(--ink-2); }
+.chart svg { width: 100%; height: auto; display: block; overflow: visible; }
+.chart svg text { fill: var(--ink-2); font-family: var(--font-body); font-size: 12px; }
+.chart svg .tick text { fill: var(--muted); font-family: var(--font-mono); font-size: 11px; }
+.legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 13px; color: var(--ink-2); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.tip { position: absolute; pointer-events: none; background: var(--tip-bg); color: var(--tip-ink); font-size: 12px; line-height: 1.45; padding: 6px 9px; border-radius: 6px; white-space: nowrap; transform: translate(-50%, calc(-100% - 10px)); z-index: 5; }
+.tip b { font-family: var(--font-mono); font-weight: 500; }
+.seg { display: inline-flex; border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; align-self: flex-start; }
+.seg button { font: inherit; font-size: 13px; padding: 6px 12px; border: 0; background: var(--surface); color: var(--ink-2); cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+details.table { font-size: 13px; color: var(--ink-2); }
+details.table summary { cursor: pointer; color: var(--muted); }
+.tscroll { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 13px; margin-top: 8px; }
+th, td { text-align: right; padding: 6px 8px; border-bottom: 1px solid var(--rule); font-variant-numeric: tabular-nums; }
+th:first-child, td:first-child { text-align: left; }
+th { color: var(--muted); font-weight: 500; }
+
+/* 통계 기초: 합치기 흐름 */
+.basics { display: flex; flex-direction: column; gap: 6px; font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+.flow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.step { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.step .k { font-family: var(--font-mono); font-size: 11px; color: var(--accent); letter-spacing: 0.06em; }
+.step .t { font-weight: 700; font-size: 15px; line-height: 1.35; }
+.step .d { font-size: 13px; color: var(--ink-2); line-height: 1.55; }
+.step .n { font-family: var(--font-mono); font-size: 18px; }
+@media (max-width: 640px) { .flow { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+.keys { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; }
+.keybox { border: 1px dashed var(--axis); border-radius: 8px; padding: 10px 12px; font-family: var(--font-mono); font-size: 12px; color: var(--ink-2); overflow-x: auto; white-space: pre; line-height: 1.6; }
+.keybox .hl { color: var(--accent); font-weight: 500; }
+@media (max-width: 560px) { .keys { grid-template-columns: minmax(0, 1fr); } }
+
+/* 회귀 */
+.formula { font-family: var(--font-mono); font-size: 18px; background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 14px 16px; overflow-x: auto; white-space: nowrap; }
+.formula .b { color: var(--accent); }
+.models { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.model { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.model.on { border-color: var(--accent); }
+.model .mt { font-size: 13px; color: var(--ink-2); line-height: 1.45; }
+.model .mv { font-family: var(--font-mono); font-size: 26px; line-height: 1.1; }
+.model .mr { font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+@media (max-width: 640px) { .models { grid-template-columns: minmax(0, 1fr); } }
+
+/* 함정 */
+.traps { display: flex; flex-direction: column; gap: 12px; }
+.trap { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 12px; align-items: start; }
+.trap .x { width: 28px; height: 28px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; font-weight: 700; font-family: var(--font-mono); }
+.trap p { color: var(--ink-2); }
+.trap b { color: var(--ink); }
+
+/* 코드 */
+pre.code { background: var(--code-bg); border-radius: 10px; padding: 14px 16px; font-family: var(--font-mono); font-size: 13px; line-height: 1.6; overflow-x: auto; margin: 0; color: var(--ink); }
+pre.code .c { color: var(--muted); }
+
+/* 용어 */
+.terms { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+.term { border-top: 2px solid var(--ink); padding-top: 8px; display: flex; flex-direction: column; gap: 4px; }
+.term b { font-family: var(--font-display); }
+.term span { font-size: 14px; color: var(--ink-2); line-height: 1.55; }
+
+footer { font-size: 13px; color: var(--muted); display: flex; flex-direction: column; gap: 8px; border-top: 1px solid var(--rule); padding-top: 20px; }
+.next { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 14px; color: var(--ink-2); }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<style>.topnav{display:flex;justify-content:space-between;gap:12px;font-size:13px;flex-wrap:wrap}.topnav a{color:var(--ink-2);text-decoration:none}.next a{color:var(--ink-2)}</style>
+</head>
+<body>
+<div class="wrap">
+<nav class="topnav"><a href="index.html">← 100가지 질문 목차</a><span><a href="q04.html">다음: 질문 4</a></span></nav>
+
+
+<header>
+  <div class="qtag">
+    <span class="chip">질문 1 / 100</span>
+    <span class="chip">1부 · 기사를 데이터로 다시 보기</span>
+    <span class="chip">배우는 것: 데이터 합치기 · 회귀분석</span>
+  </div>
+  <h1>폭설 다음 날, 왜 스태튼아일랜드만 311에 전화했을까?</h1>
+  <div class="answer">
+    <div class="ans-row"><span class="big si num">716</span><span class="lbl">스태튼아일랜드<br>10만 명당 눈 민원</span></div>
+    <span class="vs">vs</span>
+    <div class="ans-row"><span class="big num">9</span><span class="lbl">맨해튼<br>10만 명당 눈 민원</span></div>
+  </div>
+  <p class="lede ans-text">2026년 2월 23일, 폭설 다음 날의 숫자다. 인구가 시의 6%인 자치구가 그날 눈 민원의 54%를 냈다. 기사가 말한 숫자를 원본 데이터로 다시 계산하면 똑같이 나온다. 그런데 "왜"를 물으면 이야기가 달라진다.</p>
+</header>
+
+<section>
+  <div class="sec-head"><span class="eyebrow">1 · 기사 요약</span><h2>Vital City, “For Whom the Plows Come”</h2></div>
+  <div class="article">
+    <span class="src">Vital City · 2026년 2월 · 311 민원 데이터 분석 기사</span>
+    <ul>
+      <li>2월 22일 밤부터 내린 폭설 다음 날, 311 전체 접수는 15,387건으로 겨울 평균보다 약 50% 많았다.</li>
+      <li>평소 민원이 가장 적은 스태튼아일랜드가 그날 4,027건으로 다섯 자치구 중 1위였고, 그중 3,546건이 눈·얼음 민원이었다.</li>
+      <li>맨해튼(인구 170만)의 눈 민원은 146건이었다. 10만 명당으로는 716건 대 9건이다.</li>
+      <li>피해가 가장 컸던 우편번호 10곳 중 8곳이 스태튼아일랜드에 있었다.</li>
+    </ul>
+    <p class="quote">같은 주 ABC7은 스태튼아일랜드 공립학교 출석률이 20%를 밑돌았다고 보도했다. 시는 나중에 제설 대응의 실수를 인정했다.</p>
+    <span class="src"><a href="https://www.vitalcitynyc.org/snow-complaints-staten-island-nyc/" target="_blank" rel="noopener">Vital City 원문</a> · <a href="https://abc7ny.com/post/2026-blizzard-staten-island-public-schools-reopened-20-students-making-classes/18648218/" target="_blank" rel="noopener">ABC7 보도</a></span>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><span class="eyebrow">2 · 데이터로 확인</span><h2>기사의 숫자는 맞다</h2></div>
+  <p>우리가 가진 311 원본(396만 건)에서 2월 23일 "Snow or Ice" 민원만 골라 자치구별로 셌다. 스태튼아일랜드 3,546건, 맨해튼 146건으로 기사와 한 건도 다르지 않다. 이것을 각 자치구 인구로 나눈 것이 아래 막대다.</p>
+  <div class="chart" id="c-bar">
+    <span class="ct">2026년 2월 23일 눈·얼음 민원, 10만 명당</span>
+    <span class="cs">인구는 ACS 2024 5개년 추정</span>
+    <svg id="bar" viewBox="0 0 700 230" role="img" aria-label="자치구별 10만 명당 눈 민원 막대 그래프"></svg>
+    <details class="table"><summary>표로 보기</summary><div class="tscroll"><table id="bar-table"></table></div></details>
+  </div>
+  <p>하루만 보면 우연일 수 있다. 폭설 앞뒤 3주를 펼쳐 보면, 스태튼아일랜드는 23일에 먼저 폭발했고 나머지 네 자치구는 24일에야 따라왔다.</p>
+  <div class="chart" id="c-line">
+    <span class="ct">하루 눈·얼음 민원 건수, 2월 15일 ~ 3월 5일</span>
+    <div class="legend"><span><i style="background:var(--s-si)"></i>스태튼아일랜드 (인구 49만)</span><span><i style="background:var(--s-rest)"></i>나머지 4개 자치구 합계 (인구 800만)</span></div>
+    <svg id="line" viewBox="0 0 700 260" role="img" aria-label="하루 눈 민원 선 그래프"></svg>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><span class="eyebrow">3 · 통계 기초 ① 데이터 합치기</span><h2>민원 한 줄과 인구 한 줄은 어떻게 만나나</h2></div>
+  <p>311 데이터에는 "몇 건"만 있고 "몇 명이 사는지"는 없다. 인구는 인구조사(ACS)에 있다. 두 표를 붙이려면 <b>둘 다 가진 열(키)</b>이 필요한데, 311에는 그런 열이 없다. 그래서 좌표로 먼저 동네 번호를 찾아 준다.</p>
+  <div class="flow">
+    <div class="step"><span class="k">STEP 1</span><span class="t">고르기</span><span class="d">폭설 주간(2/22 18시 ~ 3/2) 눈·얼음 민원</span><span class="n num">23,096건</span></div>
+    <div class="step"><span class="k">STEP 2 · 공간 결합</span><span class="t">좌표 → 동네 번호</span><span class="d">위도·경도가 어느 Census Tract 경계 안에 있는지 판정</span><span class="n num">22,676건</span></div>
+    <div class="step"><span class="k">STEP 3 · 키 결합</span><span class="t">GEOID로 붙이기</span><span class="d">Tract 번호(GEOID)가 같은 행끼리 ACS 인구·자가율을 붙임</span><span class="n num">2,192곳</span></div>
+    <div class="step"><span class="k">STEP 4 · 정규화</span><span class="t">인구로 나누기</span><span class="d">건수 ÷ 인구 × 1,000. 큰 동네가 이기는 걸 막는다</span><span class="n num">/1,000명</span></div>
+  </div>
+  <div class="keys">
+    <div class="keybox">311 민원 (한 줄 = 민원 1건)
+key       created     lat     lon
+12345678  02-23 07:14 40.58  -74.15
+            ↓ 경계 판정
+<span class="hl">GEOID 36085…</span></div>
+    <div class="keybox">ACS (한 줄 = 동네 1곳)
+<span class="hl">GEOID</span>        인구   자가율
+<span class="hl">36085…</span>      4,812   0.81
+36061…      6,120   0.12</div>
+  </div>
+  <p>좌표가 없는 420건(1.8%)은 2단계에서 빠진다. 인구 1,000명 미만 동네도 뺐다. 분모가 작으면 비율이 폭주하기 때문이다(작은 수의 법칙). 합치기 전후로 <b>몇 건이 빠졌는지 반드시 기록</b>하는 것이 첫 번째 습관이다.</p>
+</section>
+
+<section>
+  <div class="sec-head"><span class="eyebrow">4 · 통계 기초 ② 회귀분석</span><h2>"자기 집이 있는 동네일수록 눈 민원이 많다"를 한 줄로 쓰면</h2></div>
+  <p>스태튼아일랜드는 자가 주택 비율(중앙값 72%)이 가장 높은 자치구다. 자기 집 앞 보도는 자기가 치워야 하고, 차고 앞 진입로가 막히면 출근을 못 한다. 그렇다면 "자가율이 높은 동네일수록 눈 민원이 많다"는 가설을 세울 수 있다. 회귀분석은 이 관계를 직선 하나로 요약한다.</p>
+  <div class="formula">눈 민원(1,000명당) = a + <span class="b">b</span> × 자가율</div>
+  <p><b>b(기울기)</b>는 "자가율이 1만큼 늘 때 민원이 얼마나 늘어나는가"다. 자가율은 0~1 비율이라, 읽기 쉽게 10%p 단위로 바꿨다. 점 하나가 동네 하나다.</p>
+  <div class="chart" id="c-scatter">
+    <span class="ct">동네별 자가율과 폭설 주간 눈 민원 (2,192개 Tract)</span>
+    <div class="seg" role="group" aria-label="회귀선 선택">
+      <button type="button" id="btn-m1" aria-pressed="true">모형 1 · 직선 하나</button>
+      <button type="button" id="btn-m2" aria-pressed="false">모형 2 · 자치구 고려</button>
+    </div>
+    <div class="legend"><span><i style="background:var(--s-si)"></i>스태튼아일랜드 Tract</span><span><i style="background:var(--s-rest)"></i>나머지 4개 자치구 Tract</span></div>
+    <svg id="scatter" viewBox="0 0 700 340" role="img" aria-label="자가율과 눈 민원 산점도"></svg>
+    <span class="cs" id="scatter-note"></span>
+  </div>
+  <div class="models">
+    <div class="model on" id="card-m1"><span class="mt">모형 1 · 자가율만</span><span class="mv num">+0.55</span><span class="mr">자가율 10%p당 · R² 0.06</span></div>
+    <div class="model" id="card-m2"><span class="mt">모형 2 · 자가율 + 자치구</span><span class="mv num">+0.10</span><span class="mr">자가율 10%p당 · R² 0.48</span></div>
+    <div class="model"><span class="mt">모형 3 · 스태튼아일랜드 빼고</span><span class="mv num">+0.12</span><span class="mr">자가율 10%p당 · R² 0.02</span></div>
+  </div>
+  <h3>숫자 읽는 법</h3>
+  <p>모형 1에서 자가율이 10%p 높은 동네는 눈 민원이 1,000명당 0.55건 많다. 그런데 "같은 자치구 안에서 비교하라"고 자치구를 함께 넣으면(모형 2) 기울기가 <b>0.10으로 5분의 1</b>이 된다. 반대로 설명력(R²)은 0.06에서 0.48로 뛴다. 자치구 하나가 자가율보다 훨씬 많은 것을 설명한다는 뜻이다.</p>
+  <p>모형 2에서 스태튼아일랜드에 붙은 값은 <span class="num">+18.0</span>이다. 자가율이 같아도 스태튼아일랜드라는 이유만으로 맨해튼보다 1,000명당 18건이 많다. 자가율 효과(10%p당 0.10건)로 이 차이를 만들려면 자가율이 1,800%p 높아야 한다. 즉 <b>원인은 "자가 주택"보다 "그 자치구에서 일어난 일"</b>(제설 순서, 넓은 주택가 도로, 늦게 온 제설차)에 가깝다.</p>
+  <p>이렇게 처음 보인 관계가 다른 변수를 넣자 줄어드는 현상을 <b>교란(confounding)</b>이라 한다. 여기서 교란변수는 자치구다.</p>
+</section>
+
+<section>
+  <div class="sec-head"><span class="eyebrow">5 · 이렇게 하면 틀린다</span><h2>이 데이터의 함정 세 가지</h2></div>
+  <div class="traps">
+    <div class="trap"><span class="x">1</span><p><b>"종결" ≠ "치웠다".</b> 스태튼아일랜드 눈 민원의 처리시간 중앙값은 0.4시간, 브루클린은 48.8시간이다. 스태튼아일랜드를 제일 빨리 치웠다는 뜻이 아니다. 몰려든 민원을 한꺼번에 종결 처리하면 숫자가 이렇게 나온다. 처리시간은 행정 기록이지 현장 결과가 아니다.</p></div>
+    <div class="trap"><span class="x">2</span><p><b>민원 = 눈의 양이 아니다.</b> 민원 수로는 어디에 눈이 더 쌓였는지 알 수 없다. 맨해튼은 세입자가 대부분이라 보도는 대개 건물 관리인이 치우고, 많은 사람이 지하철로 출근한다. 311은 "불편을 느끼고 신고한 사람"의 기록이다.</p></div>
+    <div class="trap"><span class="x">3</span><p><b>같은 질문, 다른 숫자.</b> 다른 분석 보고서는 스태튼아일랜드 눈 민원을 10만 명당 3,833건으로 적었다. 716건과 다른 이유는 기간(하루 vs 여러 주)과 정의가 달라서다. 숫자를 인용할 때는 <b>기간·분모·필터</b>를 함께 적어야 한다.</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><span class="eyebrow">6 · 직접 해보기</span><h2>파이썬 일곱 줄</h2></div>
+<pre class="code"><span class="c"># 1. 고르기</span>
+snow = df[(df.problem == "Snow or Ice") &amp; (df.created.dt.date == date(2026, 2, 23))]
+<span class="c"># 2~3. 합치기: 민원 → Tract 번호 → ACS (키 = GEOID)</span>
+snow = snow.merge(point_geoid, on="key")
+tract = snow.groupby("GEOID").size().rename("n").to_frame().join(acs.set_index("GEOID"))
+<span class="c"># 4. 정규화</span>
+tract["rate"] = tract.n / tract.total_pop * 1000
+<span class="c"># 회귀: 모형 1 → 모형 2</span>
+smf.ols("rate ~ owner_rate", tract).fit()
+smf.ols("rate ~ owner_rate + C(borough)", tract).fit()</pre>
+  <p class="cs" style="color:var(--muted);font-size:13px">전체 코드: analysis/stories/story_02_snow_sample.py</p>
+</section>
+
+<section>
+  <div class="sec-head"><span class="eyebrow">7 · 오늘 배운 말</span><h2>용어 다섯 개</h2></div>
+  <div class="terms">
+    <div class="term"><b>키(key)</b><span>두 표를 붙일 때 기준이 되는 공통 열. 여기서는 GEOID.</span></div>
+    <div class="term"><b>공간 결합</b><span>공통 열이 없을 때 좌표가 어느 경계 안에 있는지로 짝을 찾는 것.</span></div>
+    <div class="term"><b>정규화</b><span>건수를 인구 같은 크기로 나눠 공정하게 비교하는 것.</span></div>
+    <div class="term"><b>기울기 b · R²</b><span>b는 x가 1 늘 때 y의 변화, R²는 직선이 흩어짐을 얼마나 설명하는지(0~1).</span></div>
+    <div class="term"><b>교란변수</b><span>x와 y 둘 다에 영향을 줘서 가짜 관계를 만드는 제3의 변수. 여기서는 자치구.</span></div>
+  </div>
+</section>
+
+<footer>
+  <div class="next"><a href="index.html">← 목차</a><a href="q04.html">다음 심화: 질문 4 · 한파와 중복 민원 →</a></div>
+  <span>데이터: NYC 311 서비스 요청 2025-11-01 ~ 2026-10-31 (3,963,959건), ACS 2024 5개년, TIGER/Line 2024 Tract 경계. 회귀는 최소제곱법(OLS), HC1 표준오차, 인구 1,000명 이상 Tract 2,192곳.</span>
+  <span>기사: Vital City, ABC7. 수치는 원본으로 다시 계산했다.</span>
+</footer>
+</div>
+
+<script>
+const DATA = {"daily":{"dates":["02-15","02-16","02-17","02-18","02-19","02-20","02-21","02-22","02-23","02-24","02-25","02-26","02-27","02-28","03-01","03-02","03-03","03-04","03-05"],"series":{"Bronx":[12,13,13,5,5,4,1,10,459,1105,366,122,51,20,6,5,0,1,1],"Brooklyn":[38,37,17,11,8,5,1,21,830,2786,874,499,167,57,23,29,1,2,5],"Manhattan":[9,11,13,4,8,2,0,2,146,868,236,67,30,10,6,5,1,1,0],"Queens":[45,30,35,13,18,5,1,45,1543,2456,650,299,109,46,10,16,0,3,1],"Staten Island":[16,36,11,5,3,5,5,28,3546,4154,886,279,119,51,32,30,5,0,2]}},"feb23":[{"borough":"Staten Island","n":3546,"pop":494956,"per100k":716.4},{"borough":"Queens","n":1543,"pop":2323052,"per100k":66.4},{"borough":"Bronx","n":459,"pop":1404779,"per100k":32.7},{"borough":"Brooklyn","n":830,"pop":2631580,"per100k":31.5},{"borough":"Manhattan","n":146,"pop":1629477,"per100k":9.0}],"feb23_total_all":15424,"join":{"snow_week":23096,"with_geoid":22676,"tracts":2192,"tracts_zero":140},"m1":{"intercept":0.8,"slope":5.54,"slope_10pp":0.55,"ci":[0.44,0.67],"r2":0.06,"n":2192},"m2":{"intercept":0.7,"slope":0.98,"slope_10pp":0.1,"ci":[0.03,0.17],"r2":0.481,"n":2192},"m3":{"intercept":1.51,"slope":1.17,"slope_10pp":0.12,"ci":[0.08,0.15],"r2":0.017,"n":2074},"m2_boro":{"Bronx":0.7,"Brooklyn":1.1,"Queens":1.1,"Staten Island":18.0},"boro_owner":{"Bronx":14.5,"Brooklyn":30.8,"Manhattan":21.5,"Queens":50.0,"Staten Island":71.9},"boro_rate_median":{"Bronx":0.99,"Brooklyn":1.62,"Manhattan":0.63,"Queens":1.58,"Staten Island":15.44},"points":[[60.0,1.98,"Bronx"],[60.2,0.75,"Bronx"],[22.0,1.07,"Bronx"],[9.7,1.33,"Bronx"],[8.2,0.48,"Bronx"],[0.0,1.43,"Bronx"],[22.2,0.28,"Bronx"],[0.0,0.66,"Bronx"],[2.4,0.59,"Bronx"],[2.4,0.32,"Bronx"],[7.0,0.42,"Bronx"],[17.0,1.1,"Bronx"],[15.0,0.72,"Bronx"],[20.8,1.68,"Bronx"],[2.7,4.31,"Bronx"],[51.5,2.4,"Bronx"],[7.9,1.08,"Bronx"],[60.7,0.77,"Bronx"],[1.7,0.49,"Bronx"],[12.4,0.52,"Bronx"],[13.8,0.93,"Bronx"],[3.9,1.63,"Bronx"],[22.3,0.68,"Bronx"],[2.9,0.24,"Bronx"],[11.9,0.21,"Bronx"],[6.2,0.48,"Bronx"],[6.5,2.2,"Bronx"],[14.9,0.0,"Bronx"],[1.4,0.0,"Bronx"],[10.8,0.36,"Bronx"],[15.4,0.4,"Bronx"],[35.6,0.33,"Bronx"],[9.3,0.78,"Bronx"],[43.8,2.37,"Bronx"],[1.2,0.31,"Bronx"],[17.7,2.27,"Bronx"],[16.5,0.24,"Bronx"],[3.9,3.58,"Bronx"],[1.8,0.91,"Bronx"],[29.0,0.39,"Bronx"],[3.2,0.99,"Bronx"],[27.8,1.13,"Bronx"],[24.5,1.78,"Bronx"],[33.1,0.62,"Bronx"],[8.1,2.54,"Bronx"],[26.5,0.3,"Bronx"],[14.4,2.52,"Bronx"],[26.0,0.95,"Bronx"],[20.0,0.0,"Bronx"],[27.6,2.84,"Bronx"],[1.6,0.73,"Bronx"],[10.8,0.16,"Bronx"],[69.3,0.32,"Bronx"],[17.6,0.0,"Bronx"],[9.8,0.26,"Bronx"],[5.9,0.34,"Bronx"],[5.1,1.36,"Bronx"],[15.5,0.52,"Bronx"],[26.4,1.36,"Bronx"],[14.7,0.52,"Bronx"],[21.6,3.03,"Bronx"],[52.6,1.72,"Bronx"],[5.4,0.0,"Bronx"],[7.2,0.0,"Bronx"],[57.7,1.58,"Bronx"],[4.9,0.68,"Bronx"],[10.1,0.3,"Bronx"],[2.4,0.0,"Bronx"],[11.9,0.64,"Bronx"],[20.4,2.25,"Bronx"],[23.4,0.47,"Bronx"],[0.0,0.61,"Bronx"],[57.0,0.72,"Bronx"],[9.8,0.19,"Bronx"],[70.4,1.27,"Bronx"],[5.0,0.33,"Bronx"],[1.5,0.0,"Bronx"],[73.5,0.33,"Bronx"],[7.5,0.25,"Bronx"],[0.0,0.0,"Bronx"],[15.8,0.98,"Bronx"],[1.5,0.43,"Bronx"],[1.0,0.66,"Bronx"],[1.6,0.4,"Bronx"],[22.2,0.42,"Bronx"],[18.9,0.58,"Bronx"],[54.5,1.95,"Bronx"],[8.5,1.39,"Bronx"],[4.7,2.65,"Bronx"],[8.6,0.33,"Bronx"],[47.4,4.03,"Bronx"],[9.9,1.66,"Bronx"],[63.5,0.26,"Bronx"],[1.2,1.06,"Bronx"],[57.4,0.53,"Bronx"],[58.9,1.77,"Bronx"],[0.0,2.29,"Bronx"],[49.6,0.84,"Bronx"],[3.6,0.66,"Bronx"],[10.5,1.54,"Bronx"],[8.7,0.76,"Bronx"],[0.0,0.32,"Bronx"],[2.3,0.19,"Bronx"],[23.3,0.76,"Bronx"],[12.7,0.4,"Bronx"],[0.0,0.0,"Bronx"],[8.3,0.35,"Bronx"],[1.9,0.38,"Bronx"],[25.2,0.51,"Bronx"],[14.6,0.91,"Bronx"],[45.8,1.29,"Bronx"],[1.0,0.53,"Bronx"],[3.1,0.36,"Bronx"],[9.2,2.79,"Bronx"],[2.3,0.67,"Bronx"],[51.4,3.31,"Bronx"],[0.7,0.78,"Bronx"],[0.0,0.79,"Bronx"],[4.9,1.17,"Bronx"],[19.9,1.58,"Bronx"],[0.0,0.78,"Bronx"],[18.1,0.0,"Bronx"],[24.4,5.3,"Bronx"],[8.0,0.83,"Bronx"],[12.2,6.01,"Bronx"],[30.1,0.7,"Bronx"],[3.2,1.04,"Bronx"],[28.4,0.14,"Bronx"],[20.4,0.27,"Bronx"],[7.1,0.68,"Bronx"],[35.1,0.0,"Bronx"],[30.0,3.88,"Bronx"],[1.2,0.51,"Bronx"],[4.0,1.38,"Bronx"],[3.3,0.32,"Bronx"],[10.7,0.49,"Bronx"],[21.3,0.33,"Bronx"],[2.1,2.8,"Bronx"],[19.8,1.32,"Bronx"],[0.0,2.02,"Bronx"],[8.6,1.6,"Bronx"],[0.0,0.0,"Bronx"],[0.0,0.78,"Bronx"],[16.2,2.4,"Bronx"],[0.0,0.21,"Bronx"],[20.6,1.23,"Bronx"],[17.7,0.36,"Bronx"],[27.0,0.7,"Bronx"],[4.4,0.5,"Bronx"],[1.6,0.61,"Bronx"],[6.1,1.87,"Bronx"],[0.0,0.59,"Bronx"],[13.0,0.35,"Bronx"],[1.5,0.17,"Bronx"],[10.9,0.59,"Bronx"],[18.0,3.12,"Bronx"],[6.2,2.82,"Bronx"],[18.0,0.38,"Bronx"],[5.4,1.3,"Bronx"],[6.4,0.51,"Bronx"],[0.9,0.67,"Bronx"],[4.5,1.11,"Bronx"],[7.8,0.0,"Bronx"],[6.0,0.0,"Bronx"],[1.9,0.6,"Bronx"],[0.0,0.0,"Bronx"],[30.2,2.35,"Bronx"],[1.1,0.23,"Bronx"],[45.2,10.89,"Bronx"],[0.0,1.48,"Bronx"],[0.0,2.18,"Bronx"],[32.0,0.0,"Bronx"],[9.3,1.65,"Bronx"],[12.5,1.89,"Bronx"],[37.9,0.49,"Bronx"],[1.5,0.0,"Bronx"],[26.6,3.78,"Bronx"],[52.8,2.17,"Bronx"],[15.8,1.58,"Bronx"],[28.8,2.71,"Bronx"],[1.5,0.0,"Bronx"],[40.5,0.39,"Bronx"],[0.3,0.98,"Bronx"],[28.0,0.63,"Bronx"],[7.5,4.75,"Bronx"],[88.4,0.0,"Bronx"],[0.0,1.41,"Bronx"],[28.5,1.53,"Bronx"],[3.9,2.9,"Bronx"],[13.9,4.36,"Bronx"],[18.2,3.39,"Bronx"],[1.2,0.84,"Bronx"],[17.6,0.29,"Bronx"],[6.2,0.74,"Bronx"],[7.8,1.24,"Bronx"],[72.3,1.01,"Bronx"],[69.5,1.15,"Bronx"],[10.4,1.12,"Bronx"],[21.0,1.79,"Bronx"],[45.1,0.84,"Bronx"],[5.7,1.72,"Bronx"],[24.9,5.55,"Bronx"],[43.4,4.01,"Bronx"],[38.9,4.23,"Bronx"],[51.1,1.16,"Bronx"],[22.1,2.91,"Bronx"],[85.8,0.0,"Bronx"],[66.7,5.33,"Bronx"],[64.1,3.93,"Bronx"],[11.2,3.38,"Bronx"],[57.2,3.61,"Bronx"],[32.2,2.74,"Bronx"],[38.4,1.91,"Bronx"],[45.0,0.54,"Bronx"],[37.5,0.32,"Bronx"],[59.1,3.48,"Bronx"],[58.5,1.05,"Bronx"],[72.2,2.82,"Bronx"],[54.1,4.03,"Bronx"],[65.3,0.0,"Bronx"],[64.6,0.59,"Bronx"],[67.3,1.1,"Bronx"],[70.1,5.42,"Bronx"],[8.4,1.01,"Bronx"],[49.2,1.41,"Bronx"],[12.4,0.73,"Bronx"],[9.7,0.38,"Bronx"],[25.6,2.47,"Bronx"],[21.2,0.55,"Bronx"],[47.6,6.71,"Bronx"],[6.0,0.91,"Bronx"],[47.0,6.48,"Bronx"],[72.3,6.88,"Bronx"],[16.6,0.0,"Bronx"],[13.8,1.27,"Bronx"],[22.4,0.99,"Bronx"],[39.2,1.23,"Bronx"],[45.9,18.21,"Bronx"],[58.2,1.16,"Bronx"],[54.7,8.17,"Bronx"],[40.7,0.33,"Bronx"],[37.7,2.12,"Bronx"],[45.6,2.31,"Bronx"],[58.7,2.27,"Bronx"],[72.7,2.85,"Bronx"],[8.6,0.52,"Bronx"],[66.4,2.16,"Bronx"],[3.5,0.85,"Bronx"],[2.1,1.49,"Bronx"],[50.5,3.04,"Bronx"],[6.5,0.0,"Bronx"],[4.4,0.87,"Bronx"],[9.9,0.37,"Bronx"],[57.7,1.53,"Bronx"],[10.9,0.55,"Bronx"],[3.4,0.4,"Bronx"],[52.9,3.39,"Bronx"],[12.2,1.19,"Bronx"],[35.2,7.44,"Bronx"],[7.0,1.29,"Bronx"],[15.0,3.3,"Bronx"],[2.0,1.0,"Bronx"],[34.3,2.84,"Bronx"],[18.3,1.71,"Bronx"],[7.1,0.43,"Bronx"],[30.0,4.18,"Bronx"],[2.8,1.83,"Bronx"],[50.4,5.74,"Bronx"],[4.1,1.1,"Bronx"],[1.6,0.55,"Bronx"],[0.0,0.45,"Bronx"],[1.3,0.57,"Bronx"],[36.5,3.25,"Bronx"],[1.4,0.28,"Bronx"],[58.0,1.09,"Bronx"],[0.8,0.18,"Bronx"],[20.6,1.96,"Bronx"],[4.9,1.15,"Bronx"],[30.1,10.06,"Bronx"],[1.6,0.23,"Bronx"],[9.9,4.4,"Bronx"],[6.2,2.28,"Bronx"],[23.2,4.25,"Bronx"],[3.3,0.95,"Bronx"],[41.9,1.13,"Bronx"],[1.5,1.24,"Bronx"],[1.0,1.91,"Bronx"],[1.7,0.63,"Bronx"],[0.5,0.0,"Bronx"],[6.1,1.25,"Bronx"],[3.7,1.43,"Bronx"],[56.5,0.29,"Bronx"],[7.5,0.6,"Bronx"],[8.2,0.53,"Bronx"],[32.8,4.06,"Bronx"],[0.5,0.0,"Bronx"],[3.4,1.12,"Bronx"],[14.0,1.14,"Bronx"],[33.6,1.81,"Bronx"],[10.9,1.46,"Bronx"],[4.1,1.23,"Bronx"],[57.8,6.02,"Bronx"],[17.4,0.54,"Bronx"],[15.1,2.36,"Bronx"],[4.0,2.25,"Bronx"],[5.3,0.86,"Bronx"],[7.2,0.17,"Bronx"],[48.4,2.18,"Bronx"],[2.6,1.43,"Bronx"],[47.4,1.61,"Bronx"],[6.8,1.32,"Bronx"],[66.6,0.45,"Bronx"],[84.7,0.42,"Bronx"],[1.7,4.42,"Bronx"],[6.4,3.01,"Bronx"],[62.5,1.33,"Bronx"],[0.0,0.2,"Bronx"],[15.7,1.35,"Bronx"],[39.1,2.04,"Bronx"],[0.0,0.99,"Bronx"],[57.0,2.12,"Bronx"],[57.7,8.49,"Bronx"],[60.7,1.4,"Bronx"],[68.9,0.42,"Bronx"],[47.7,18.58,"Bronx"],[30.8,25.29,"Bronx"],[18.6,2.36,"Bronx"],[62.9,3.87,"Bronx"],[67.1,1.41,"Bronx"],[0.0,1.81,"Bronx"],[17.3,3.93,"Bronx"],[47.4,0.59,"Bronx"],[42.0,0.19,"Bronx"],[39.5,0.83,"Bronx"],[39.1,0.0,"Bronx"],[49.6,0.46,"Bronx"],[52.5,1.36,"Bronx"],[14.4,0.23,"Bronx"],[46.5,1.28,"Bronx"],[74.3,3.92,"Bronx"],[67.5,2.08,"Brooklyn"],[32.4,3.11,"Brooklyn"],[49.0,0.44,"Brooklyn"],[57.6,1.32,"Brooklyn"],[41.3,10.72,"Brooklyn"],[41.5,3.06,"Brooklyn"],[26.2,1.91,"Brooklyn"],[8.7,1.27,"Brooklyn"],[62.2,1.19,"Brooklyn"],[17.1,1.1,"Brooklyn"],[14.5,0.19,"Brooklyn"],[31.7,1.73,"Brooklyn"],[49.7,2.63,"Brooklyn"],[36.4,0.65,"Brooklyn"],[5.8,1.18,"Brooklyn"],[0.0,0.31,"Brooklyn"],[47.7,3.25,"Brooklyn"],[38.4,0.0,"Brooklyn"],[12.0,3.15,"Brooklyn"],[49.7,6.86,"Brooklyn"],[16.0,6.43,"Brooklyn"],[32.1,3.9,"Brooklyn"],[15.1,6.39,"Brooklyn"],[64.1,8.45,"Brooklyn"],[30.8,2.34,"Brooklyn"],[29.9,1.81,"Brooklyn"],[26.8,4.25,"Brooklyn"],[75.7,3.55,"Brooklyn"],[46.0,5.13,"Brooklyn"],[65.8,5.25,"Brooklyn"],[31.8,3.5,"Brooklyn"],[37.6,3.22,"Brooklyn"],[54.5,1.56,"Brooklyn"],[50.2,5.74,"Brooklyn"],[19.7,2.28,"Brooklyn"],[52.4,1.49,"Brooklyn"],[37.8,4.3,"Brooklyn"],[30.2,6.72,"Brooklyn"],[56.3,5.04,"Brooklyn"],[62.6,3.91,"Brooklyn"],[23.0,1.28,"Brooklyn"],[8.7,3.95,"Brooklyn"],[29.5,2.51,"Brooklyn"],[28.6,1.88,"Brooklyn"],[28.9,6.83,"Brooklyn"],[27.6,2.02,"Brooklyn"],[43.0,2.79,"Brooklyn"],[24.9,2.19,"Brooklyn"],[41.5,2.73,"Brooklyn"],[19.1,9.23,"Brooklyn"],[32.2,2.24,"Brooklyn"],[39.1,3.67,"Brooklyn"],[45.1,3.86,"Brooklyn"],[18.0,1.98,"Brooklyn"],[8.1,2.27,"Brooklyn"],[19.6,2.56,"Brooklyn"],[46.1,4.62,"Brooklyn"],[23.0,2.44,"Brooklyn"],[28.9,5.19,"Brooklyn"],[26.4,1.06,"Brooklyn"],[29.0,0.91,"Brooklyn"],[18.7,0.25,"Brooklyn"],[27.0,4.01,"Brooklyn"],[0.0,0.47,"Brooklyn"],[38.6,2.48,"Brooklyn"],[31.1,0.77,"Brooklyn"],[11.8,1.29,"Brooklyn"],[41.5,0.5,"Brooklyn"],[11.8,0.38,"Brooklyn"],[32.3,1.54,"Brooklyn"],[26.9,0.0,"Brooklyn"],[36.2,2.15,"Brooklyn"],[13.0,0.3,"Brooklyn"],[25.5,1.09,"Brooklyn"],[30.7,6.51,"Brooklyn"],[27.1,0.38,"Brooklyn"],[15.2,0.0,"Brooklyn"],[14.8,0.46,"Brooklyn"],[14.6,0.47,"Brooklyn"],[30.0,0.0,"Brooklyn"],[28.0,0.53,"Brooklyn"],[18.6,0.0,"Brooklyn"],[36.2,1.18,"Brooklyn"],[16.7,1.21,"Brooklyn"],[21.4,0.0,"Brooklyn"],[25.1,0.93,"Brooklyn"],[50.0,3.94,"Brooklyn"],[11.3,1.07,"Brooklyn"],[33.5,16.69,"Brooklyn"],[34.6,3.27,"Brooklyn"],[32.4,3.71,"Brooklyn"],[27.4,0.43,"Brooklyn"],[31.3,1.66,"Brooklyn"],[11.9,1.4,"Brooklyn"],[28.1,3.52,"Brooklyn"],[55.0,4.33,"Brooklyn"],[14.4,3.4,"Brooklyn"],[29.7,2.68,"Brooklyn"],[29.2,2.55,"Brooklyn"],[46.0,1.44,"Brooklyn"],[40.1,4.46,"Brooklyn"],[32.1,4.04,"Brooklyn"],[54.3,7.45,"Brooklyn"],[39.6,6.36,"Brooklyn"],[25.7,3.55,"Brooklyn"],[22.3,0.79,"Brooklyn"],[33.6,2.52,"Brooklyn"],[49.0,2.79,"Brooklyn"],[45.2,9.44,"Brooklyn"],[43.8,2.46,"Brooklyn"],[19.5,3.4,"Brooklyn"],[30.6,5.17,"Brooklyn"],[25.7,4.06,"Brooklyn"],[45.9,2.11,"Brooklyn"],[74.7,0.81,"Brooklyn"],[43.6,1.3,"Brooklyn"],[32.2,1.73,"Brooklyn"],[64.6,0.7,"Brooklyn"],[51.9,1.72,"Brooklyn"],[54.4,1.31,"Brooklyn"],[28.5,2.65,"Brooklyn"],[60.9,1.45,"Brooklyn"],[43.4,1.58,"Brooklyn"],[56.9,3.53,"Brooklyn"],[22.1,4.74,"Brooklyn"],[35.9,4.04,"Brooklyn"],[39.7,1.76,"Brooklyn"],[30.3,2.75,"Brooklyn"],[48.6,2.61,"Brooklyn"],[91.0,0.45,"Brooklyn"],[52.4,4.38,"Brooklyn"],[64.5,7.37,"Brooklyn"],[37.4,2.33,"Brooklyn"],[52.5,2.85,"Brooklyn"],[47.3,2.9,"Brooklyn"],[52.9,4.37,"Brooklyn"],[66.2,11.43,"Brooklyn"],[46.8,0.0,"Brooklyn"],[35.2,1.59,"Brooklyn"],[28.2,1.43,"Brooklyn"],[39.1,2.71,"Brooklyn"],[19.5,4.1,"Brooklyn"],[51.9,1.62,"Brooklyn"],[34.0,2.13,"Brooklyn"],[76.8,6.17,"Brooklyn"],[13.1,0.44,"Brooklyn"],[54.0,4.72,"Brooklyn"],[45.3,3.69,"Brooklyn"],[39.4,1.05,"Brooklyn"],[19.6,2.16,"Brooklyn"],[30.6,1.98,"Brooklyn"],[32.2,2.25,"Brooklyn"],[50.3,0.15,"Brooklyn"],[32.4,2.13,"Brooklyn"],[63.0,1.46,"Brooklyn"],[40.2,4.13,"Brooklyn"],[53.6,1.38,"Brooklyn"],[64.6,2.19,"Brooklyn"],[13.1,6.03,"Brooklyn"],[49.7,5.13,"Brooklyn"],[29.2,6.01,"Brooklyn"],[73.8,13.4,"Brooklyn"],[31.6,14.95,"Brooklyn"],[80.0,1.96,"Brooklyn"],[49.4,5.74,"Brooklyn"],[66.0,1.16,"Brooklyn"],[39.9,1.73,"Brooklyn"],[48.7,5.44,"Brooklyn"],[43.4,5.27,"Brooklyn"],[12.4,0.72,"Brooklyn"],[23.6,4.13,"Brooklyn"],[9.4,1.55,"Brooklyn"],[28.8,0.39,"Brooklyn"],[29.6,2.68,"Brooklyn"],[27.9,0.0,"Brooklyn"],[14.4,0.95,"Brooklyn"],[21.0,0.72,"Brooklyn"],[15.4,1.41,"Brooklyn"],[20.5,3.07,"Brooklyn"],[19.6,3.22,"Brooklyn"],[21.9,0.74,"Brooklyn"],[39.6,0.52,"Brooklyn"],[43.5,0.7,"Brooklyn"],[15.2,3.93,"Brooklyn"],[43.5,1.43,"Brooklyn"],[19.7,1.37,"Brooklyn"],[22.9,0.0,"Brooklyn"],[29.4,2.83,"Brooklyn"],[32.9,0.61,"Brooklyn"],[21.4,2.34,"Brooklyn"],[18.7,0.35,"Brooklyn"],[24.2,1.63,"Brooklyn"],[11.6,0.16,"Brooklyn"],[14.8,0.36,"Brooklyn"],[14.8,0.18,"Brooklyn"],[9.9,1.9,"Brooklyn"],[40.4,1.18,"Brooklyn"],[36.9,1.81,"Brooklyn"],[32.5,1.12,"Brooklyn"],[31.3,2.51,"Brooklyn"],[55.0,0.3,"Brooklyn"],[9.8,4.71,"Brooklyn"],[46.1,0.39,"Brooklyn"],[6.4,0.96,"Brooklyn"],[47.6,6.28,"Brooklyn"],[14.2,1.0,"Brooklyn"],[25.6,2.24,"Brooklyn"],[32.0,1.02,"Brooklyn"],[36.8,1.45,"Brooklyn"],[1.5,1.62,"Brooklyn"],[30.3,0.36,"Brooklyn"],[14.0,1.19,"Brooklyn"],[12.3,1.97,"Brooklyn"],[13.0,2.26,"Brooklyn"],[9.1,0.26,"Brooklyn"],[37.3,2.06,"Brooklyn"],[2.3,1.74,"Brooklyn"],[53.1,1.13,"Brooklyn"],[30.7,3.61,"Brooklyn"],[27.1,1.98,"Brooklyn"],[19.4,2.19,"Brooklyn"],[24.4,0.87,"Brooklyn"],[28.3,1.48,"Brooklyn"],[34.8,2.49,"Brooklyn"],[23.5,1.45,"Brooklyn"],[28.1,1.94,"Brooklyn"],[12.3,0.82,"Brooklyn"],[33.3,2.13,"Brooklyn"],[39.8,1.68,"Brooklyn"],[39.4,1.02,"Brooklyn"],[42.4,1.9,"Brooklyn"],[26.1,2.72,"Brooklyn"],[14.6,0.46,"Brooklyn"],[27.3,5.42,"Brooklyn"],[37.5,1.17,"Brooklyn"],[50.3,11.12,"Brooklyn"],[5.6,0.76,"Brooklyn"],[39.2,1.85,"Brooklyn"],[14.5,0.75,"Brooklyn"],[13.1,1.63,"Brooklyn"],[0.0,0.32,"Brooklyn"],[8.6,1.77,"Brooklyn"],[15.3,3.83,"Brooklyn"],[31.1,4.75,"Brooklyn"],[13.7,1.93,"Brooklyn"],[21.0,1.89,"Brooklyn"],[30.9,2.6,"Brooklyn"],[30.7,1.6,"Brooklyn"],[22.0,2.2,"Brooklyn"],[30.5,3.86,"Brooklyn"],[40.0,2.23,"Brooklyn"],[26.0,2.94,"Brooklyn"],[36.1,0.75,"Brooklyn"],[26.6,5.67,"Brooklyn"],[23.4,0.6,"Brooklyn"],[25.3,3.36,"Brooklyn"],[31.4,4.1,"Brooklyn"],[43.6,2.08,"Brooklyn"],[18.3,0.37,"Brooklyn"],[46.7,1.33,"Brooklyn"],[12.1,3.16,"Brooklyn"],[65.5,1.05,"Brooklyn"],[17.4,1.11,"Brooklyn"],[67.3,2.23,"Brooklyn"],[14.6,0.44,"Brooklyn"],[27.9,1.13,"Brooklyn"],[14.4,2.49,"Brooklyn"],[52.3,1.83,"Brooklyn"],[7.0,2.51,"Brooklyn"],[15.1,2.09,"Brooklyn"],[27.6,3.04,"Brooklyn"],[26.1,3.22,"Brooklyn"],[15.9,2.2,"Brooklyn"],[20.9,0.84,"Brooklyn"],[4.2,0.63,"Brooklyn"],[21.8,0.66,"Brooklyn"],[20.1,4.7,"Brooklyn"],[37.2,1.71,"Brooklyn"],[27.5,2.59,"Brooklyn"],[4.4,0.85,"Brooklyn"],[17.9,1.83,"Brooklyn"],[36.2,0.22,"Brooklyn"],[52.5,0.53,"Brooklyn"],[52.6,0.84,"Brooklyn"],[20.6,1.09,"Brooklyn"],[35.5,0.5,"Brooklyn"],[30.8,1.2,"Brooklyn"],[0.0,0.0,"Brooklyn"],[8.8,2.73,"Brooklyn"],[4.8,0.45,"Brooklyn"],[11.2,0.44,"Brooklyn"],[28.7,0.74,"Brooklyn"],[22.0,0.27,"Brooklyn"],[7.7,3.99,"Brooklyn"],[2.6,0.0,"Brooklyn"],[4.4,0.29,"Brooklyn"],[27.9,0.0,"Brooklyn"],[0.8,0.58,"Brooklyn"],[10.1,0.59,"Brooklyn"],[0.5,1.96,"Brooklyn"],[0.0,0.4,"Brooklyn"],[27.2,2.61,"Brooklyn"],[49.2,0.33,"Brooklyn"],[8.7,0.4,"Brooklyn"],[29.2,0.86,"Brooklyn"],[40.6,0.46,"Brooklyn"],[2.6,0.0,"Brooklyn"],[13.0,0.74,"Brooklyn"],[14.7,2.46,"Brooklyn"],[6.8,0.54,"Brooklyn"],[8.8,0.89,"Brooklyn"],[20.8,8.41,"Brooklyn"],[21.0,2.58,"Brooklyn"],[37.1,4.81,"Brooklyn"],[9.5,0.32,"Brooklyn"],[10.7,0.0,"Brooklyn"],[22.7,6.19,"Brooklyn"],[31.8,0.96,"Brooklyn"],[16.2,0.71,"Brooklyn"],[58.1,2.64,"Brooklyn"],[30.8,2.09,"Brooklyn"],[22.3,0.4,"Brooklyn"],[33.5,3.57,"Brooklyn"],[19.9,2.22,"Brooklyn"],[15.5,3.2,"Brooklyn"],[36.5,0.98,"Brooklyn"],[28.0,1.0,"Brooklyn"],[17.1,0.19,"Brooklyn"],[8.2,0.57,"Brooklyn"],[35.1,0.73,"Brooklyn"],[30.6,1.05,"Brooklyn"],[39.0,4.6,"Brooklyn"],[47.0,1.13,"Brooklyn"],[41.0,2.43,"Brooklyn"],[25.5,2.75,"Brooklyn"],[60.9,5.22,"Brooklyn"],[2.0,0.74,"Brooklyn"],[32.4,2.59,"Brooklyn"],[16.1,0.79,"Brooklyn"],[38.6,9.74,"Brooklyn"],[18.9,3.43,"Brooklyn"],[52.3,0.59,"Brooklyn"],[6.7,1.19,"Brooklyn"],[66.5,7.73,"Brooklyn"],[18.8,0.27,"Brooklyn"],[36.4,5.06,"Brooklyn"],[20.4,0.89,"Brooklyn"],[45.5,1.66,"Brooklyn"],[36.0,0.5,"Brooklyn"],[47.0,2.3,"Brooklyn"],[12.9,0.6,"Brooklyn"],[33.0,1.34,"Brooklyn"],[49.9,1.9,"Brooklyn"],[13.2,1.03,"Brooklyn"],[57.2,1.58,"Brooklyn"],[23.0,1.52,"Brooklyn"],[41.4,8.61,"Brooklyn"],[33.4,1.56,"Brooklyn"],[58.1,0.0,"Brooklyn"],[22.3,2.42,"Brooklyn"],[21.4,1.16,"Brooklyn"],[32.1,5.04,"Brooklyn"],[13.8,4.41,"Brooklyn"],[27.1,2.55,"Brooklyn"],[14.7,0.57,"Brooklyn"],[52.0,2.41,"Brooklyn"],[17.5,3.4,"Brooklyn"],[39.7,4.74,"Brooklyn"],[11.1,0.66,"Brooklyn"],[29.3,1.34,"Brooklyn"],[15.6,1.48,"Brooklyn"],[34.5,0.44,"Brooklyn"],[9.5,2.93,"Brooklyn"],[35.6,1.93,"Brooklyn"],[7.6,1.51,"Brooklyn"],[17.3,2.18,"Brooklyn"],[5.0,2.07,"Brooklyn"],[34.1,2.84,"Brooklyn"],[11.0,1.74,"Brooklyn"],[26.9,1.71,"Brooklyn"],[21.4,2.86,"Brooklyn"],[30.5,0.92,"Brooklyn"],[16.0,0.79,"Brooklyn"],[20.7,4.74,"Brooklyn"],[41.6,2.64,"Brooklyn"],[31.1,1.93,"Brooklyn"],[8.7,0.86,"Brooklyn"],[48.8,1.76,"Brooklyn"],[13.1,2.32,"Brooklyn"],[24.4,2.61,"Brooklyn"],[14.1,1.52,"Brooklyn"],[46.9,1.41,"Brooklyn"],[6.4,3.85,"Brooklyn"],[52.0,1.57,"Brooklyn"],[0.8,1.1,"Brooklyn"],[66.9,3.49,"Brooklyn"],[46.0,3.15,"Brooklyn"],[0.0,1.65,"Brooklyn"],[41.2,1.45,"Brooklyn"],[20.3,3.39,"Brooklyn"],[68.0,1.46,"Brooklyn"],[42.2,2.34,"Brooklyn"],[36.1,1.73,"Brooklyn"],[58.0,3.13,"Brooklyn"],[49.8,0.9,"Brooklyn"],[39.6,1.64,"Brooklyn"],[59.8,4.56,"Brooklyn"],[52.1,1.76,"Brooklyn"],[41.8,0.62,"Brooklyn"],[47.2,0.78,"Brooklyn"],[21.2,2.81,"Brooklyn"],[32.4,1.33,"Brooklyn"],[14.9,8.54,"Brooklyn"],[20.6,1.66,"Brooklyn"],[34.4,4.66,"Brooklyn"],[16.3,3.26,"Brooklyn"],[11.1,2.53,"Brooklyn"],[26.3,2.82,"Brooklyn"],[54.5,1.42,"Brooklyn"],[2.3,1.11,"Brooklyn"],[23.9,2.05,"Brooklyn"],[17.4,0.32,"Brooklyn"],[38.1,6.42,"Brooklyn"],[0.0,0.0,"Brooklyn"],[2.6,1.48,"Brooklyn"],[32.8,2.45,"Brooklyn"],[18.0,3.96,"Brooklyn"],[33.7,3.31,"Brooklyn"],[28.0,9.52,"Brooklyn"],[24.6,1.77,"Brooklyn"],[35.5,3.23,"Brooklyn"],[59.5,2.63,"Brooklyn"],[31.7,3.23,"Brooklyn"],[24.4,2.59,"Brooklyn"],[59.4,0.0,"Brooklyn"],[15.7,2.5,"Brooklyn"],[37.4,1.99,"Brooklyn"],[64.1,4.1,"Brooklyn"],[9.5,0.73,"Brooklyn"],[20.0,3.06,"Brooklyn"],[26.5,0.69,"Brooklyn"],[0.8,0.77,"Brooklyn"],[3.2,0.44,"Brooklyn"],[11.2,0.3,"Brooklyn"],[17.7,0.0,"Brooklyn"],[0.0,0.22,"Brooklyn"],[9.9,0.27,"Brooklyn"],[11.3,2.62,"Brooklyn"],[11.5,1.45,"Brooklyn"],[21.9,3.35,"Brooklyn"],[12.7,1.39,"Brooklyn"],[22.2,1.38,"Brooklyn"],[8.6,2.84,"Brooklyn"],[3.3,0.0,"Brooklyn"],[24.2,2.59,"Brooklyn"],[31.8,2.65,"Brooklyn"],[14.6,3.97,"Brooklyn"],[35.4,6.27,"Brooklyn"],[17.8,0.39,"Brooklyn"],[8.5,3.91,"Brooklyn"],[17.6,5.33,"Brooklyn"],[7.7,0.54,"Brooklyn"],[62.0,5.67,"Brooklyn"],[0.0,1.34,"Brooklyn"],[30.4,1.8,"Brooklyn"],[31.1,0.66,"Brooklyn"],[30.1,0.0,"Brooklyn"],[48.8,4.82,"Brooklyn"],[27.1,0.31,"Brooklyn"],[22.3,0.43,"Brooklyn"],[31.3,1.3,"Brooklyn"],[35.9,0.21,"Brooklyn"],[14.4,2.12,"Brooklyn"],[16.8,0.4,"Brooklyn"],[18.9,0.25,"Brooklyn"],[26.9,1.69,"Brooklyn"],[2.4,0.36,"Brooklyn"],[18.2,0.19,"Brooklyn"],[13.3,0.21,"Brooklyn"],[43.4,4.77,"Brooklyn"],[13.6,1.77,"Brooklyn"],[27.4,1.17,"Brooklyn"],[18.5,2.26,"Brooklyn"],[16.6,3.57,"Brooklyn"],[14.7,1.94,"Brooklyn"],[13.3,2.51,"Brooklyn"],[19.2,2.56,"Brooklyn"],[41.0,1.79,"Brooklyn"],[9.5,4.11,"Brooklyn"],[31.0,4.2,"Brooklyn"],[32.7,3.45,"Brooklyn"],[17.3,6.22,"Brooklyn"],[88.4,5.06,"Brooklyn"],[13.2,3.2,"Brooklyn"],[1.3,2.04,"Brooklyn"],[88.1,1.52,"Brooklyn"],[15.4,0.9,"Brooklyn"],[39.2,3.94,"Brooklyn"],[76.3,0.0,"Brooklyn"],[33.2,5.42,"Brooklyn"],[95.1,1.44,"Brooklyn"],[17.8,2.29,"Brooklyn"],[0.0,0.0,"Brooklyn"],[35.4,1.1,"Brooklyn"],[66.1,1.51,"Brooklyn"],[12.0,1.96,"Brooklyn"],[67.7,2.27,"Brooklyn"],[28.6,1.71,"Brooklyn"],[18.6,5.29,"Brooklyn"],[18.2,3.32,"Brooklyn"],[12.8,0.39,"Brooklyn"],[38.1,2.51,"Brooklyn"],[47.1,1.33,"Brooklyn"],[33.8,1.41,"Brooklyn"],[19.6,2.38,"Brooklyn"],[40.5,2.1,"Brooklyn"],[16.3,0.76,"Brooklyn"],[47.3,2.14,"Brooklyn"],[18.2,2.62,"Brooklyn"],[66.4,1.4,"Brooklyn"],[51.1,0.33,"Brooklyn"],[28.5,1.53,"Brooklyn"],[64.6,0.88,"Brooklyn"],[44.2,0.31,"Brooklyn"],[45.5,2.64,"Brooklyn"],[50.1,3.58,"Brooklyn"],[28.8,2.54,"Brooklyn"],[44.3,0.85,"Brooklyn"],[33.1,4.91,"Brooklyn"],[12.6,0.57,"Brooklyn"],[60.6,3.58,"Brooklyn"],[81.4,5.54,"Brooklyn"],[73.0,3.3,"Brooklyn"],[36.7,2.83,"Brooklyn"],[61.1,0.33,"Brooklyn"],[84.8,10.13,"Brooklyn"],[76.7,0.0,"Brooklyn"],[94.8,2.74,"Brooklyn"],[62.5,2.13,"Brooklyn"],[92.9,0.75,"Brooklyn"],[32.2,4.2,"Brooklyn"],[58.4,1.83,"Brooklyn"],[86.2,2.79,"Brooklyn"],[81.0,3.28,"Brooklyn"],[71.8,0.78,"Brooklyn"],[86.6,2.68,"Brooklyn"],[81.6,3.02,"Brooklyn"],[94.6,1.79,"Brooklyn"],[80.2,0.0,"Brooklyn"],[83.6,0.0,"Brooklyn"],[75.4,8.63,"Brooklyn"],[45.3,1.61,"Brooklyn"],[86.1,0.72,"Brooklyn"],[93.3,1.05,"Brooklyn"],[59.4,0.66,"Brooklyn"],[51.3,0.39,"Brooklyn"],[87.5,0.57,"Brooklyn"],[79.5,2.41,"Brooklyn"],[67.9,3.64,"Brooklyn"],[82.5,1.26,"Brooklyn"],[61.0,3.0,"Brooklyn"],[61.2,0.87,"Brooklyn"],[41.7,0.87,"Brooklyn"],[81.5,3.93,"Brooklyn"],[78.1,2.15,"Brooklyn"],[44.5,9.06,"Brooklyn"],[75.5,2.14,"Brooklyn"],[85.7,3.28,"Brooklyn"],[38.3,0.6,"Brooklyn"],[82.4,0.89,"Brooklyn"],[52.8,1.89,"Brooklyn"],[79.3,0.37,"Brooklyn"],[87.1,0.95,"Brooklyn"],[69.2,0.95,"Brooklyn"],[65.6,1.07,"Brooklyn"],[78.8,1.75,"Brooklyn"],[37.6,1.71,"Brooklyn"],[47.4,0.57,"Brooklyn"],[30.4,0.61,"Brooklyn"],[42.6,1.59,"Brooklyn"],[86.5,1.89,"Brooklyn"],[52.3,2.94,"Brooklyn"],[49.1,4.65,"Brooklyn"],[57.2,0.71,"Brooklyn"],[89.7,0.87,"Brooklyn"],[82.0,3.0,"Brooklyn"],[63.8,3.49,"Brooklyn"],[56.2,0.0,"Brooklyn"],[27.4,0.0,"Brooklyn"],[16.2,0.24,"Brooklyn"],[12.1,2.09,"Brooklyn"],[14.2,0.94,"Brooklyn"],[32.7,2.57,"Brooklyn"],[43.1,0.72,"Brooklyn"],[37.5,0.65,"Brooklyn"],[11.3,3.44,"Brooklyn"],[60.3,2.61,"Brooklyn"],[75.4,1.84,"Brooklyn"],[26.4,2.2,"Brooklyn"],[46.8,2.44,"Brooklyn"],[29.4,6.76,"Brooklyn"],[41.6,0.0,"Brooklyn"],[26.4,1.18,"Brooklyn"],[10.1,0.56,"Brooklyn"],[10.4,1.8,"Brooklyn"],[8.1,0.72,"Brooklyn"],[27.3,0.0,"Brooklyn"],[23.0,1.54,"Brooklyn"],[46.7,2.54,"Brooklyn"],[14.2,1.86,"Brooklyn"],[14.5,1.38,"Brooklyn"],[32.2,2.41,"Brooklyn"],[1.7,1.2,"Brooklyn"],[41.1,3.73,"Brooklyn"],[33.0,3.35,"Brooklyn"],[22.3,2.64,"Brooklyn"],[20.0,2.48,"Brooklyn"],[0.0,4.89,"Brooklyn"],[27.1,0.95,"Brooklyn"],[38.4,0.74,"Brooklyn"],[35.6,0.69,"Brooklyn"],[26.9,1.51,"Brooklyn"],[2.0,1.51,"Brooklyn"],[4.6,1.13,"Brooklyn"],[16.4,1.17,"Brooklyn"],[19.9,0.24,"Brooklyn"],[20.7,1.94,"Brooklyn"],[22.1,0.88,"Brooklyn"],[59.5,0.0,"Brooklyn"],[76.5,1.09,"Brooklyn"],[72.9,1.01,"Brooklyn"],[77.3,0.52,"Brooklyn"],[59.2,0.45,"Brooklyn"],[61.2,1.47,"Brooklyn"],[51.5,0.0,"Brooklyn"],[91.8,0.0,"Brooklyn"],[68.4,0.48,"Brooklyn"],[39.1,0.95,"Brooklyn"],[41.7,0.51,"Brooklyn"],[29.4,0.76,"Brooklyn"],[29.8,0.0,"Brooklyn"],[50.5,1.35,"Brooklyn"],[25.4,1.01,"Brooklyn"],[16.9,0.34,"Brooklyn"],[37.2,0.33,"Brooklyn"],[51.0,0.32,"Brooklyn"],[14.3,1.28,"Brooklyn"],[43.9,0.56,"Brooklyn"],[8.4,1.93,"Brooklyn"],[52.4,1.18,"Brooklyn"],[35.2,1.64,"Brooklyn"],[12.6,0.46,"Brooklyn"],[24.2,0.0,"Brooklyn"],[4.2,0.0,"Brooklyn"],[25.8,0.26,"Brooklyn"],[6.2,0.13,"Brooklyn"],[4.1,0.7,"Brooklyn"],[33.6,0.28,"Brooklyn"],[8.5,0.25,"Brooklyn"],[35.3,1.73,"Brooklyn"],[15.4,0.81,"Brooklyn"],[28.7,0.0,"Brooklyn"],[0.5,0.23,"Brooklyn"],[7.4,0.48,"Brooklyn"],[0.0,0.0,"Brooklyn"],[0.0,0.0,"Brooklyn"],[15.5,0.89,"Brooklyn"],[33.8,1.22,"Brooklyn"],[32.3,1.87,"Brooklyn"],[14.7,0.7,"Brooklyn"],[20.6,1.75,"Brooklyn"],[47.3,0.38,"Brooklyn"],[61.4,0.0,"Brooklyn"],[63.9,0.0,"Brooklyn"],[51.2,1.38,"Brooklyn"],[61.3,0.0,"Brooklyn"],[36.7,0.45,"Brooklyn"],[54.4,0.63,"Brooklyn"],[2.8,0.0,"Brooklyn"],[71.6,0.56,"Brooklyn"],[66.7,2.14,"Brooklyn"],[50.5,0.26,"Brooklyn"],[43.0,0.27,"Brooklyn"],[51.0,1.81,"Brooklyn"],[59.0,0.76,"Brooklyn"],[46.4,6.23,"Brooklyn"],[65.0,0.53,"Brooklyn"],[75.0,2.45,"Brooklyn"],[66.4,1.55,"Brooklyn"],[49.4,1.66,"Brooklyn"],[0.0,0.76,"Brooklyn"],[69.9,2.08,"Brooklyn"],[44.0,1.71,"Brooklyn"],[50.1,1.82,"Brooklyn"],[56.6,8.11,"Brooklyn"],[71.5,0.61,"Brooklyn"],[67.2,0.66,"Brooklyn"],[61.7,1.3,"Brooklyn"],[41.9,4.48,"Brooklyn"],[60.7,0.83,"Brooklyn"],[67.1,1.5,"Brooklyn"],[58.4,0.93,"Brooklyn"],[51.7,0.39,"Brooklyn"],[67.7,0.0,"Brooklyn"],[60.6,1.11,"Brooklyn"],[85.6,0.0,"Brooklyn"],[90.7,1.68,"Brooklyn"],[71.5,0.0,"Brooklyn"],[54.1,0.0,"Brooklyn"],[70.6,0.55,"Brooklyn"],[56.2,0.68,"Brooklyn"],[67.7,0.87,"Brooklyn"],[0.0,0.82,"Brooklyn"],[0.2,0.18,"Brooklyn"],[2.0,0.16,"Brooklyn"],[32.8,1.07,"Brooklyn"],[60.1,0.54,"Brooklyn"],[22.1,0.85,"Brooklyn"],[35.6,1.35,"Brooklyn"],[0.0,0.24,"Brooklyn"],[0.0,1.01,"Brooklyn"],[34.8,0.79,"Brooklyn"],[29.1,0.26,"Brooklyn"],[33.2,0.31,"Brooklyn"],[21.8,2.29,"Brooklyn"],[17.4,1.78,"Brooklyn"],[23.8,0.45,"Brooklyn"],[26.6,1.53,"Brooklyn"],[25.3,0.89,"Brooklyn"],[26.6,0.0,"Brooklyn"],[5.3,2.29,"Brooklyn"],[58.7,2.58,"Brooklyn"],[17.5,3.86,"Brooklyn"],[24.0,3.3,"Brooklyn"],[31.8,2.56,"Brooklyn"],[36.0,3.04,"Brooklyn"],[30.6,1.95,"Brooklyn"],[11.0,0.49,"Brooklyn"],[47.1,0.79,"Brooklyn"],[35.6,0.83,"Brooklyn"],[51.2,3.11,"Brooklyn"],[45.8,2.03,"Brooklyn"],[18.3,2.0,"Brooklyn"],[17.5,1.5,"Brooklyn"],[21.3,0.51,"Brooklyn"],[56.0,2.55,"Brooklyn"],[44.4,0.64,"Brooklyn"],[19.8,1.57,"Brooklyn"],[31.4,0.0,"Brooklyn"],[44.2,1.77,"Brooklyn"],[28.4,3.94,"Brooklyn"],[22.1,0.82,"Brooklyn"],[37.8,0.3,"Brooklyn"],[26.5,1.04,"Brooklyn"],[42.0,3.87,"Brooklyn"],[24.9,5.44,"Brooklyn"],[23.6,3.36,"Brooklyn"],[37.9,0.51,"Brooklyn"],[19.8,0.21,"Brooklyn"],[16.3,0.84,"Brooklyn"],[27.5,3.13,"Brooklyn"],[26.7,1.37,"Brooklyn"],[42.8,3.0,"Brooklyn"],[43.8,0.21,"Brooklyn"],[0.0,0.19,"Brooklyn"],[28.7,1.48,"Brooklyn"],[0.0,0.0,"Brooklyn"],[0.0,0.22,"Brooklyn"],[21.4,2.0,"Brooklyn"],[25.4,2.07,"Brooklyn"],[58.1,5.89,"Brooklyn"],[71.6,7.21,"Brooklyn"],[0.0,2.25,"Manhattan"],[31.8,0.0,"Manhattan"],[5.2,1.16,"Manhattan"],[18.6,0.33,"Manhattan"],[1.6,0.34,"Manhattan"],[29.9,6.61,"Manhattan"],[82.3,0.0,"Manhattan"],[1.0,0.15,"Manhattan"],[63.3,0.48,"Manhattan"],[14.6,0.4,"Manhattan"],[76.0,0.27,"Manhattan"],[8.3,1.16,"Manhattan"],[60.1,1.04,"Manhattan"],[15.9,2.39,"Manhattan"],[26.4,0.0,"Manhattan"],[11.3,1.04,"Manhattan"],[0.0,0.59,"Manhattan"],[36.6,2.55,"Manhattan"],[9.8,0.74,"Manhattan"],[16.7,3.6,"Manhattan"],[0.0,0.44,"Manhattan"],[0.0,0.22,"Manhattan"],[7.7,0.0,"Manhattan"],[31.4,0.85,"Manhattan"],[80.5,1.82,"Manhattan"],[16.4,0.31,"Manhattan"],[12.7,1.43,"Manhattan"],[5.9,1.87,"Manhattan"],[5.6,0.35,"Manhattan"],[26.0,2.06,"Manhattan"],[22.7,1.4,"Manhattan"],[43.9,2.69,"Manhattan"],[12.7,2.15,"Manhattan"],[20.9,0.0,"Manhattan"],[15.3,0.58,"Manhattan"],[42.7,5.49,"Manhattan"],[13.4,1.24,"Manhattan"],[46.2,0.18,"Manhattan"],[10.9,1.21,"Manhattan"],[18.2,0.48,"Manhattan"],[7.0,0.73,"Manhattan"],[40.9,0.19,"Manhattan"],[10.0,0.57,"Manhattan"],[0.0,0.24,"Manhattan"],[23.1,0.91,"Manhattan"],[52.9,1.15,"Manhattan"],[36.5,2.62,"Manhattan"],[50.5,1.89,"Manhattan"],[62.8,0.85,"Manhattan"],[51.6,2.25,"Manhattan"],[31.5,0.19,"Manhattan"],[26.8,3.69,"Manhattan"],[29.6,1.05,"Manhattan"],[37.6,0.77,"Manhattan"],[6.5,2.26,"Manhattan"],[63.8,0.59,"Manhattan"],[0.0,0.2,"Manhattan"],[57.7,1.32,"Manhattan"],[0.0,0.0,"Manhattan"],[46.4,2.43,"Manhattan"],[31.8,1.42,"Manhattan"],[15.9,1.07,"Manhattan"],[29.1,0.73,"Manhattan"],[19.3,3.01,"Manhattan"],[34.7,1.4,"Manhattan"],[42.2,0.37,"Manhattan"],[20.1,0.25,"Manhattan"],[13.4,0.0,"Manhattan"],[34.5,2.49,"Manhattan"],[19.1,1.12,"Manhattan"],[17.6,2.97,"Manhattan"],[25.5,1.12,"Manhattan"],[47.2,1.54,"Manhattan"],[29.6,0.42,"Manhattan"],[27.2,1.79,"Manhattan"],[28.1,0.75,"Manhattan"],[39.1,1.12,"Manhattan"],[44.0,1.13,"Manhattan"],[40.1,2.58,"Manhattan"],[42.6,0.0,"Manhattan"],[11.1,3.32,"Manhattan"],[30.2,3.97,"Manhattan"],[20.9,0.0,"Manhattan"],[69.3,0.0,"Manhattan"],[29.7,1.12,"Manhattan"],[33.4,1.45,"Manhattan"],[24.7,0.51,"Manhattan"],[26.5,0.14,"Manhattan"],[26.7,1.38,"Manhattan"],[14.9,0.72,"Manhattan"],[44.9,1.05,"Manhattan"],[22.9,1.33,"Manhattan"],[56.0,0.62,"Manhattan"],[44.3,0.23,"Manhattan"],[29.4,4.62,"Manhattan"],[0.6,1.24,"Manhattan"],[8.9,5.46,"Manhattan"],[22.0,1.85,"Manhattan"],[0.0,1.07,"Manhattan"],[6.2,0.29,"Manhattan"],[48.0,0.0,"Manhattan"],[67.9,0.26,"Manhattan"],[29.1,0.38,"Manhattan"],[43.0,3.48,"Manhattan"],[52.5,0.24,"Manhattan"],[54.7,1.04,"Manhattan"],[14.5,0.59,"Manhattan"],[10.9,4.25,"Manhattan"],[36.9,0.97,"Manhattan"],[62.5,2.18,"Manhattan"],[9.5,0.76,"Manhattan"],[15.6,0.74,"Manhattan"],[0.5,1.31,"Manhattan"],[43.7,1.94,"Manhattan"],[0.5,1.48,"Manhattan"],[65.1,2.01,"Manhattan"],[6.1,0.31,"Manhattan"],[5.8,1.79,"Manhattan"],[59.2,0.32,"Manhattan"],[24.5,0.67,"Manhattan"],[7.9,1.85,"Manhattan"],[58.6,0.71,"Manhattan"],[42.4,0.8,"Manhattan"],[26.7,0.48,"Manhattan"],[70.5,0.58,"Manhattan"],[18.4,0.59,"Manhattan"],[27.4,0.39,"Manhattan"],[70.0,0.3,"Manhattan"],[11.2,2.3,"Manhattan"],[33.1,0.85,"Manhattan"],[5.5,0.0,"Manhattan"],[39.3,0.94,"Manhattan"],[15.9,0.65,"Manhattan"],[30.7,0.86,"Manhattan"],[0.9,0.21,"Manhattan"],[1.7,0.0,"Manhattan"],[86.1,0.0,"Manhattan"],[42.3,0.16,"Manhattan"],[4.8,0.45,"Manhattan"],[28.3,1.99,"Manhattan"],[37.9,0.61,"Manhattan"],[46.3,0.69,"Manhattan"],[29.5,0.5,"Manhattan"],[53.1,1.49,"Manhattan"],[70.7,1.01,"Manhattan"],[49.6,0.6,"Manhattan"],[31.7,0.59,"Manhattan"],[27.1,0.27,"Manhattan"],[19.6,1.02,"Manhattan"],[24.4,0.37,"Manhattan"],[15.2,0.0,"Manhattan"],[40.8,2.24,"Manhattan"],[41.4,0.42,"Manhattan"],[32.9,0.16,"Manhattan"],[40.7,1.4,"Manhattan"],[81.5,0.82,"Manhattan"],[5.9,0.58,"Manhattan"],[15.1,0.1,"Manhattan"],[20.3,0.26,"Manhattan"],[47.4,0.63,"Manhattan"],[36.3,0.92,"Manhattan"],[10.3,1.31,"Manhattan"],[39.6,1.07,"Manhattan"],[43.8,0.2,"Manhattan"],[63.7,0.4,"Manhattan"],[55.8,0.18,"Manhattan"],[6.1,0.0,"Manhattan"],[9.5,0.45,"Manhattan"],[40.7,0.66,"Manhattan"],[36.5,0.58,"Manhattan"],[2.8,0.47,"Manhattan"],[53.4,1.09,"Manhattan"],[82.2,0.32,"Manhattan"],[36.2,0.31,"Manhattan"],[22.7,1.56,"Manhattan"],[4.3,0.32,"Manhattan"],[47.0,0.55,"Manhattan"],[1.0,0.72,"Manhattan"],[47.0,0.42,"Manhattan"],[9.6,0.58,"Manhattan"],[46.9,1.01,"Manhattan"],[5.2,0.2,"Manhattan"],[25.1,0.62,"Manhattan"],[9.5,0.11,"Manhattan"],[42.4,0.71,"Manhattan"],[1.9,1.07,"Manhattan"],[29.1,0.86,"Manhattan"],[10.4,0.19,"Manhattan"],[13.8,2.08,"Manhattan"],[37.3,0.19,"Manhattan"],[39.5,0.4,"Manhattan"],[12.5,0.53,"Manhattan"],[37.0,0.3,"Manhattan"],[11.3,0.86,"Manhattan"],[34.3,0.24,"Manhattan"],[3.8,0.96,"Manhattan"],[34.6,0.59,"Manhattan"],[21.5,0.61,"Manhattan"],[32.5,0.0,"Manhattan"],[4.0,0.16,"Manhattan"],[25.8,0.0,"Manhattan"],[3.2,0.43,"Manhattan"],[19.3,0.39,"Manhattan"],[40.7,1.61,"Manhattan"],[43.4,0.87,"Manhattan"],[0.0,0.26,"Manhattan"],[18.4,0.33,"Manhattan"],[4.5,0.68,"Manhattan"],[36.0,1.57,"Manhattan"],[0.3,1.92,"Manhattan"],[20.7,0.0,"Manhattan"],[44.8,2.39,"Manhattan"],[33.7,0.34,"Manhattan"],[16.4,3.62,"Manhattan"],[16.9,0.0,"Manhattan"],[24.6,0.48,"Manhattan"],[4.9,0.25,"Manhattan"],[19.2,0.36,"Manhattan"],[8.6,0.29,"Manhattan"],[6.9,0.35,"Manhattan"],[23.4,0.93,"Manhattan"],[7.6,0.27,"Manhattan"],[14.5,0.31,"Manhattan"],[29.6,0.81,"Manhattan"],[10.2,0.19,"Manhattan"],[12.8,0.52,"Manhattan"],[0.0,2.03,"Manhattan"],[6.5,0.78,"Manhattan"],[19.7,0.56,"Manhattan"],[30.7,0.82,"Manhattan"],[0.6,1.48,"Manhattan"],[21.0,0.82,"Manhattan"],[29.3,1.7,"Manhattan"],[30.2,2.78,"Manhattan"],[12.8,0.0,"Manhattan"],[3.3,0.35,"Manhattan"],[1.1,0.3,"Manhattan"],[17.1,0.18,"Manhattan"],[24.9,2.12,"Manhattan"],[24.2,1.7,"Manhattan"],[31.8,0.18,"Manhattan"],[10.7,0.13,"Manhattan"],[5.9,0.46,"Manhattan"],[17.7,1.68,"Manhattan"],[0.7,0.65,"Manhattan"],[11.5,0.41,"Manhattan"],[3.2,0.55,"Manhattan"],[15.1,1.2,"Manhattan"],[10.6,0.0,"Manhattan"],[19.4,0.09,"Manhattan"],[14.0,0.3,"Manhattan"],[4.3,0.21,"Manhattan"],[45.2,0.0,"Manhattan"],[9.8,1.13,"Manhattan"],[4.8,0.94,"Manhattan"],[18.0,0.76,"Manhattan"],[1.9,0.86,"Manhattan"],[10.0,0.0,"Manhattan"],[0.0,0.13,"Manhattan"],[2.1,0.14,"Manhattan"],[22.0,0.0,"Manhattan"],[0.0,0.4,"Manhattan"],[1.8,0.2,"Manhattan"],[15.1,0.72,"Manhattan"],[24.4,0.45,"Manhattan"],[38.8,1.25,"Manhattan"],[2.3,0.33,"Manhattan"],[0.9,0.12,"Manhattan"],[22.9,0.78,"Manhattan"],[0.0,3.14,"Manhattan"],[9.5,0.79,"Manhattan"],[10.5,1.03,"Manhattan"],[30.9,0.67,"Manhattan"],[69.9,0.32,"Manhattan"],[0.0,0.93,"Manhattan"],[12.0,0.63,"Manhattan"],[35.0,0.3,"Manhattan"],[28.6,0.75,"Manhattan"],[0.0,0.7,"Manhattan"],[7.1,1.36,"Manhattan"],[2.9,0.28,"Manhattan"],[0.5,0.37,"Manhattan"],[13.8,1.19,"Manhattan"],[1.7,0.57,"Manhattan"],[9.0,0.3,"Manhattan"],[52.4,1.12,"Manhattan"],[8.6,3.32,"Manhattan"],[10.6,0.34,"Manhattan"],[39.0,0.2,"Manhattan"],[32.0,1.29,"Queens"],[4.2,0.0,"Queens"],[46.0,14.76,"Queens"],[52.7,2.19,"Queens"],[48.9,2.25,"Queens"],[41.7,5.42,"Queens"],[14.0,3.66,"Queens"],[65.0,1.59,"Queens"],[52.5,4.31,"Queens"],[41.5,1.74,"Queens"],[41.2,1.11,"Queens"],[62.8,1.89,"Queens"],[56.7,1.65,"Queens"],[33.8,10.36,"Queens"],[19.8,2.74,"Queens"],[24.9,5.83,"Queens"],[60.6,2.25,"Queens"],[31.7,4.95,"Queens"],[51.2,0.96,"Queens"],[1.2,0.0,"Queens"],[71.2,1.34,"Queens"],[46.4,3.12,"Queens"],[58.1,3.55,"Queens"],[15.7,8.16,"Queens"],[61.9,1.05,"Queens"],[6.7,2.97,"Queens"],[17.3,7.58,"Queens"],[47.0,1.15,"Queens"],[44.1,4.8,"Queens"],[44.7,1.37,"Queens"],[9.8,2.7,"Queens"],[41.3,0.97,"Queens"],[56.7,1.13,"Queens"],[44.9,3.01,"Queens"],[0.0,1.97,"Queens"],[51.3,1.15,"Queens"],[79.1,0.73,"Queens"],[5.8,1.51,"Queens"],[4.2,2.61,"Queens"],[45.9,2.61,"Queens"],[15.7,4.24,"Queens"],[68.2,3.56,"Queens"],[12.6,8.15,"Queens"],[9.3,3.95,"Queens"],[56.1,2.56,"Queens"],[6.2,2.14,"Queens"],[4.3,3.26,"Queens"],[81.5,0.51,"Queens"],[50.9,1.91,"Queens"],[14.5,1.78,"Queens"],[5.5,1.34,"Queens"],[16.9,6.04,"Queens"],[8.8,1.89,"Queens"],[5.1,2.87,"Queens"],[16.3,0.79,"Queens"],[19.7,1.4,"Queens"],[15.7,2.61,"Queens"],[38.0,1.82,"Queens"],[21.7,4.58,"Queens"],[8.7,4.57,"Queens"],[4.4,3.29,"Queens"],[68.8,2.69,"Queens"],[0.5,1.44,"Queens"],[62.2,5.98,"Queens"],[42.2,2.07,"Queens"],[50.0,5.17,"Queens"],[26.7,4.08,"Queens"],[79.8,7.16,"Queens"],[32.6,0.52,"Queens"],[53.6,2.71,"Queens"],[79.4,9.41,"Queens"],[37.5,3.35,"Queens"],[59.2,1.83,"Queens"],[22.5,1.79,"Queens"],[62.3,0.53,"Queens"],[12.8,0.43,"Queens"],[72.4,2.87,"Queens"],[73.2,1.51,"Queens"],[44.2,3.55,"Queens"],[28.2,0.34,"Queens"],[45.9,2.11,"Queens"],[21.3,2.25,"Queens"],[26.9,1.57,"Queens"],[7.1,29.93,"Queens"],[58.9,1.8,"Queens"],[22.4,3.49,"Queens"],[46.8,0.37,"Queens"],[12.3,2.5,"Queens"],[41.8,0.42,"Queens"],[39.5,2.8,"Queens"],[60.8,1.7,"Queens"],[39.7,2.39,"Queens"],[39.8,0.69,"Queens"],[12.4,4.41,"Queens"],[55.4,1.44,"Queens"],[51.6,3.16,"Queens"],[47.8,1.88,"Queens"],[37.9,1.09,"Queens"],[34.7,0.51,"Queens"],[36.8,1.21,"Queens"],[57.5,0.75,"Queens"],[45.4,2.02,"Queens"],[20.9,0.53,"Queens"],[55.6,1.0,"Queens"],[35.7,1.59,"Queens"],[23.5,1.24,"Queens"],[47.1,0.91,"Queens"],[55.8,2.9,"Queens"],[18.5,0.52,"Queens"],[18.5,1.2,"Queens"],[18.2,1.24,"Queens"],[9.3,0.65,"Queens"],[65.2,0.99,"Queens"],[6.2,3.24,"Queens"],[64.3,0.0,"Queens"],[25.9,1.08,"Queens"],[48.2,0.0,"Queens"],[20.8,0.0,"Queens"],[46.1,2.61,"Queens"],[12.6,15.57,"Queens"],[69.0,1.26,"Queens"],[1.1,2.92,"Queens"],[64.2,2.86,"Queens"],[48.7,0.18,"Queens"],[11.6,1.62,"Queens"],[27.4,1.97,"Queens"],[8.6,0.76,"Queens"],[76.8,0.31,"Queens"],[69.7,2.24,"Queens"],[69.2,0.0,"Queens"],[37.5,0.68,"Queens"],[77.6,4.02,"Queens"],[68.3,0.85,"Queens"],[62.1,1.07,"Queens"],[69.1,0.87,"Queens"],[68.2,1.92,"Queens"],[5.1,16.27,"Queens"],[63.8,3.03,"Queens"],[10.0,1.13,"Queens"],[17.4,9.78,"Queens"],[66.6,2.68,"Queens"],[17.3,1.98,"Queens"],[63.1,1.44,"Queens"],[68.5,1.4,"Queens"],[44.7,3.25,"Queens"],[16.6,0.0,"Queens"],[64.3,2.12,"Queens"],[35.8,1.45,"Queens"],[67.7,0.74,"Queens"],[30.7,1.61,"Queens"],[74.8,1.46,"Queens"],[74.7,3.16,"Queens"],[82.6,4.03,"Queens"],[47.7,5.98,"Queens"],[33.9,2.51,"Queens"],[71.6,1.18,"Queens"],[33.3,6.55,"Queens"],[58.6,0.76,"Queens"],[35.5,10.73,"Queens"],[15.9,9.31,"Queens"],[22.7,0.79,"Queens"],[35.7,3.06,"Queens"],[62.8,1.19,"Queens"],[39.8,1.35,"Queens"],[27.7,2.03,"Queens"],[55.7,1.64,"Queens"],[68.7,1.62,"Queens"],[37.6,3.27,"Queens"],[5.0,1.11,"Queens"],[1.0,0.73,"Queens"],[18.2,4.17,"Queens"],[6.5,0.22,"Queens"],[3.4,1.68,"Queens"],[59.5,0.18,"Queens"],[36.1,0.98,"Queens"],[20.8,0.66,"Queens"],[11.9,1.34,"Queens"],[42.2,1.58,"Queens"],[12.6,1.37,"Queens"],[10.1,4.63,"Queens"],[25.5,5.6,"Queens"],[23.1,1.16,"Queens"],[31.4,2.88,"Queens"],[37.0,0.0,"Queens"],[66.0,1.11,"Queens"],[24.3,1.96,"Queens"],[33.0,3.46,"Queens"],[11.9,0.98,"Queens"],[60.9,1.29,"Queens"],[23.9,1.1,"Queens"],[57.9,1.21,"Queens"],[9.2,1.65,"Queens"],[16.2,1.44,"Queens"],[37.2,5.15,"Queens"],[11.6,1.15,"Queens"],[13.5,0.22,"Queens"],[25.6,1.57,"Queens"],[72.3,2.07,"Queens"],[30.8,1.29,"Queens"],[8.0,0.0,"Queens"],[66.2,4.69,"Queens"],[22.0,0.65,"Queens"],[28.2,0.26,"Queens"],[83.1,0.53,"Queens"],[38.6,0.77,"Queens"],[67.8,0.64,"Queens"],[16.1,0.28,"Queens"],[56.5,2.94,"Queens"],[36.1,0.0,"Queens"],[28.2,0.23,"Queens"],[54.1,2.33,"Queens"],[47.4,0.66,"Queens"],[60.5,1.97,"Queens"],[35.0,1.85,"Queens"],[56.0,2.69,"Queens"],[64.6,0.62,"Queens"],[32.5,2.02,"Queens"],[58.5,4.98,"Queens"],[65.5,0.85,"Queens"],[26.4,1.85,"Queens"],[32.3,1.28,"Queens"],[33.6,0.0,"Queens"],[52.0,5.6,"Queens"],[65.5,1.42,"Queens"],[39.8,1.25,"Queens"],[64.1,2.18,"Queens"],[48.6,1.93,"Queens"],[45.8,0.74,"Queens"],[32.6,0.53,"Queens"],[29.0,0.0,"Queens"],[55.0,1.17,"Queens"],[66.1,2.18,"Queens"],[34.3,0.0,"Queens"],[65.5,5.9,"Queens"],[58.5,1.35,"Queens"],[72.5,3.89,"Queens"],[42.1,7.13,"Queens"],[13.3,0.0,"Queens"],[8.0,0.16,"Queens"],[42.1,0.27,"Queens"],[61.1,0.36,"Queens"],[76.0,0.95,"Queens"],[38.5,0.75,"Queens"],[57.7,0.83,"Queens"],[77.9,2.82,"Queens"],[48.2,1.87,"Queens"],[49.7,1.35,"Queens"],[58.8,3.08,"Queens"],[39.5,0.38,"Queens"],[30.3,0.49,"Queens"],[41.1,0.0,"Queens"],[61.6,8.3,"Queens"],[32.8,0.34,"Queens"],[79.7,4.46,"Queens"],[68.4,0.0,"Queens"],[42.9,1.24,"Queens"],[16.2,0.67,"Queens"],[13.1,0.75,"Queens"],[68.9,0.73,"Queens"],[11.1,0.28,"Queens"],[19.3,0.34,"Queens"],[36.5,0.14,"Queens"],[84.3,0.38,"Queens"],[52.4,3.65,"Queens"],[78.3,8.75,"Queens"],[33.5,0.8,"Queens"],[12.5,1.51,"Queens"],[76.2,0.71,"Queens"],[31.2,0.89,"Queens"],[6.5,0.0,"Queens"],[78.1,1.28,"Queens"],[16.3,1.54,"Queens"],[26.7,0.0,"Queens"],[65.7,1.09,"Queens"],[15.8,0.0,"Queens"],[9.4,0.94,"Queens"],[25.0,0.45,"Queens"],[36.6,1.65,"Queens"],[21.5,0.34,"Queens"],[55.5,2.59,"Queens"],[29.1,0.65,"Queens"],[51.8,7.89,"Queens"],[32.3,1.0,"Queens"],[82.5,4.52,"Queens"],[28.4,2.11,"Queens"],[78.2,2.5,"Queens"],[87.3,4.59,"Queens"],[23.6,0.0,"Queens"],[64.3,0.5,"Queens"],[15.9,1.69,"Queens"],[54.0,7.06,"Queens"],[5.6,0.71,"Queens"],[33.4,1.64,"Queens"],[23.3,0.96,"Queens"],[15.5,0.79,"Queens"],[14.1,1.89,"Queens"],[34.2,1.39,"Queens"],[41.0,1.44,"Queens"],[46.9,1.82,"Queens"],[0.0,0.0,"Queens"],[82.6,2.54,"Queens"],[32.1,2.51,"Queens"],[42.8,1.28,"Queens"],[40.8,2.3,"Queens"],[19.4,1.16,"Queens"],[23.0,2.19,"Queens"],[24.1,1.8,"Queens"],[18.4,1.49,"Queens"],[60.2,1.5,"Queens"],[19.0,1.69,"Queens"],[25.4,1.23,"Queens"],[7.1,0.59,"Queens"],[40.4,1.33,"Queens"],[21.5,0.21,"Queens"],[15.5,0.31,"Queens"],[52.2,2.51,"Queens"],[15.3,2.12,"Queens"],[52.9,1.09,"Queens"],[38.0,4.24,"Queens"],[24.6,3.6,"Queens"],[85.3,1.87,"Queens"],[71.5,2.21,"Queens"],[57.7,5.63,"Queens"],[31.4,4.64,"Queens"],[65.1,10.13,"Queens"],[23.1,0.76,"Queens"],[57.1,12.2,"Queens"],[46.7,0.97,"Queens"],[18.3,2.33,"Queens"],[60.8,6.27,"Queens"],[52.0,0.77,"Queens"],[44.3,0.54,"Queens"],[8.8,3.93,"Queens"],[74.7,0.43,"Queens"],[54.9,9.54,"Queens"],[50.7,2.11,"Queens"],[37.6,3.14,"Queens"],[86.7,0.99,"Queens"],[47.3,5.94,"Queens"],[46.2,2.34,"Queens"],[8.7,1.13,"Queens"],[60.1,0.0,"Queens"],[60.0,0.72,"Queens"],[64.2,4.04,"Queens"],[46.1,5.15,"Queens"],[74.7,1.33,"Queens"],[53.3,4.54,"Queens"],[65.4,0.49,"Queens"],[71.4,0.67,"Queens"],[74.6,2.0,"Queens"],[79.0,1.49,"Queens"],[65.5,3.82,"Queens"],[81.4,1.96,"Queens"],[70.5,0.46,"Queens"],[49.7,1.45,"Queens"],[86.4,0.46,"Queens"],[85.5,0.57,"Queens"],[54.9,0.0,"Queens"],[77.6,0.45,"Queens"],[74.0,0.93,"Queens"],[54.8,0.46,"Queens"],[66.8,0.0,"Queens"],[57.4,0.63,"Queens"],[77.2,1.59,"Queens"],[52.9,0.31,"Queens"],[82.4,1.39,"Queens"],[79.1,2.03,"Queens"],[33.9,3.44,"Queens"],[63.2,0.57,"Queens"],[78.5,0.58,"Queens"],[35.1,4.12,"Queens"],[62.5,0.46,"Queens"],[84.7,1.27,"Queens"],[23.2,1.36,"Queens"],[16.1,0.19,"Queens"],[78.9,1.26,"Queens"],[3.9,1.89,"Queens"],[7.0,2.75,"Queens"],[50.6,3.09,"Queens"],[5.3,1.72,"Queens"],[56.7,0.0,"Queens"],[25.5,7.41,"Queens"],[83.6,0.45,"Queens"],[20.7,4.43,"Queens"],[71.9,1.82,"Queens"],[18.6,2.66,"Queens"],[81.8,1.77,"Queens"],[85.7,0.71,"Queens"],[56.6,3.8,"Queens"],[45.7,3.24,"Queens"],[53.9,3.88,"Queens"],[67.3,3.26,"Queens"],[62.2,4.8,"Queens"],[23.5,2.04,"Queens"],[25.6,2.99,"Queens"],[89.3,2.1,"Queens"],[31.4,2.16,"Queens"],[77.5,1.95,"Queens"],[32.4,1.14,"Queens"],[26.2,2.49,"Queens"],[16.6,1.43,"Queens"],[11.3,4.55,"Queens"],[79.3,3.18,"Queens"],[13.1,0.63,"Queens"],[93.5,0.81,"Queens"],[34.6,4.46,"Queens"],[93.1,1.2,"Queens"],[29.1,2.1,"Queens"],[36.0,3.36,"Queens"],[86.3,1.79,"Queens"],[60.6,1.77,"Queens"],[73.2,1.34,"Queens"],[80.0,0.88,"Queens"],[49.8,2.88,"Queens"],[54.2,5.72,"Queens"],[85.0,1.7,"Queens"],[82.8,1.26,"Queens"],[94.7,0.0,"Queens"],[95.3,0.0,"Queens"],[26.9,6.15,"Queens"],[88.3,1.47,"Queens"],[91.3,0.89,"Queens"],[79.9,0.98,"Queens"],[36.6,5.91,"Queens"],[98.1,1.94,"Queens"],[54.1,3.0,"Queens"],[93.5,1.45,"Queens"],[38.8,3.79,"Queens"],[58.7,1.9,"Queens"],[87.4,4.24,"Queens"],[55.9,1.77,"Queens"],[31.2,9.12,"Queens"],[86.2,4.34,"Queens"],[85.0,2.8,"Queens"],[62.6,3.16,"Queens"],[62.9,1.07,"Queens"],[62.1,2.64,"Queens"],[67.8,0.87,"Queens"],[91.2,1.54,"Queens"],[53.8,5.46,"Queens"],[94.3,0.0,"Queens"],[57.2,1.98,"Queens"],[83.0,0.65,"Queens"],[86.1,0.35,"Queens"],[68.0,4.2,"Queens"],[61.8,1.51,"Queens"],[56.6,12.66,"Queens"],[76.0,3.41,"Queens"],[81.6,9.12,"Queens"],[56.7,0.56,"Queens"],[85.2,0.64,"Queens"],[84.4,1.47,"Queens"],[51.1,0.89,"Queens"],[68.0,0.85,"Queens"],[60.0,1.22,"Queens"],[56.8,2.75,"Queens"],[59.9,1.16,"Queens"],[51.2,3.55,"Queens"],[92.6,0.86,"Queens"],[80.6,0.0,"Queens"],[20.3,1.86,"Queens"],[79.1,1.61,"Queens"],[73.3,6.42,"Queens"],[45.9,1.23,"Queens"],[32.4,1.14,"Queens"],[51.6,1.6,"Queens"],[23.7,4.82,"Queens"],[48.4,1.47,"Queens"],[50.0,1.69,"Queens"],[19.5,1.73,"Queens"],[78.0,2.11,"Queens"],[63.2,3.44,"Queens"],[81.8,0.8,"Queens"],[51.0,2.89,"Queens"],[67.4,2.43,"Queens"],[39.2,0.75,"Queens"],[46.9,2.05,"Queens"],[17.9,0.83,"Queens"],[22.3,1.53,"Queens"],[48.4,0.8,"Queens"],[57.1,0.67,"Queens"],[25.8,0.61,"Queens"],[71.6,0.36,"Queens"],[87.7,11.89,"Queens"],[77.5,10.67,"Queens"],[73.7,2.32,"Queens"],[38.8,4.79,"Queens"],[41.9,2.21,"Queens"],[61.5,1.61,"Queens"],[44.2,1.52,"Queens"],[17.1,0.47,"Queens"],[53.5,1.63,"Queens"],[83.2,0.62,"Queens"],[48.2,1.19,"Queens"],[62.7,2.29,"Queens"],[55.7,0.18,"Queens"],[22.9,3.18,"Queens"],[66.2,5.9,"Queens"],[27.2,3.26,"Queens"],[62.9,3.19,"Queens"],[59.4,0.59,"Queens"],[40.4,1.18,"Queens"],[65.8,1.22,"Queens"],[58.6,5.58,"Queens"],[25.2,1.21,"Queens"],[6.8,0.33,"Queens"],[66.7,4.12,"Queens"],[52.8,3.19,"Queens"],[53.6,8.78,"Queens"],[27.4,0.0,"Queens"],[19.4,0.0,"Queens"],[40.9,0.63,"Queens"],[32.3,1.01,"Queens"],[78.5,1.38,"Queens"],[77.1,1.53,"Queens"],[84.3,0.75,"Queens"],[71.2,1.34,"Queens"],[62.9,1.33,"Queens"],[65.0,3.59,"Queens"],[85.6,1.58,"Queens"],[12.0,0.45,"Queens"],[81.4,1.49,"Queens"],[71.1,1.88,"Queens"],[14.7,0.0,"Queens"],[25.6,0.26,"Queens"],[52.1,0.62,"Queens"],[11.7,0.34,"Queens"],[25.9,0.52,"Queens"],[49.7,0.36,"Queens"],[49.6,0.0,"Queens"],[31.4,0.27,"Queens"],[59.8,1.04,"Queens"],[27.3,0.64,"Queens"],[23.7,0.51,"Queens"],[24.7,1.67,"Queens"],[69.6,1.67,"Queens"],[40.8,0.47,"Queens"],[79.6,0.85,"Queens"],[87.6,1.97,"Queens"],[75.8,3.91,"Queens"],[99.5,0.23,"Queens"],[59.8,1.91,"Queens"],[90.8,3.85,"Queens"],[39.0,1.32,"Queens"],[90.9,0.6,"Queens"],[51.2,1.57,"Queens"],[64.4,4.96,"Queens"],[47.5,5.52,"Queens"],[16.4,1.4,"Queens"],[38.3,1.89,"Queens"],[33.5,10.19,"Queens"],[35.1,2.67,"Queens"],[47.0,1.57,"Queens"],[78.2,5.31,"Queens"],[44.4,3.25,"Queens"],[52.7,4.04,"Queens"],[55.2,2.33,"Queens"],[0.0,0.29,"Queens"],[19.0,3.06,"Queens"],[0.0,0.3,"Queens"],[18.3,2.66,"Queens"],[84.2,0.95,"Queens"],[74.3,1.21,"Queens"],[65.6,0.77,"Queens"],[90.0,0.66,"Queens"],[17.2,2.75,"Queens"],[91.7,1.99,"Queens"],[68.8,1.02,"Queens"],[71.5,0.7,"Queens"],[79.3,0.36,"Queens"],[27.5,4.1,"Queens"],[9.2,4.47,"Queens"],[70.0,4.47,"Queens"],[47.4,3.8,"Queens"],[52.5,4.52,"Queens"],[48.9,11.13,"Queens"],[20.3,6.4,"Queens"],[22.3,7.29,"Queens"],[92.3,0.15,"Queens"],[48.3,2.36,"Queens"],[13.2,4.61,"Queens"],[31.8,7.88,"Queens"],[71.0,1.14,"Queens"],[66.0,2.29,"Queens"],[62.4,1.65,"Queens"],[94.5,0.55,"Queens"],[77.7,7.85,"Queens"],[76.6,0.36,"Queens"],[94.6,1.72,"Queens"],[62.9,2.11,"Queens"],[73.7,0.29,"Queens"],[63.0,1.47,"Queens"],[29.2,1.71,"Queens"],[64.5,0.91,"Queens"],[80.0,4.2,"Queens"],[45.7,0.74,"Queens"],[81.0,2.03,"Queens"],[66.3,1.62,"Queens"],[45.6,1.37,"Queens"],[49.8,0.64,"Queens"],[41.8,0.51,"Queens"],[43.3,0.55,"Queens"],[20.2,0.46,"Queens"],[28.4,0.81,"Queens"],[17.2,2.64,"Queens"],[35.9,6.34,"Queens"],[46.1,2.69,"Queens"],[35.6,1.02,"Queens"],[28.8,1.5,"Queens"],[41.3,3.19,"Queens"],[38.4,0.0,"Queens"],[46.6,1.86,"Queens"],[55.9,2.37,"Queens"],[61.4,0.0,"Queens"],[94.0,2.38,"Queens"],[55.9,1.29,"Queens"],[54.0,4.51,"Queens"],[28.5,2.25,"Queens"],[88.8,2.55,"Queens"],[50.9,3.62,"Queens"],[78.6,1.9,"Queens"],[12.8,0.97,"Queens"],[37.7,1.36,"Queens"],[42.8,4.99,"Queens"],[74.4,1.05,"Queens"],[87.3,2.56,"Queens"],[63.9,1.58,"Queens"],[61.2,1.44,"Queens"],[65.9,1.15,"Queens"],[89.0,2.35,"Queens"],[96.9,2.36,"Queens"],[66.6,0.48,"Queens"],[79.9,1.43,"Queens"],[85.7,2.47,"Queens"],[66.6,6.43,"Queens"],[99.4,2.1,"Queens"],[58.3,1.75,"Queens"],[6.4,0.62,"Queens"],[27.3,1.1,"Queens"],[68.3,1.02,"Queens"],[60.2,1.18,"Queens"],[50.1,2.63,"Queens"],[91.2,0.65,"Queens"],[88.2,0.0,"Queens"],[71.4,0.8,"Queens"],[80.6,3.02,"Queens"],[76.1,1.09,"Queens"],[87.9,0.0,"Queens"],[77.8,1.0,"Queens"],[59.7,3.46,"Queens"],[63.9,1.81,"Queens"],[75.8,0.42,"Queens"],[75.7,8.27,"Queens"],[47.1,3.41,"Queens"],[26.2,5.07,"Queens"],[69.8,1.57,"Queens"],[60.9,1.88,"Queens"],[93.6,3.7,"Queens"],[68.9,2.24,"Queens"],[76.1,4.15,"Queens"],[73.2,1.25,"Queens"],[79.1,1.53,"Queens"],[94.5,0.0,"Queens"],[56.0,1.16,"Queens"],[50.0,0.93,"Queens"],[24.8,0.57,"Queens"],[70.5,1.73,"Queens"],[62.7,0.0,"Queens"],[88.8,1.38,"Queens"],[95.8,2.72,"Queens"],[75.2,1.63,"Queens"],[80.1,0.83,"Queens"],[57.0,1.58,"Queens"],[31.4,6.35,"Staten Island"],[42.8,29.98,"Staten Island"],[19.3,7.48,"Staten Island"],[74.7,24.91,"Staten Island"],[32.3,34.86,"Staten Island"],[45.4,23.08,"Staten Island"],[58.8,26.86,"Staten Island"],[72.0,36.85,"Staten Island"],[59.0,12.83,"Staten Island"],[20.0,10.49,"Staten Island"],[22.8,1.52,"Staten Island"],[31.9,18.74,"Staten Island"],[56.8,42.4,"Staten Island"],[66.8,36.71,"Staten Island"],[24.2,27.54,"Staten Island"],[65.2,2.87,"Staten Island"],[82.1,6.64,"Staten Island"],[7.2,7.68,"Staten Island"],[55.4,20.34,"Staten Island"],[58.4,95.21,"Staten Island"],[72.8,13.92,"Staten Island"],[56.2,75.77,"Staten Island"],[53.0,13.14,"Staten Island"],[62.8,54.74,"Staten Island"],[77.8,8.4,"Staten Island"],[72.1,20.29,"Staten Island"],[69.5,17.72,"Staten Island"],[48.0,23.81,"Staten Island"],[43.2,25.1,"Staten Island"],[55.4,30.31,"Staten Island"],[54.0,19.19,"Staten Island"],[52.4,15.53,"Staten Island"],[53.1,17.25,"Staten Island"],[51.5,18.63,"Staten Island"],[59.1,14.97,"Staten Island"],[73.2,14.37,"Staten Island"],[40.7,5.83,"Staten Island"],[69.1,14.41,"Staten Island"],[97.9,61.26,"Staten Island"],[73.3,5.85,"Staten Island"],[74.8,14.25,"Staten Island"],[72.9,13.69,"Staten Island"],[78.3,37.75,"Staten Island"],[36.0,10.86,"Staten Island"],[96.3,9.66,"Staten Island"],[75.8,16.43,"Staten Island"],[63.0,13.74,"Staten Island"],[3.0,7.65,"Staten Island"],[40.0,19.59,"Staten Island"],[63.7,16.03,"Staten Island"],[89.5,24.3,"Staten Island"],[51.5,16.44,"Staten Island"],[77.5,8.52,"Staten Island"],[82.8,23.09,"Staten Island"],[85.8,30.39,"Staten Island"],[90.7,12.41,"Staten Island"],[91.7,5.57,"Staten Island"],[74.0,18.71,"Staten Island"],[77.4,18.54,"Staten Island"],[70.4,23.17,"Staten Island"],[89.7,16.16,"Staten Island"],[84.4,16.43,"Staten Island"],[66.3,31.51,"Staten Island"],[75.1,17.9,"Staten Island"],[89.3,6.3,"Staten Island"],[79.0,9.02,"Staten Island"],[85.6,4.64,"Staten Island"],[81.7,12.87,"Staten Island"],[83.2,34.22,"Staten Island"],[78.9,32.84,"Staten Island"],[82.5,5.68,"Staten Island"],[80.7,14.79,"Staten Island"],[35.7,12.18,"Staten Island"],[93.3,29.79,"Staten Island"],[90.3,47.34,"Staten Island"],[78.4,34.01,"Staten Island"],[61.4,32.23,"Staten Island"],[72.7,79.9,"Staten Island"],[72.9,36.77,"Staten Island"],[85.3,19.96,"Staten Island"],[78.0,23.39,"Staten Island"],[87.6,23.21,"Staten Island"],[88.8,37.47,"Staten Island"],[67.1,16.05,"Staten Island"],[67.6,28.61,"Staten Island"],[38.5,18.43,"Staten Island"],[51.4,20.49,"Staten Island"],[76.6,11.41,"Staten Island"],[81.0,14.83,"Staten Island"],[86.8,8.54,"Staten Island"],[86.0,11.84,"Staten Island"],[61.3,9.33,"Staten Island"],[82.3,9.81,"Staten Island"],[71.1,11.76,"Staten Island"],[47.6,6.55,"Staten Island"],[66.6,3.57,"Staten Island"],[72.5,18.02,"Staten Island"],[88.7,12.6,"Staten Island"],[86.9,7.38,"Staten Island"],[66.7,5.64,"Staten Island"],[78.7,13.63,"Staten Island"],[73.1,8.21,"Staten Island"],[81.9,15.35,"Staten Island"],[74.7,25.66,"Staten Island"],[70.1,11.2,"Staten Island"],[76.9,16.62,"Staten Island"],[79.2,14.05,"Staten Island"],[71.3,4.83,"Staten Island"],[82.0,27.0,"Staten Island"],[81.6,15.2,"Staten Island"],[68.9,14.25,"Staten Island"],[67.5,9.85,"Staten Island"],[66.1,2.46,"Staten Island"],[62.2,6.69,"Staten Island"],[82.0,9.8,"Staten Island"],[20.1,3.04,"Staten Island"],[55.5,3.01,"Staten Island"],[71.9,4.85,"Staten Island"]]};
+const NS = "http://www.w3.org/2000/svg";
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+function el(tag, attrs, parent) { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
+const KO = { "Staten Island": "스태튼아일랜드", "Queens": "퀸스", "Bronx": "브롱크스", "Brooklyn": "브루클린", "Manhattan": "맨해튼" };
+const fmt = n => n.toLocaleString("ko-KR");
+
+function tipFor(box) {
+  const t = document.createElement("div"); t.className = "tip"; t.hidden = true; box.appendChild(t);
+  return {
+    show(html, evt, svg) {
+      t.innerHTML = html; t.hidden = false;
+      const r = box.getBoundingClientRect();
+      t.style.left = (evt.clientX - r.left) + "px"; t.style.top = (evt.clientY - r.top) + "px";
+    },
+    hide() { t.hidden = true; }
+  };
+}
+
+/* 막대: 10만 명당 */
+(function () {
+  const svg = document.getElementById("bar"), box = document.getElementById("c-bar"), tip = tipFor(box);
+  const rows = DATA.feb23, W = 700, L = 120, R = 70, top = 10, bh = 26, gap = 14;
+  const max = 800, x = v => L + (W - L - R) * v / max;
+  const g = el("g", { class: "tick" }, svg);
+  [0, 200, 400, 600, 800].forEach(v => {
+    el("line", { x1: x(v), x2: x(v), y1: top - 4, y2: top + rows.length * (bh + gap), stroke: "var(--grid)", "stroke-width": 1 }, g);
+    const t = el("text", { x: x(v), y: top + rows.length * (bh + gap) + 14, "text-anchor": "middle" }, g); t.textContent = v;
+  });
+  rows.forEach((r, i) => {
+    const y = top + i * (bh + gap), si = r.borough === "Staten Island";
+    const lab = el("text", { x: L - 10, y: y + bh / 2 + 4, "text-anchor": "end" }, svg); lab.textContent = KO[r.borough];
+    const w = Math.max(4, x(r.per100k) - L);
+    el("path", { d: `M${L},${y} h${w - 4} a4,4 0 0 1 4,4 v${bh - 8} a4,4 0 0 1 -4,4 h${-(w - 4)} z`, fill: si ? "var(--s-si)" : "var(--s-rest)", opacity: si ? 1 : 0.55 }, svg);
+    const v = el("text", { x: L + w + 8, y: y + bh / 2 + 4, style: "font-family:var(--font-mono);fill:var(--ink)" }, svg); v.textContent = r.per100k.toFixed(1);
+    const hit = el("rect", { x: 0, y: y - gap / 2, width: W, height: bh + gap, fill: "transparent" }, svg);
+    hit.addEventListener("mousemove", e => tip.show(`${KO[r.borough]}<br><b>${fmt(r.n)}</b>건 ÷ 인구 <b>${fmt(r.pop)}</b>명<br>= 10만 명당 <b>${r.per100k}</b>건`, e));
+    hit.addEventListener("mouseleave", tip.hide);
+  });
+  const tb = document.getElementById("bar-table");
+  tb.innerHTML = "<tr><th>자치구</th><th>눈 민원</th><th>인구</th><th>10만 명당</th></tr>" + rows.map(r => `<tr><td>${KO[r.borough]}</td><td>${fmt(r.n)}</td><td>${fmt(r.pop)}</td><td>${r.per100k}</td></tr>`).join("");
+})();
+
+/* 선: 스태튼아일랜드 vs 나머지 */
+(function () {
+  const svg = document.getElementById("line"), box = document.getElementById("c-line"), tip = tipFor(box);
+  const dates = DATA.daily.dates, S = DATA.daily.series;
+  const si = S["Staten Island"], rest = dates.map((_, i) => ["Bronx", "Brooklyn", "Manhattan", "Queens"].reduce((a, k) => a + S[k][i], 0));
+  const W = 700, H = 260, L = 52, R = 20, T = 14, B = 34, max = 8000;
+  const x = i => L + (W - L - R) * i / (dates.length - 1), y = v => T + (H - T - B) * (1 - v / max);
+  const g = el("g", { class: "tick" }, svg);
+  [0, 2000, 4000, 6000, 8000].forEach(v => {
+    el("line", { x1: L, x2: W - R, y1: y(v), y2: y(v), stroke: v ? "var(--grid)" : "var(--axis)", "stroke-width": 1 }, g);
+    const t = el("text", { x: L - 8, y: y(v) + 4, "text-anchor": "end" }, g); t.textContent = fmt(v);
+  });
+  dates.forEach((d, i) => { if (i % 3 === 0 || i === 8) { const t = el("text", { x: x(i), y: H - 12, "text-anchor": "middle" }, g); t.textContent = d.replace("-", "/").replace(/^0/, ""); } });
+  const path = arr => arr.map((v, i) => (i ? "L" : "M") + x(i).toFixed(1) + "," + y(v).toFixed(1)).join("");
+  el("path", { d: path(rest), fill: "none", stroke: "var(--s-rest)", "stroke-width": 2, "stroke-linejoin": "round" }, svg);
+  el("path", { d: path(si), fill: "none", stroke: "var(--s-si)", "stroke-width": 2, "stroke-linejoin": "round" }, svg);
+  const a = el("text", { x: x(8) - 8, y: y(si[8]) - 8, "text-anchor": "end", style: "fill:var(--ink)" }, svg); a.textContent = "2/23 스태튼아일랜드 3,546";
+  const b = el("text", { x: x(9) + 8, y: y(rest[9]) + 4, style: "fill:var(--ink)" }, svg); b.textContent = "2/24 나머지 " + fmt(rest[9]);
+  const cross = el("line", { y1: T, y2: H - B, stroke: "var(--axis)", "stroke-width": 1, visibility: "hidden" }, svg);
+  const d1 = el("circle", { r: 4, fill: "var(--s-si)", stroke: "var(--surface)", "stroke-width": 2, visibility: "hidden" }, svg);
+  const d2 = el("circle", { r: 4, fill: "var(--s-rest)", stroke: "var(--surface)", "stroke-width": 2, visibility: "hidden" }, svg);
+  const hit = el("rect", { x: L, y: T, width: W - L - R, height: H - T - B, fill: "transparent" }, svg);
+  hit.addEventListener("mousemove", e => {
+    const p = svg.createSVGPoint(); p.x = e.clientX; p.y = e.clientY; const q = p.matrixTransform(svg.getScreenCTM().inverse());
+    const i = Math.max(0, Math.min(dates.length - 1, Math.round((q.x - L) / (W - L - R) * (dates.length - 1))));
+    [cross, d1, d2].forEach(n => n.setAttribute("visibility", "visible"));
+    cross.setAttribute("x1", x(i)); cross.setAttribute("x2", x(i));
+    d1.setAttribute("cx", x(i)); d1.setAttribute("cy", y(si[i])); d2.setAttribute("cx", x(i)); d2.setAttribute("cy", y(rest[i]));
+    tip.show(`${dates[i].replace("-", "월 ")}일<br>스태튼아일랜드 <b>${fmt(si[i])}</b><br>나머지 4개 <b>${fmt(rest[i])}</b>`, e);
+  });
+  hit.addEventListener("mouseleave", () => { [cross, d1, d2].forEach(n => n.setAttribute("visibility", "hidden")); tip.hide(); });
+})();
+
+/* 산점도 + 회귀선 */
+(function () {
+  const svg = document.getElementById("scatter"), box = document.getElementById("c-scatter"), tip = tipFor(box);
+  const pts = DATA.points, W = 700, H = 340, L = 48, R = 20, T = 14, B = 40, ymax = 100;
+  const x = v => L + (W - L - R) * v / 100, y = v => T + (H - T - B) * (1 - Math.min(v, ymax) / ymax);
+  const g = el("g", { class: "tick" }, svg);
+  [0, 25, 50, 75, 100].forEach(v => {
+    el("line", { x1: L, x2: W - R, y1: y(v), y2: y(v), stroke: v ? "var(--grid)" : "var(--axis)", "stroke-width": 1 }, g);
+    const t = el("text", { x: L - 8, y: y(v) + 4, "text-anchor": "end" }, g); t.textContent = v;
+    const t2 = el("text", { x: x(v), y: H - B + 18, "text-anchor": "middle" }, g); t2.textContent = v + "%";
+  });
+  const xl = el("text", { x: W - R, y: H - 4, "text-anchor": "end" }, svg); xl.textContent = "자가율 (자기 집에 사는 가구 비율) →";
+  const yl = el("text", { x: L, y: T - 2 }, svg); yl.textContent = "↑ 1,000명당 눈 민원";
+  const gp = el("g", {}, svg);
+  const order = pts.slice().sort((a, b) => (a[2] === "Staten Island") - (b[2] === "Staten Island"));
+  order.forEach(p => el("circle", { cx: x(p[0]).toFixed(1), cy: y(p[1]).toFixed(1), r: 3, fill: p[2] === "Staten Island" ? "var(--s-si)" : "var(--s-rest)", "fill-opacity": 0.55, stroke: "var(--surface)", "stroke-width": 0.6 }, gp));
+  const lines = el("g", {}, svg);
+  const m1 = DATA.m1, m2 = DATA.m2, boro = DATA.m2_boro;
+  function seg(a, b, xs, cls, color, dash) {
+    const [x0, x1] = xs; el("line", { x1: x(x0), x2: x(x1), y1: y(a + b * x0 / 100), y2: y(a + b * x1 / 100), stroke: color, "stroke-width": 2.5, "stroke-dasharray": dash || "", "stroke-linecap": "round" }, lines);
+  }
+  const note = document.getElementById("scatter-note");
+  function draw(which) {
+    lines.innerHTML = "";
+    if (which === 1) {
+      seg(m1.intercept, m1.slope, [0, 100], "", "var(--ink)");
+      const t = el("text", { x: x(98), y: y(m1.intercept + m1.slope * 0.98) - 10, "text-anchor": "end", style: "fill:var(--ink)" }, lines); t.textContent = "직선 하나: 10%p당 +" + m1.slope_10pp;
+      note.textContent = "오른쪽 위의 주황 점(스태튼아일랜드)이 직선을 끌어올린다. 파란 점만 보면 거의 평평하다.";
+    } else {
+      const base = m2.intercept, sib = base + boro["Staten Island"];
+      seg(base, m2.slope, [0, 100], "", "var(--s-rest)");
+      seg(sib, m2.slope, [30, 100], "", "var(--s-si)");
+      const t1 = el("text", { x: x(98), y: y(base + m2.slope * 0.98) - 8, "text-anchor": "end", style: "fill:var(--ink)" }, lines); t1.textContent = "맨해튼 기준선";
+      const t2 = el("text", { x: x(32), y: y(sib + m2.slope * 0.32) - 10, style: "fill:var(--ink)" }, lines); t2.textContent = "스태튼아일랜드: 같은 기울기, 18건 위";
+      note.textContent = "자치구마다 출발점(절편)을 따로 주면 기울기는 10%p당 +" + m2.slope_10pp + "로 거의 평평해진다. 퀸스·브루클린·브롱크스 선은 맨해튼 선과 1건 안팎 차이라 생략했다.";
+    }
+    document.getElementById("btn-m1").setAttribute("aria-pressed", which === 1);
+    document.getElementById("btn-m2").setAttribute("aria-pressed", which === 2);
+    document.getElementById("card-m1").classList.toggle("on", which === 1);
+    document.getElementById("card-m2").classList.toggle("on", which === 2);
+  }
+  document.getElementById("btn-m1").addEventListener("click", () => draw(1));
+  document.getElementById("btn-m2").addEventListener("click", () => draw(2));
+  draw(1);
+  const hit = el("rect", { x: L, y: T, width: W - L - R, height: H - T - B, fill: "transparent" }, svg);
+  hit.addEventListener("mousemove", e => {
+    const p = svg.createSVGPoint(); p.x = e.clientX; p.y = e.clientY; const q = p.matrixTransform(svg.getScreenCTM().inverse());
+    let best = null, bd = 144;
+    for (const pt of pts) { const dx = x(pt[0]) - q.x, dy = y(pt[1]) - q.y, d = dx * dx + dy * dy; if (d < bd) { bd = d; best = pt; } }
+    if (best) tip.show(`${KO[best[2]]} Tract<br>자가율 <b>${best[0]}%</b> · 1,000명당 <b>${best[1]}</b>건`, e); else tip.hide();
+  });
+  hit.addEventListener("mouseleave", tip.hide);
+})();
+</script>
+</body>
+</html>

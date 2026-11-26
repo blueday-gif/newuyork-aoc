@@ -1,0 +1,161 @@
+== RAW 3963959 unique keys 3963959
+created 2025-11-01 21:09:28 2026-10-31 21:09:02
+closed  2025-01-06 16:15:00 2026-12-14 11:50:00
+keys in point_geoid: 3880604 of 3880604 | raw keys not in pg: 83355
+lat missing 83134
+
+== column missing %
+key            0.00
+created        0.00
+closed         4.01
+agency         0.00
+problem        0.00
+detail         1.88
+addr           3.69
+status         0.00
+channel        0.00
+borough        0.00
+lat            2.10
+lon            2.10
+resolution     2.29
+loc_type      11.95
+bbl           11.96
+zip            0.89
+
+== status
+status
+Closed         3785871
+In Progress     102020
+Open             56449
+Assigned         13027
+Pending           5294
+Started           1121
+Unspecified        177
+
+== channel
+channel
+ONLINE     1928609
+PHONE       888097
+MOBILE      812845
+UNKNOWN     332035
+OTHER         2373
+
+== agency top
+agency
+NYPD     1721099
+HPD       907790
+DSNY      361052
+DOT       285797
+DEP       219714
+DPR       139298
+DOB       117705
+DOHMH      84121
+DHS        50650
+TLC        38551
+DCWP       21126
+EDC        10971
+
+== duration hours
+closed missing 158869 | negative 1371 | zero 62788 | >365d 5
+count    3803719.00
+mean         159.62
+std          483.96
+min            0.00
+10%            0.39
+50%            7.94
+90%          386.28
+99%         2512.04
+max         8862.66
+closed after extract date 2026-11-12: 1
+
+== created exactly 00:00:00 share 0.09 %
+by agency (midnight %):
+agency
+DOT      0.9
+DOHMH    0.9
+DCWP     0.0
+DEP      0.0
+DOB      0.0
+DHS      0.0
+DOE      0.0
+DPR      0.0
+
+== days 365 min 1734 max 22805
+top 8 days:
+created
+2026-02-24    22805
+2026-01-27    19225
+2026-01-28    16982
+2025-12-15    16388
+2026-01-26    15727
+2026-02-01    15684
+2026-01-30    15448
+2026-02-23    15424
+
+== address: distinct raw 622756 normalized 592940 | rows whose addr has double spaces 367194
+addr
+655 EAST 230 STREET         47105
+78-15 PARSONS BOULEVARD      9526
+1869 83 STREET               8847
+5-47 50 AVENUE               7610
+1465 WASHINGTON AVENUE       5718
+34-16 ASTORIA BLVD SOUTH     5584
+100 MESEROLE AVENUE          5263
+30-70 34 STREET              4772
+JOHN F KENNEDY AIRPORT       4512
+82-68 164 STREET             4221
+address concentration: top 0.1% addrs share 11.3 % | top 1% 30.12 %
+same addr+problem+minute repeated rows: 143600 3.62 %
+
+== ACS rows 2327
+       white_rate  black_rate  hispanic_rate  asian_rate  median_income  poverty_rate  renter_rate
+count    2243.000    2243.000       2243.000    2243.000       2199.000      2239.000     2231.000
+mean        0.303       0.215          0.272       0.152      89599.686         0.173        0.628
+std         0.274       0.257          0.219       0.173      43123.702         0.124        0.255
+min         0.000       0.000          0.000       0.000      11094.000         0.000        0.000
+25%         0.042       0.017          0.106       0.028      60631.500         0.084        0.433
+50%         0.237       0.087          0.196       0.083      82676.000         0.142        0.669
+75%         0.530       0.361          0.389       0.215     108306.500         0.232        0.843
+max         1.000       1.000          0.937       0.933     250001.000         1.000        1.000
+race_total == total_pop: 1.0
+sum of 4 race shares: describe
+count    2327.000
+mean        0.908
+std         0.184
+min         0.000
+25%         0.916
+50%         0.954
+75%         0.979
+max         1.000
+pop>=1000: 2195 race missing: 0
+majority group (>=50%) tract counts:
+major
+no_majority      666
+white_rate       609
+hispanic_rate    396
+black_rate       391
+asian_rate       133
+by borough:
+major                     asian_rate  black_rate  hispanic_rate  no_majority  white_rate
+borough                                                                                 
+Bronx                              0          55            209           58          19
+Brooklyn (Kings)                  32         212             53          212         264
+Manhattan (New York)               4          12             35           88         151
+Queens                            96         109             94          271         103
+Staten Island (Richmond)           1           3              5           37          72
+
+Spearman among race / SES (pop>=1000):
+               white_rate  black_rate  hispanic_rate  asian_rate  median_income  poverty_rate  renter_rate
+white_rate           1.00       -0.65          -0.43        0.23           0.51         -0.40        -0.22
+black_rate          -0.65        1.00           0.05       -0.53          -0.27          0.27         0.18
+hispanic_rate       -0.43        0.05           1.00       -0.12          -0.46          0.41         0.44
+asian_rate           0.23       -0.53          -0.12        1.00           0.23         -0.22        -0.24
+median_income        0.51       -0.27          -0.46        0.23           1.00         -0.74        -0.52
+poverty_rate        -0.40        0.27           0.41       -0.22          -0.74          1.00         0.58
+renter_rate         -0.22        0.18           0.44       -0.24          -0.52          0.58         1.00
+
+lang_total non-null: 2327 describe: {'count': 2327.0, 'mean': 3439.0, 'std': 1913.0, 'min': 0.0, '25%': 2107.0, '50%': 3221.0, '75%': 4526.0, 'max': 16762.0}
+
+== plan02_tracts 2327 race joined: 2243
+category sum == complaint_count: 1.0
+tract complaint total: 3880604

@@ -1,0 +1,2 @@
+﻿n,knn_linked,moran_i,expected_i,p_value_perm,perms,hh,ll,hl,lh,hh_p05,ll_p05,lisa_at_floor,gi_hot,gi_cold
+2195,2,0.16894491457946567,-0.00045578851412944393,0.001,999,0,0,0,0,156,101,3,32,0

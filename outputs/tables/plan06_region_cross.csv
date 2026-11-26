@@ -1,0 +1,13 @@
+region_name,도로 중심,소음 중심,주거 중심,혼합
+Bronx 도로 중심,50,10,36,22
+Bronx 주거 중심,16,13,189,5
+Brooklyn 도로 중심,269,27,32,129
+Brooklyn 주거 중심,36,37,202,41
+Manhattan 소음 중심,42,42,50,69
+Manhattan 주거 중심,0,16,68,3
+Queens 건축 중심,0,0,0,3
+Queens 도로 중심,390,45,59,149
+Queens 주거 중심,6,1,10,10
+Staten Island 도로 중심,25,4,2,74
+Staten Island 주거 중심,0,2,7,3
+Staten Island 주거 중심 11,0,1,0,0

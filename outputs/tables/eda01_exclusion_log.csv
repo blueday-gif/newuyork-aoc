@@ -1,0 +1,5 @@
+﻿step,removed,remaining,rule
+311 전체 행,0,3963959,311_requests_clean.parquet
+좌표 결측 제외,83134,3880825,latitude 결측
+Tract 밖 좌표 제외,221,3880604,ACS Tract polygon within
+인구 1000명 미만 Tract를 상관·5분위에서 제외,132,2195,total_pop >= 1000. 제외 Tract의 민원 76730건

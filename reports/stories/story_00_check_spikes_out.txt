@@ -1,0 +1,51 @@
+first 3 days {datetime.date(2025, 11, 1): 1734, datetime.date(2025, 11, 2): 9467, datetime.date(2025, 11, 3): 11040}
+last 3 days {datetime.date(2026, 10, 29): 11433, datetime.date(2026, 10, 30): 11399, datetime.date(2026, 10, 31): 8995}
+median day 10800.0
+hour of created on 2025-11-01: {21: 453, 22: 640, 23: 641}
+
+negative duration by agency: {'DEP': 898, 'DOT': 404, 'NYPD': 68, 'DSNY': 1}
+status vs closed missing:
+closed         False   True 
+status                      
+Assigned        9779    3248
+Closed       3785853      18
+In Progress     1446  100574
+Open            7445   49004
+Pending          412    4882
+Started            6    1115
+Unspecified      149      28
+
+median hours to close by agency:
+agency
+NYPD             1.4
+DHS              6.3
+DEP             22.1
+DSNY            39.9
+NYC311-PRD      42.4
+DOE             50.0
+DOT             51.6
+HPD            100.4
+DPR            116.0
+DOB            130.0
+DOHMH          232.7
+OTI            382.1
+TLC            383.3
+DCWP           535.0
+OOS           1053.7
+
+borough values: {'BROOKLYN': 1224732, 'QUEENS': 966464, 'BRONX': 834519, 'MANHATTAN': 772372, 'STATEN ISLAND': 161802, 'Unspecified': 4070}
+2026-02-24 {'Snow or Ice': 11370, 'Illegal Parking': 1669, 'HEAT/HOT WATER': 1641, 'Noise - Residential': 1243, 'Traffic Signal Condition': 765}
+2026-01-27 {'Snow or Ice': 6048, 'HEAT/HOT WATER': 4071, 'Illegal Parking': 1583, 'Noise - Residential': 1198, 'Blocked Driveway': 823}
+2025-12-15 {'HEAT/HOT WATER': 3569, 'Snow or Ice': 3296, 'Noise - Residential': 2397, 'Illegal Parking': 1292, 'Blocked Driveway': 567}
+
+noise top days: {datetime.date(2026, 6, 21): 5350, datetime.date(2026, 7, 26): 5201, datetime.date(2026, 5, 17): 4826, datetime.date(2026, 5, 31): 4721, datetime.date(2026, 5, 16): 4610, datetime.date(2026, 9, 6): 4585}
+fireworks rows 0 top days {}
+
+distinct problem 197 distinct detail 1025
+'기타' detail top:
+{'Water System': 64194, 'Encampment': 47369, 'Damaged Tree': 44366, 'Homeless Person Assistance': 34414, 'Non-Emergency Police Matter': 24093, 'Vendor Enforcement': 23865, 'Overgrown Tree/Branches': 23772, 'Sewer': 22364, 'Water Maintenance': 22329, 'Obstruction': 22056}
+
+655 E 230: n 47105 | problems {'Noise - Residential': 47013, 'Illegal Parking': 36, 'HEAT/HOT WATER': 25}
+ detail {'Loud Music/Party': 47010, 'Blocked Hydrant': 35, 'ENTIRE BUILDING': 20, 'APARTMENT ONLY': 5}
+ by month {Period('2025-11', 'M'): 14362, Period('2025-12', 'M'): 28163, Period('2026-01', 'M'): 986, Period('2026-02', 'M'): 650, Period('2026-03', 'M'): 1599, Period('2026-04', 'M'): 1230, Period('2026-05', 'M'): 53, Period('2026-06', 'M'): 2, Period('2026-07', 'M'): 9, Period('2026-08', 'M'): 5, Period('2026-09', 'M'): 17, Period('2026-10', 'M'): 29}
+ median close hrs 1.35

@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>우연히 '유의한' 110개 동네</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@500;700&family=Noto+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="story.css">
+</head>
+<body>
+<div class="wrap">
+<nav class="topnav"><a href="index.html">← 100가지 질문 목차</a><span><a href="q85.html">이전: 질문 85</a></span></nav>
+<header><div class="qtag"><span class="chip">질문 90 / 100</span><span class="chip">9부 · 통계 초보 교실</span><span class="chip">배우는 것: 다중 비교 · p값 · FDR</span></div><h1>2,195개 동네를 하나씩 검정하면, 아무 차이가 없어도 110곳이 '유의'하다?</h1><div class="answer" style="grid-template-columns:auto auto auto"><div class="ans-row"><span class="big num si">109</span><span class="lbl">가짜 데이터에서<br>p < 0.05인 동네</span></div><span class="vs">vs</span><div class="ans-row"><span class="big num">0</span><span class="lbl">FDR 보정 뒤<br>남은 동네</span></div></div><p class="lede ans-text">진짜 차이가 전혀 없는 가짜 데이터를 2,195개 동네에 만들어 넣고, 동네마다 "평균과 다른가"를 검정했다. 109곳이 p < 0.05로 '유의'하게 나왔다. 검정을 많이 하면 우연이 반드시 당첨된다.</p></header>
+<section><div class="sec-head"><span class="eyebrow">1 · 고전 사례</span><h2>xkcd 882, “Significant”</h2></div><div class="article"><span class="src">Randall Munroe · xkcd (2011)</span><ul><li>"젤리빈이 여드름을 일으킨다!" 과학자들이 조사했지만 관계가 없었다(p > 0.05).</li><li>"그럼 특정 색깔이 문제일 거야." 20가지 색을 하나씩 검정했다.</li><li>초록색 하나만 p < 0.05가 나왔다. 20번 검정하면 우연히 1번쯤 나오는 결과다.</li><li>신문 1면: "초록 젤리빈, 여드름과 관련! 95% 확신".</li></ul><span class="src"><a href="https://xkcd.com/882/" target="_blank" rel="noopener">xkcd 882</a></span></div></section>
+<section><div class="sec-head"><span class="eyebrow">2 · 시뮬레이션으로 확인</span><h2>차이가 0인 세계의 p값</h2></div><p>동네마다 표준정규분포에서 숫자 하나(z 점수)를 뽑았다. 모든 동네의 진짜 차이는 0이다. 그리고 각 동네의 p값을 계산했다. 차이가 없는 세계에서 p값은 0과 1 사이에 고르게 퍼진다.</p><div class="chart" data-c="c1"><span class="ct">가짜 데이터 2,195개 동네의 p값 분포</span><span class="cs">주황 = p < 0.05 칸. 막대 높이가 거의 평평하다</span><svg viewBox="0 0 700 300" role="img" aria-label="가짜 데이터 2,195개 동네의 p값 분포"></svg><span class="vnote"></span><details class="table" hidden><summary>표로 보기</summary><div class="tscroll"><table class="tv"></table></div></details></div><p>맨 왼쪽 칸(p < 0.05)에 109곳이 들어갔다. 기대값 110곳(2,195 × 5%)과 거의 같다. 이 109곳을 지도에 칠하면 "민원 이상 지역 109곳"이라는 그럴듯한 지도가 나온다. 전부 우연이다.</p></section>
+<section><div class="sec-head"><span class="eyebrow">3 · 통계 기초 ① p값</span><h2>p < 0.05가 정확히 뜻하는 것</h2></div><p>p값은 "차이가 없다고 가정할 때, 지금만큼 큰 차이가 우연히 나올 확률"이다. p < 0.05는 "우연이라면 20번에 1번 나올 정도로 드물다"는 뜻이다. 거꾸로 말하면 <b>20번 검정하면 1번은 우연히 통과한다</b>. 2,195번 하면 약 110번이다.</p></section>
+<section><div class="sec-head"><span class="eyebrow">4 · 통계 기초 ② 보정</span><h2>검정이 많으면 기준을 높인다</h2></div><div class="cards"><div class="model on"><span class="mt">보정 없음 (p < 0.05)</span><span class="mv num">109곳</span><span class="mr">모두 가짜 양성</span></div><div class="model"><span class="mt">본페로니 (p < 0.05 ÷ 2,195)</span><span class="mv num">0곳</span><span class="mr">아주 엄격하다</span></div><div class="model"><span class="mt">FDR (벤야미니-호흐베르크)</span><span class="mv num">0곳</span><span class="mr">가짜 비율을 5%로 묶는다</span></div></div><p><b>본페로니</b>는 기준을 검정 횟수로 나눈다. 2,195번이면 p < 0.0000228이어야 한다. 확실하지만 진짜 차이도 놓치기 쉽다. <b>FDR 보정</b>은 "유의하다고 고른 것 중 가짜의 비율"을 5% 이하로 묶는다. 덜 엄격해서 진짜 신호는 더 잘 살린다. 이 가짜 데이터에서는 두 방법 모두 0곳을 남겼다. 맞는 답이다.</p><div class="callout">이 프로젝트의 동네 군집 분석도 FDR 보정을 했고, 보정하면 국지 군집이 0개가 됐다. "보정 전 몇 곳"만 보도하면 xkcd의 초록 젤리빈이 된다.</div></section>
+<section><div class="sec-head"><span class="eyebrow">5 · 이렇게 하면 틀린다</span><h2>함정 3가지</h2></div><div class="traps"><div class="trap"><span class="x">1</span><p><b>보정 없이 동네 지도 칠하기.</b> 수천 개 동네를 각각 검정해 유의한 곳만 칠하면, 우연이 만든 지도가 된다.</p></div><div class="trap"><span class="x">2</span><p><b>p > 0.05 = 차이 없음.</b> 차이를 '찾지 못했다'는 뜻이다. 표본이 작으면 진짜 차이도 놓친다.</p></div><div class="trap"><span class="x">3</span><p><b>나중에 가설 고르기.</b> 데이터를 다 보고 나서 "초록색이 이상하네"라고 가설을 세우면, 검정 횟수를 숨긴 것과 같다. 무엇을 검정할지 먼저 적어 둔다.</p></div></div></section>
+<section><div class="sec-head"><span class="eyebrow">6 · 직접 해보기</span><h2>파이썬으로 따라 하기</h2></div><pre class="code">from scipy.stats import norm
+from statsmodels.stats.multitest import multipletests
+z = np.random.default_rng(2026).standard_normal(2195)   # 진짜 차이 = 0
+p = 2 * (1 - norm.cdf(abs(z)))
+(p &lt; 0.05).sum()                                         # 약 110
+multipletests(p, method=&quot;fdr_bh&quot;)[0].sum()               # 보정 뒤</pre><p class="cs" style="color:var(--muted);font-size:13px">전체 계산: analysis/stories/story_03_deep_calc.py</p></section>
+<section><div class="sec-head"><span class="eyebrow">7 · 오늘 배운 말</span><h2>용어 4개</h2></div><div class="terms"><div class="term"><b>p값</b><span>차이가 없을 때 이만큼 큰 차이가 우연히 나올 확률.</span></div><div class="term"><b>다중 비교</b><span>검정을 여러 번 하면 우연한 '유의'가 쌓이는 문제.</span></div><div class="term"><b>본페로니 보정</b><span>유의 기준을 검정 횟수로 나누는 엄격한 보정.</span></div><div class="term"><b>FDR</b><span>유의하다고 고른 것 중 가짜의 비율. 이것을 제한하는 보정.</span></div></div></section>
+<footer><div class="next"><a href="index.html">← 목차</a><a href="index.html">목차로 돌아가기</a></div><span>데이터: NYC 311 서비스 요청 2025-11-01 21시 ~ 2026-10-31 21시 (3,963,959건), ACS 2024 5개년, Census Tract(인구 1,000명 이상 2,195곳). </span></footer>
+</div>
+<script id="charts" type="application/json">{"c1": {"type": "col", "labels": ["0.00", "0.05", "0.10", "0.15", "0.20", "0.25", "0.30", "0.35", "0.40", "0.45", "0.50", "0.55", "0.60", "0.65", "0.70", "0.75", "0.80", "0.85", "0.90", "0.95"], "values": [109, 109, 93, 125, 102, 114, 120, 121, 107, 127, 111, 100, 112, 102, 91, 105, 111, 119, 122, 95], "hl": [0], "unit": "곳", "every": 2, "h": 230, "ref": 109.75, "refLabel": "고르게 퍼진다면 칸마다 110곳", "tips": ["p 0.00–0.05<br><b>109<\/b>곳", "p 0.05–0.10<br><b>109<\/b>곳", "p 0.10–0.15<br><b>93<\/b>곳", "p 0.15–0.20<br><b>125<\/b>곳", "p 0.20–0.25<br><b>102<\/b>곳", "p 0.25–0.30<br><b>114<\/b>곳", "p 0.30–0.35<br><b>120<\/b>곳", "p 0.35–0.40<br><b>121<\/b>곳", "p 0.40–0.45<br><b>107<\/b>곳", "p 0.45–0.50<br><b>127<\/b>곳", "p 0.50–0.55<br><b>111<\/b>곳", "p 0.55–0.60<br><b>100<\/b>곳", "p 0.60–0.65<br><b>112<\/b>곳", "p 0.65–0.70<br><b>102<\/b>곳", "p 0.70–0.75<br><b>91<\/b>곳", "p 0.75–0.80<br><b>105<\/b>곳", "p 0.80–0.85<br><b>111<\/b>곳", "p 0.85–0.90<br><b>119<\/b>곳", "p 0.90–0.95<br><b>122<\/b>곳", "p 0.95–1.00<br><b>95<\/b>곳"]}}</script>
+<script src="story.js"></script>
+</body>
+</html>

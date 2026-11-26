@@ -1,0 +1,170 @@
+stable-tract rows: 3,803,874
+borough pop: {'Bronx': 1404779.0, 'Brooklyn (Kings)': 2631580.0, 'Manhattan (New York)': 1629477.0, 'Queens': 2323052.0, 'Staten Island (Richmond)': 494956.0}
+
+### A1 Vital City: 2026-02-23 폭설 날 자치구별 Snow or Ice
+2026-02-23 전체 15424 | 눈 민원 6524 {'STATEN ISLAND': 3546, 'QUEENS': 1543, 'BROOKLYN': 830, 'BRONX': 459, 'MANHATTAN': 146}
+  눈 민원 10만명당: {'STATEN ISLAND': 716.4, 'QUEENS': 66.4, 'BRONX': 32.7, 'BROOKLYN': 31.5, 'MANHATTAN': 9.0}
+2026-02-24 전체 22805 | 눈 민원 11370 {'STATEN ISLAND': 4154, 'BROOKLYN': 2786, 'QUEENS': 2456, 'BRONX': 1105, 'MANHATTAN': 868, 'Unspecified': 1}
+  눈 민원 10만명당: {'STATEN ISLAND': 839.3, 'BROOKLYN': 105.9, 'QUEENS': 105.7, 'BRONX': 78.7, 'MANHATTAN': 53.3}
+2/22 18시~3/2 눈 민원: 23096 {'STATEN ISLAND': 9123, 'BROOKLYN': 5285, 'QUEENS': 5174, 'BRONX': 2144, 'MANHATTAN': 1369, 'Unspecified': 1}
+  10만명당: {'STATEN ISLAND': 1843.0, 'QUEENS': 223.0, 'BROOKLYN': 201.0, 'BRONX': 153.0, 'MANHATTAN': 84.0}
+  처리시간 중앙값(시간) 자치구별: {'BRONX': 10.4, 'BROOKLYN': 48.8, 'MANHATTAN': 40.0, 'QUEENS': 18.2, 'STATEN ISLAND': 0.4, 'Unspecified': 0.5}
+겨울(12~2월) 하루 평균 접수: 11281
+
+### A2 감사관 Turn Up the Heat: 한 시즌에 난방 민원 5회 초과 건물
+2025-11~2026-05 난방 민원 308677 | BBL 있는 건물 수 36225 | 5회 초과 건물 10276 (28.4%) | 이 건물들의 민원 비율 83.7%
+  건물당 최다: {'2046990051': 2228, '2033150044': 1621, '2051150024': 1192}
+
+### A3 City Limits: 난방 민원 중 '중복' 처리 비율
+난방 민원 중 결과문에 duplicate: 30.8%
+1/24~2/1 한파 기간 duplicate: 38.5%
+결과문 상위: {'This complaint is a duplicate of a building-wide condition already rep': 108442, 'HPD responded to a complaint of no heat or hot water in the building. ': 55369, 'The Department of Housing Preservation and Development was not able to': 42533, 'The Department of Housing Preservation and Development conducted or at': 30242}
+
+### A4 AEI: 노숙인 야영지(Encampment) 처리시간 × 소득 5분위
+         size  median
+inc_q                
+Q1(최저)   4506    2.28
+Q2       3830    2.75
+Q3       3591    2.35
+Q4       6604    2.06
+Q5(최고)  25556    1.85
+참고 난방 처리시간 중앙값 × 소득: {'Q1(최저)': 39.9, 'Q2': 41.9, 'Q3': 45.6, 'Q4': 46.0, 'Q5(최고)': 47.7}
+참고 불법주차 처리시간 중앙값 × 소득: {'Q1(최저)': 1.54, 'Q2': 1.85, 'Q3': 1.81, 'Q4': 1.55, 'Q5(최고)': 1.09}
+
+### A5 DCJ: '사회적 무질서' 민원 비중
+해당 유형 합계 125892 3.18% {'Encampment': 47369, 'Homeless Person Assistance': 34414, 'Graffiti': 17274, 'Panhandling': 11601, 'Drug Activity': 8888, 'Drinking': 4434, 'Urinating in Public': 1702, 'Disorderly Youth': 210}
+
+### A6 Kontokosta: 히스패닉 비율과 난방 민원 (임차가구 1,000가구당)
+히스패닉 5분위별: {1: 102.5, 2: 109.6, 3: 144.8, 4: 156.7, 5: 234.4}
+소득 5분위 안에서 히스패닉 5분위:
+his_q       1      2      3      4      5
+inc_q                                    
+Q1(최저)  104.0  115.0  141.0  131.0  255.0
+Q2      125.0  149.0  216.0  207.0  245.0
+Q3      203.0  133.0  171.0  162.0  158.0
+Q4      130.0  109.0  108.0  146.0  109.0
+Q5(최고)   65.0   81.0   95.0  112.0   62.0
+
+### A7 임대료 동결(2026-10-01 시행) 뒤 10월 난방 민원
+2026-10 난방 민원 26338 | 2025-11 난방 민원 46657 | 하루 평균 850 vs 1555
+2026-10 주별: {np.uint32(40): 937, np.uint32(41): 3575, np.uint32(42): 6197, np.uint32(43): 10627, np.uint32(44): 5002}
+
+### A8 맘다니 취임(2026-01-01) 전후 단순 비교 함정
+월별 총 민원: {Period('2025-11', 'M'): 296114, Period('2025-12', 'M'): 332103, Period('2026-01', 'M'): 348511, Period('2026-02', 'M'): 334691, Period('2026-03', 'M'): 342390, Period('2026-04', 'M'): 302190, Period('2026-05', 'M'): 331980, Period('2026-06', 'M'): 334834, Period('2026-07', 'M'): 343134, Period('2026-08', 'M'): 328927, Period('2026-09', 'M'): 323632, Period('2026-10', 'M'): 345453}
+월별 난방: {Period('2025-11', 'M'): 46657, Period('2025-12', 'M'): 63902, Period('2026-01', 'M'): 79928, Period('2026-02', 'M'): 59031, Period('2026-03', 'M'): 29783, Period('2026-04', 'M'): 19553, Period('2026-05', 'M'): 9823, Period('2026-06', 'M'): 4388, Period('2026-07', 'M'): 4331, Period('2026-08', 'M'): 3682, Period('2026-09', 'M'): 4862, Period('2026-10', 'M'): 26338}
+
+### A9 2024 뉴스 '소음 1위 73.8만' 대비 이번 12개월
+Noise 계열 problem 합계: 787668 | 불법주차 618157
+
+### B1 과반 집단별 1,000명당 민원과 유형
+전체: {'asian_rate': 341.2, 'black_rate': 463.5, 'hispanic_rate': 540.6, 'no_majority': 469.5, 'white_rate': 379.4}
+  소음: {'asian_rate': 50.4, 'black_rate': 112.5, 'hispanic_rate': 129.8, 'no_majority': 92.3, 'white_rate': 60.2}
+  주거환경: {'asian_rate': 31.7, 'black_rate': 119.5, 'hispanic_rate': 163.1, 'no_majority': 81.9, 'white_rate': 44.6}
+  도로·교통: {'asian_rate': 148.9, 'black_rate': 117.3, 'hispanic_rate': 124.6, 'no_majority': 158.5, 'white_rate': 136.6}
+  위생: {'asian_rate': 21.7, 'black_rate': 40.5, 'hispanic_rate': 44.5, 'no_majority': 34.9, 'white_rate': 26.7}
+  해충·동물: {'asian_rate': 3.4, 'black_rate': 5.5, 'hispanic_rate': 4.5, 'no_majority': 5.7, 'white_rate': 6.1}
+
+### B2 소득 5분위별 1,000명당
+전체: {'Q1(최저)': 507.5, 'Q2': 456.2, 'Q3': 439.4, 'Q4': 413.8, 'Q5(최고)': 418.5}
+  소음: {'Q1(최저)': 144.0, 'Q2': 87.4, 'Q3': 73.5, 'Q4': 69.8, 'Q5(최고)': 69.7}
+  주거환경: {'Q1(최저)': 152.4, 'Q2': 108.7, 'Q3': 80.4, 'Q4': 53.3, 'Q5(최고)': 44.7}
+  도로·교통: {'Q1(최저)': 94.5, 'Q2': 145.4, 'Q3': 164.0, 'Q4': 160.1, 'Q5(최고)': 140.6}
+  위생: {'Q1(최저)': 41.9, 'Q2': 36.2, 'Q3': 34.3, 'Q4': 30.5, 'Q5(최고)': 28.5}
+  해충·동물: {'Q1(최저)': 4.5, 'Q2': 4.9, 'Q3': 5.7, 'Q4': 5.9, 'Q5(최고)': 6.4}
+
+### B3 채널(온라인·모바일 vs 전화) × 소득
+channel  MOBILE  ONLINE  OTHER  PHONE
+inc_q                                
+Q1(최저)     23.4    49.6    0.0   27.0
+Q2         21.5    52.2    0.1   26.3
+Q3         23.0    53.0    0.1   23.9
+Q4         20.6    56.1    0.1   23.2
+Q5(최고)     24.2    56.6    0.1   19.1
+channel        MOBILE  ONLINE  OTHER  PHONE
+major                                      
+asian_rate       23.5    53.9    0.1   22.5
+black_rate       22.7    47.9    0.1   29.3
+hispanic_rate    21.9    51.1    0.0   27.0
+no_majority      22.2    55.2    0.1   22.5
+white_rate       23.6    55.8    0.1   20.5
+
+### B4 쥐(Rodent) 1,000명당 × 소득 · 자치구
+소득: {'Q1(최저)': 2.8, 'Q2': 2.9, 'Q3': 3.1, 'Q4': 3.0, 'Q5(최고)': 3.5}
+자치구: {'BRONX': 285.0, 'BROOKLYN': 359.7, 'MANHATTAN': 387.0, 'QUEENS': 222.8, 'STATEN ISLAND': 216.8} (10만명당)
+
+### B5 심슨의 역설: 소득과 민원율 Spearman, 전체 vs 자치구 안
+전체 rho -0.13
+  Bronx rho -0.27 n 338
+  Brooklyn (Kings) rho 0.17 n 765
+  Manhattan (New York) rho -0.2 n 288
+  Queens rho -0.05 n 669
+  Staten Island (Richmond) rho -0.24 n 117
+
+### B6 생태학적 오류 예: 히스패닉 비율과 소음 민원율 (Tract)
+hispanic_rate vs 소음율 rho 0.38 | vs 주거율 0.32 | vs 도로율 0.02
+black_rate vs 소음율 rho 0.26 | vs 주거율 0.4 | vs 도로율 -0.22
+white_rate vs 소음율 rho -0.22 | vs 주거율 -0.28 | vs 도로율 0.12
+
+### C1 소음: 시간대·요일·특별한 날
+시간대 1위: {22: 82985, 23: 76937, 0: 65658}
+요일(0=월): {0: 94593, 1: 90075, 2: 90078, 3: 92003, 4: 108833, 5: 155542, 6: 156544}
+2025-12-31 소음 1637
+2026-01-01 소음 2092
+2026-07-04 소음 3506
+2026-07-05 소음 3298
+2026-02-08 소음 1618
+2026-06-21 소음 5350
+2026-03-17 소음 1348
+소음 일평균 2158
+Noise 세부 상위: {'Loud Music/Party': 424108, 'Banging/Pounding': 156469, 'Loud Talking': 73548, 'Car/Truck Music': 22931, 'Car/Truck Horn': 20804, 'Noise: Construction Before/After Hours (NM1)': 15338, 'Other': 10555, 'Engine Idling': 10167}
+불꽃놀이 관련: 10891 {'Illegal Fireworks': 10891} {Timestamp('2026-07-04 00:00:00'): 2257, Timestamp('2026-07-05 00:00:00'): 1688, Timestamp('2026-07-03 00:00:00'): 534}
+
+### C2 새벽 3시에 들어오는 민원
+{'Noise - Residential': 12490, 'Illegal Parking': 8026, 'HEAT/HOT WATER': 4773, 'Noise - Street/Sidewalk': 4567, 'Blocked Driveway': 2216}
+
+### C3 평균 vs 중앙값: 처리시간
+전체 평균 159.6 중앙값 7.9
+  Illegal Parking: n 618157, 중앙값 1.5h, 평균 2.9h, 미종결 0.0%
+  HEAT/HOT WATER: n 352278, 중앙값 42.9h, 평균 47.4h, 미종결 4.2%
+  Rodent: n 26026, 중앙값 140.8h, 평균 269.3h, 미종결 7.3%
+  Street Light Condition: n 39252, 중앙값 238.7h, 평균 433.3h, 미종결 15.4%
+  Dead Animal: n 11053, 중앙값 44.2h, 평균 54.5h, 미종결 0.4%
+
+### C4 평균으로의 회귀: 앞 6개월 상위 10% Tract는 뒤 6개월에도?
+앞 상위10%가 뒤에도 상위10%: 66% | 앞 상위10% 평균 비율(전체 중앙값 대비) 2.33 → 뒤 2.13 | 앞뒤 Spearman 0.86
+
+### D1 쏠림
+주소 수 592939 | 1건만 있는 주소 43% | 상위 1% 주소의 민원 비율 30.1%
+상위 10: {'655 EAST 230 STREET': 47105, '78-15 PARSONS BOULEVARD': 9526, '1869 83 STREET': 8847, '5-47 50 AVENUE': 7610, '1465 WASHINGTON AVENUE': 5718, '34-16 ASTORIA BLVD SOUTH': 5584, '100 MESEROLE AVENUE': 5263, '30-70 34 STREET': 4772, 'JOHN F KENNEDY AIRPORT': 4512, '82-68 164 STREET': 4221}
+
+### D2 655 E 230th St 효과: 브롱크스 소음 순위
+자치구 소음 1,000명당: {'BRONX': 155.8, 'BROOKLYN': 80.5, 'MANHATTAN': 109.9, 'QUEENS': 68.5, 'STATEN ISLAND': 38.0}
+655 제외: {'BRONX': 122.3, 'BROOKLYN': 80.5, 'MANHATTAN': 109.9, 'QUEENS': 68.5, 'STATEN ISLAND': 38.0}
+
+### D3 1인당의 함정: 거주 인구가 적은 Tract
+            GEOID           borough  total_pop  complaint_count  complaints_per_1k
+321   36005042000             Bronx     4660.0            51605       11074.034335
+2150  36081125700            Queens     3162.0            13431        4247.628083
+1105  36047107001  Brooklyn (Kings)     4672.0            15269        3268.193493
+607   36047027800  Brooklyn (Kings)     3134.0             9960        3178.047224
+457   36047011901  Brooklyn (Kings)     1378.0             4033        2926.705370
+
+### E1 가장 드문 민원 유형
+{'Oil or Gas Spill': 8, 'Dry Weather Discharge': 7, 'Tunnel Condition': 6, 'DEP Sidewalk Condition': 5, 'Public Payphone Complaint': 5, 'Squeegee': 5, 'DEP Highway Condition': 5, 'FHV Licensee Complaint': 4, 'Leaning Bar': 4, 'DSNY Internal': 3, 'Building Condition': 3, 'Construction Safety Enforcement': 2, 'Building Marshals office': 1, 'Safety': 1, 'Trapping Pigeon': 1}
+
+### E2 이색 세부내용
+Squirrel 809 {'Squirrel': 809}
+Raccoon 1362 {'Raccoon': 1362}
+Bed Bug 0 {}
+Ice Cream 1111 {'Noise, Ice Cream Truck (NR4)': 729, 'Ice Cream Truck': 382}
+Helicopter 10971 {'Other': 10555, 'NYPD': 301}
+Barking 6078 {'Noise, Barking Dog (NR5)': 6078}
+Rooster 385 {'Rooster': 385}
+Drone 0 {}
+Car Horn 0 {}
+Banging 156469 {'Banging/Pounding': 156469}
+Smoking 8951 {'Allowed in Smoke Free Area': 8059, 'Smoking': 602}
+E-Bike|E-Scooter|Electric Bike 452 {'Improperly Parked or Abandoned': 419, 'Parking Corral Not Maintained': 25}
+
+### E3 기관별 미종결 비율
+{'EDC': 100.0, 'TLC': 57.1, 'DPR': 32.9, 'OOS': 18.3, 'DOHMH': 10.7, 'OTI': 6.8}
