@@ -1,5 +1,6 @@
 concepts = ["quintile", "per_capita", "reported_vs_occurred"]
 related = [17, 23, 24, 44]
+papers = ["minkoff_2016"]
 
 background = """
 #### 임차율

@@ -1,5 +1,6 @@
 concepts = ["broken_windows", "taxonomy_change", "reported_vs_occurred"]
 related = [10, 77]
+papers = ["dcj_2019"]
 
 background = """
 #### 스퀴지맨

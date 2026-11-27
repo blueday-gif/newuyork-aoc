@@ -1,5 +1,6 @@
 concepts = ["admin_echo", "underreporting", "proxy"]
 related = [39, 38, 7]
+papers = ["ikrar_building_syndrome", "urban_2025"]
 
 background = """
 #### 쓰고 싶은 문장

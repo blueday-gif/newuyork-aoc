@@ -1,5 +1,6 @@
 concepts = ["lift", "bbl", "data_join", "hpd"]
 related = [71, 70, 7]
+papers = ["ikrar_building_syndrome"]
 join_status = "방법만 정리함. 연관 분석은 311로 했지만, '신고 이전 위반율' 비교에는 HPD 위반 자료가 필요하다."
 
 background = """

@@ -1,5 +1,7 @@
 concepts = ["reported_vs_occurred", "underreporting", "sensor_vs_report", "taxonomy_change"]
 related = [96, 39, 97, 1]
+related_why = { 96 = "날씨 흔적이 311에 남는 방식", 39 = "신고가 적은 곳이 문제가 적은 곳은 아니다", 97 = "311 밖의 독립 자료로 신고를 검증하는 다른 예", 1 = "기상 사건 직후 민원이 몰리는 모양" }
+papers = ["bayflood_2025"]
 join_status = "방법만 정리함. FloodNet 센서 수위와 FEMA 홍수 위험 지도를 아직 붙이지 않았다."
 
 background = """

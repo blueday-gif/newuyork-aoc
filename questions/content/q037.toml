@@ -1,5 +1,7 @@
 concepts = ["underreporting", "proxy", "hpd", "data_join"]
 related = [36, 7, 39]
+papers = ["kontokosta_heat"]
+lab = "reporting_bias"
 
 background = """
 #### 두 주장

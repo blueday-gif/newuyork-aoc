@@ -1,5 +1,6 @@
 concepts = ["taxonomy_change", "reported_vs_occurred", "same_period"]
 related = [8, 11, 77]
+papers = ["dcj_2019"]
 
 background = """
 #### '사회적 무질서' 민원

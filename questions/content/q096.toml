@@ -1,5 +1,6 @@
 concepts = ["weather_join", "seasonality", "taxonomy_change"]
 related = [57, 58, 1, 100]
+related_why = { 57 = "기온을 붙여 난방 민원의 문턱을 잰다", 58 = "폭염일과 정전·소화전 민원", 1 = "폭설 다음 날 눈 민원이 몰린 사례", 100 = "같은 '날씨' 결합을 홍수 센서로 넓힌다" }
 join_status = "방법만 정리함. NOAA 일별 기온·강수량을 아직 받지 않았다."
 
 background = """

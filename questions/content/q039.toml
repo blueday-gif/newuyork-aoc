@@ -1,5 +1,8 @@
 concepts = ["underreporting", "proxy", "contacting_propensity", "data_join"]
 related = [38, 37, 7]
+related_why = { 38 = "38번의 '부자 동네에 쥐 민원이 많다'를 뒤집어 읽은 것이다", 37 = "같은 과소신고 문제를 난방에서 본다", 7 = "311과 독립된 점검 기록을 붙이는 방법" }
+papers = ["bayflood_2025", "urban_2025"]
+lab = "reporting_bias"
 
 background = """
 #### 쓰고 싶은 문장

@@ -1,5 +1,6 @@
 concepts = ["compare_like", "median", "quintile"]
 related = [8, 3, 82]
+papers = ["corinth_finley_2017"]
 
 background = """
 #### 8번을 일반화하면 틀린다

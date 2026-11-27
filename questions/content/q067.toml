@@ -1,5 +1,6 @@
 concepts = ["seasonality", "baseline", "change_two_points", "outlier"]
 related = [40, 52, 46]
+papers = ["ramphal_2022"]
 join_status = "방법만 정리함. 2019–2020년 7월 자료를 아직 뽑지 않았다."
 
 background = """

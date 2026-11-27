@@ -1,5 +1,6 @@
 concepts = ["data_join", "bbl", "taxonomy_change", "compare_like"]
 related = [16, 20, 72]
+papers = ["moda_illegal_conversion"]
 join_status = "방법만 정리함. PLUTO(건물 용도·세대 수·건축연도)를 아직 붙이지 않았다."
 
 background = """

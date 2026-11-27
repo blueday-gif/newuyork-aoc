@@ -1,5 +1,6 @@
 concepts = ["boundary_overlay", "confounding", "ecological_fallacy"]
 related = [17, 18, 27, 31]
+related_why = { 17 = "맘다니 득표와 세입자 비율", 18 = "동네 상관을 개인 행동으로 읽는 생태학적 오류", 27 = "311이 이미 가진 시의회 선거구로 본 민원", 31 = "투표율과 신고율을 함께 '참여'로 볼 수 있나" }
 join_status = "방법만 정리함. 2025년 선거 투표구(ED)별 개표 결과를 아직 붙이지 않았다."
 
 background = """

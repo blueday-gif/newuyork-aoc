@@ -1,5 +1,7 @@
 concepts = ["small_denominator", "per_capita", "place_address", "outlier"]
 related = [73, 69, 33]
+related_why = { 73 = "JFK처럼 사람이 아닌 장소가 민원을 모으는 예", 69 = "민원이 소수 주소에 몰리는 정도", 33 = "분모를 인구로 나눈 비율을 집단끼리 비교한다" }
+lab = "small_denominator"
 
 background = """
 #### 쓰고 싶은 문장

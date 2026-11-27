@@ -1,5 +1,6 @@
 concepts = ["digital_divide", "majority_group", "contacting_propensity"]
 related = [31, 42, 43]
+papers = ["minkoff_2016"]
 
 background = """
 #### 311에 신고하는 세 가지 길

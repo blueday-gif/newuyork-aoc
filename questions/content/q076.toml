@@ -1,5 +1,6 @@
 concepts = ["data_join", "bbl", "proxy"]
 related = [75, 72]
+papers = ["moda_illegal_conversion"]
 join_status = "방법만 정리함. 재무국(DOF) 세금 체납 목록과 저당 정보를 아직 붙이지 않았다."
 
 background = """

@@ -1,5 +1,6 @@
 concepts = ["change_two_points", "boundary_overlay", "data_join"]
 related = [45, 40, 61]
+papers = ["gentrification_noise"]
 join_status = "방법만 정리함. ACS 2015–2019 5개년을 아직 받지 않아 '젠트리피케이션 중'이라는 변화를 잴 수 없다."
 
 background = """

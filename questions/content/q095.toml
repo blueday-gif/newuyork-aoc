@@ -1,5 +1,7 @@
 concepts = ["data_join", "boundary_overlay", "per_capita", "small_denominator"]
 related = [16, 33, 23]
+related_why = { 16 = "이 결합으로 임차율과 민원을 비교한다", 33 = "이 결합으로 인종 구성별 민원을 비교한다", 23 = "세입자 동네의 민원 구성이 어떻게 다른지 본다" }
+lab = "small_denominator"
 join_status = "이 프로젝트에서 실제로 합친 결합이다(311 좌표 → Census Tract → ACS)."
 
 background = """

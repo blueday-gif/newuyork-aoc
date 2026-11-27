@@ -1,5 +1,7 @@
 concepts = ["underreporting", "admin_echo", "data_join", "bbl"]
 related = [7, 37, 39, 93]
+related_why = { 7 = "난방 민원과 HPD 위반을 BBL로 잇는 구체적 방법", 37 = "히스패닉 지역 과소신고 연구와 우리 결과가 왜 달라 보이나", 39 = "쥐 민원을 결과문으로 대신 검증한 결과", 93 = "점검 기록이 311에서 시작될 때 생기는 행정 순환" }
+papers = ["kontokosta_heat", "urban_2025"]
 join_status = "방법만 정리함. HPD 위반 기록과 보건국 쥐 점검 자료를 아직 붙이지 않았다."
 
 background = """

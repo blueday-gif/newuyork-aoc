@@ -1,5 +1,6 @@
 concepts = ["contacting_propensity", "confounding", "boundary_overlay"]
 related = [17, 33, 44]
+papers = ["minkoff_2016"]
 join_status = "방법만 정리함. 2025년 시장 선거 투표구(ED)별 투표율을 아직 붙이지 않았다."
 
 background = """

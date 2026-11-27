@@ -1,5 +1,6 @@
 concepts = ["sensor_vs_report", "boundary_overlay", "per_capita"]
 related = [61, 64, 39]
+papers = ["sonyc"]
 join_status = "방법만 정리함. SONYC 센서 자료를 아직 받지 않았다."
 
 background = """

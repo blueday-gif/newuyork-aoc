@@ -1,5 +1,6 @@
 concepts = ["quintile", "median", "reported_vs_occurred", "compare_like"]
 related = [9, 10, 33]
+papers = ["corinth_finley_2017"]
 
 background = """
 #### AEI 연구
