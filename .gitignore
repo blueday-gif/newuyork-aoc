@@ -8,3 +8,6 @@ __pycache__/
 desktop.ini
 
 questions/.cache/
+
+# G 드라이브 밖 작업 자료의 사본(원본 311·외부 자료·Claude 메모). 용량이 커서 git에 올리지 않는다.
+local_data/
