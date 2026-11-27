@@ -12,7 +12,7 @@ import pandas as pd
 
 QDIR = Path(__file__).resolve().parents[1]
 ROOT = QDIR.parent
-RAW = Path(os.environ.get("NY311_RAW", r"D:/project-ny311/data/processed/311_requests_2020_present.parquet"))
+RAW = Path(os.environ.get("NY311_RAW", r"D:/ny311/data/processed/311_requests_2020_present.parquet"))
 CACHE = QDIR / ".cache" / "slim.parquet"
 DATA_OUT = QDIR / "data"
 

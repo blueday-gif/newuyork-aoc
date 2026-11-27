@@ -1,0 +1,6 @@
+line-length = 150
+target-version = "py311"
+extend-exclude = [".cache"]
+
+[lint]
+select = ["E", "F", "W"]

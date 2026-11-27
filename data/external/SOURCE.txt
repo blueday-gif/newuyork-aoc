@@ -1,6 +1,7 @@
 311 원본 위치 (이 폴더로 복사하지 않음)
 
-D:\project-ny311\data\processed\311_requests_clean.parquet
+D:\ny311\data\processed\311_requests_2020_present.parquet
+파일 이름은 2020_present지만 내용은 2025-11-01~2026-10-31, 3,963,959행이다.
 기간: 2025-11-01 ~ 2026-10-31
 추출 기준일: 2026-11-12
 행 단위: 민원 1건. 이 프로젝트의 Tract 집계는 scripts/join_311_acs.py 가 만든다.
