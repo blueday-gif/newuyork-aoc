@@ -50,6 +50,24 @@ def concepts() -> dict:
     return _concepts(_mtime(QDIR / "meta" / "concepts.toml"))
 
 
+@st.cache_data(ttl="1h", max_entries=2)
+def _papers(mtime: int) -> dict:
+    return tomllib.loads((QDIR / "meta" / "papers.toml").read_text(encoding="utf-8"))
+
+
+def papers() -> dict:
+    return _papers(_mtime(QDIR / "meta" / "papers.toml"))
+
+
+@st.cache_data(ttl="1h", max_entries=10)
+def _lab(name: str, mtime: int) -> dict:
+    return json.loads((QDIR / "data" / "labs" / f"{name}.json").read_text(encoding="utf-8"))
+
+
+def lab(name: str) -> dict:
+    return _lab(name, _mtime(QDIR / "data" / "labs" / f"{name}.json"))
+
+
 @st.cache_data(ttl="1h", max_entries=200)
 def _content(qid: int, mtime: int) -> dict | None:
     path = QDIR / "content" / f"q{qid:03d}.toml"

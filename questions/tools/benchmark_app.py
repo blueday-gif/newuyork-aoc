@@ -2,6 +2,7 @@
 실행(저장소 루트에서):
   py -3 questions/tools/benchmark_app.py                         # 1~100번
   py -3 questions/tools/benchmark_app.py --ids 1 95 100          # 일부
+  py -3 questions/tools/benchmark_app.py --labs                  # 체험 위젯 반응 포함
   py -3 questions/tools/benchmark_app.py --out questions/reports/perf.md
 문항마다 새 AppTest로 목차를 한 번 실행한 뒤 질문 페이지로 옮겨 두 번째 run()의 시간을 잰다.
 맨 처음 한 번(모듈 import 포함)은 콜드 스타트로 따로 적는다.
@@ -22,7 +23,7 @@ from streamlit.testing.v1 import AppTest
 
 QDIR = Path(__file__).resolve().parents[1]
 APP = QDIR / "app.py"
-LIMIT_SEC, LIMIT_MB = 2.0, 500
+LIMIT_SEC, LIMIT_MB, LAB_LIMIT_SEC = 2.0, 500, 0.5
 
 
 def rss_mb() -> float:
@@ -41,6 +42,43 @@ def render(qid: int) -> dict:
     return {"qid": qid, "sec": sec, "exceptions": len(at.exception), "header_ok": head.startswith(f"{qid}. "), "rss": rss_mb()}
 
 
+def _slider(at: AppTest, key: str):
+    for s in at.slider:
+        if s.key == key:
+            return s
+    raise KeyError(key)
+
+
+def measure_labs() -> list[dict]:
+    """체험 위젯 조작 뒤 run() 한 번의 시간을 잰다."""
+    rows = []
+
+    at = AppTest.from_file(str(APP), default_timeout=60)
+    at.run()
+    at.switch_page("app_pages/question.py")
+    at.query_params["q"] = "74"
+    at.run()
+    _slider(at, "q74_min").set_value(500)
+    t = time.perf_counter()
+    at.run()
+    rows.append({"name": "작은 분모", "action": "최소 인구 → 500", "sec": time.perf_counter() - t})
+    _slider(at, "q74_min").set_value(2000)
+    t = time.perf_counter()
+    at.run()
+    rows.append({"name": "작은 분모", "action": "최소 인구 → 2000", "sec": time.perf_counter() - t})
+
+    at = AppTest.from_file(str(APP), default_timeout=60)
+    at.run()
+    at.switch_page("app_pages/question.py")
+    at.query_params["q"] = "39"
+    at.run()
+    _slider(at, "q39_a_rate").set_value(40)
+    t = time.perf_counter()
+    at.run()
+    rows.append({"name": "보고 편향", "action": "A 신고율 → 40", "sec": time.perf_counter() - t})
+    return rows
+
+
 def ruff_count() -> str:
     try:
         r = subprocess.run([sys.executable, "-m", "ruff", "check", str(QDIR), "--statistics", "--quiet"],
@@ -53,7 +91,7 @@ def ruff_count() -> str:
     return f"{sum(int(x.split()[0]) for x in lines if x.split()[0].isdigit())}건 (" + ", ".join(x.split()[1] for x in lines) + ")"
 
 
-def report(rows: list[dict], cold: float, rss0: float, rss_max: float) -> str:
+def report(rows: list[dict], cold: float, rss0: float, rss_max: float, lab_rows: list[dict] | None = None) -> str:
     secs = sorted(r["sec"] for r in rows)
     p95 = secs[min(len(secs) - 1, round(0.95 * (len(secs) - 1)))]
     bad = [r for r in rows if r["exceptions"] or not r["header_ok"]]
@@ -96,6 +134,19 @@ def report(rows: list[dict], cold: float, rss0: float, rss_max: float) -> str:
         *([f"- {r['qid']}번: 예외 {r['exceptions']}개, 헤더 {'정상' if r['header_ok'] else '이상'}" for r in bad] or ["없음"]),
         "",
     ]
+    if lab_rows is not None:
+        out += [
+            "## 체험 위젯 반응",
+            "",
+            f"| 체험 | 조작 | 시간(초) | 기준 {LAB_LIMIT_SEC}초 |",
+            "|---|---|---|---|",
+            *[
+                f"| {r['name']} | {r['action']} | {r['sec']:.2f} | "
+                f"{'통과' if r['sec'] <= LAB_LIMIT_SEC else '초과'} |"
+                for r in lab_rows
+            ],
+            "",
+        ]
     return "\n".join(out)
 
 
@@ -103,6 +154,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--ids", type=int, nargs="*", default=list(range(1, 101)))
     ap.add_argument("--out", type=Path)
+    ap.add_argument("--labs", action="store_true", help="체험 위젯 반응 시간도 잰다")
     args = ap.parse_args()
 
     rss0 = rss_mb()
@@ -115,8 +167,14 @@ def main():
         rows.append(r)
         flag = "" if r["exceptions"] == 0 and r["header_ok"] else "  <-- 확인"
         print(f"q{qid:03d} {r['sec']:.2f}s exc={r['exceptions']} rss={r['rss']:.0f}MB{flag}", flush=True)
+    lab_rows = None
+    if args.labs:
+        lab_rows = measure_labs()
+        for r in lab_rows:
+            flag = "" if r["sec"] <= LAB_LIMIT_SEC else "  <-- 확인"
+            print(f"lab {r['name']} {r['action']} {r['sec']:.2f}s{flag}", flush=True)
     rss_max = max(r["rss"] for r in rows)
-    text = report(rows, cold, rss0, rss_max)
+    text = report(rows, cold, rss0, rss_max, lab_rows=lab_rows)
     if args.out:
         args.out.parent.mkdir(parents=True, exist_ok=True)
         args.out.write_text(text, encoding="utf-8")

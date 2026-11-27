@@ -3,11 +3,17 @@
 """
 import streamlit as st
 
+import qlib
+import state
+
 st.set_page_config(page_title="100가지 질문 · 뉴욕 311", page_icon=":material/quiz:", layout="wide")
 
 pages = [
     st.Page("app_pages/index.py", title="목차", icon=":material/list:", default=True),
     st.Page("app_pages/question.py", title="질문 보기", icon=":material/help:", url_path="q"),
     st.Page("app_pages/concepts.py", title="개념 사전", icon=":material/menu_book:", url_path="concepts"),
+    st.Page("app_pages/labs.py", title="체험실", icon=":material/science:", url_path="labs"),
 ]
-st.navigation(pages).run()
+pg = st.navigation(pages)
+pg.run()
+state.render_sidebar(len(qlib.questions()), qlib.concepts())

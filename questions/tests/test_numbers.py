@@ -71,3 +71,23 @@ def test_content_links(qdir):
         assert not missing, f"{path.name}: 개념 사전에 없는 키 {missing}"
         bad = [r for r in c.get("related", []) if not 1 <= r <= 100 or r == qid]
         assert not bad, f"{path.name}: 잘못된 관련 문항 {bad}"
+
+
+def test_content_extras(qdir):
+    papers = tomllib.loads((qdir / "meta" / "papers.toml").read_text(encoding="utf-8"))
+    fields = {"title", "who", "track", "question", "data", "method", "finding", "differs"}
+    used: set[str] = set()
+    for key, p in papers.items():
+        assert fields <= set(p), f"{key}: 필드 부족 {fields - set(p)}"
+        assert isinstance(p["track"], int) and 1 <= p["track"] <= 4, key
+    for qid in range(1, 101):
+        c = tomllib.loads((qdir / "content" / f"q{qid:03d}.toml").read_text(encoding="utf-8"))
+        for pk in c.get("papers", []):
+            assert pk in papers, f"q{qid:03d}: papers.toml에 없는 키 {pk}"
+            used.add(pk)
+        if "lab" in c:
+            assert c["lab"] in {"small_denominator", "reporting_bias"}, f"q{qid:03d}: lab={c['lab']}"
+        related = set(c.get("related", []))
+        for rk in c.get("related_why", {}):
+            assert int(rk) in related, f"q{qid:03d}: related_why 키 {rk}이 related에 없음"
+    assert used == set(papers), f"미사용 {set(papers) - used} / 없는 키 {used - set(papers)}"
