@@ -234,6 +234,9 @@ lab = "small_denominator"                    # [신규] 이 문항에 붙일 체
 ### Phase 4: 통합 테스트·성능 보고·배포 점검
 
 - **목표:** 100문항과 체험실 전체 렌더링 테스트, `reports/perf.md` 최종본, `ruff check` 0건, Streamlit Cloud 배포 확인.
+- 2026-11-27: 3B까지 `questions-app`에 합침(470f00a). 명세는 SPEC.md(Phase 4).
+  - 실제 배포는 사용자 계정으로 한다.
+  - ruff 정리는 계산 결과 100개 JSON이 같은지로 검증한다.
 - **Claude:** 성능 보고 검수, 배포 승인.
 
 ---
