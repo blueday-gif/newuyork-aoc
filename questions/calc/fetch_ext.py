@@ -1,4 +1,4 @@
-"""공개 외부 자료 내려받기 (Phase 3A).
+"""공개 외부 자료 내려받기 (Phase 3A·3B).
 실행: py -3 questions/calc/fetch_ext.py [이름 ...] [--refresh]
 원자료는 저장소 밖 EXT_DIR에 둔다.
 """
@@ -10,6 +10,7 @@ import json
 import os
 import sys
 import time
+import zipfile
 from datetime import datetime
 from pathlib import Path
 from urllib.parse import urlencode
@@ -37,6 +38,9 @@ DATASETS: dict[str, dict] = {
         id="64uk-42ks",
         select="bbl,borocode,bldgclass,landuse,unitsres,unitstotal,yearbuilt,numfloors,bct2020",
         where="unitsres > 0", order="bbl", period="최신판"),
+    "pluto_xy": dict(
+        id="64uk-42ks", select="bbl,cd,latitude,longitude,unitsres",
+        where="unitsres > 0", order="bbl", period="최신판"),
     "floodnet_events": dict(
         id="aq7i-eu5q",
         select="sensor_id,flood_start_time,flood_end_time,max_depth_inches,duration_mins",
@@ -59,12 +63,26 @@ NOAA = dict(
                 dataTypes="TMIN,TMAX,PRCP,SNOW", units="metric", format="csv"),
     period="2025-11-01~2026-10-31")
 
+ELECTION_DIR = EXT_DIR / "elections"
+BOE = ("https://www.vote.nyc/sites/default/files/pdf/election_results/2025/"
+       "20251104General%20Election/{code}%20Mayor%20Citywide%20EDLevel.csv")
+BOE_BOROS = {
+    "manhattan": "00100100000New%20York",
+    "bronx": "00200100000Bronx",
+    "brooklyn": "00300100000Kings",
+    "queens": "00400100000Queens",
+    "staten_island": "00500100000Richmond",
+}
+DCP_ED = "https://s-media.nyc.gov/agencies/dcp/assets/files/zip/data-tools/bytes/election-districts/nyed_{v}.zip"
+ED_VERSION = "25c"
+
 NUM_COLS = {
     "unitsres", "unitstotal", "yearbuilt", "numfloors", "max_depth_inches", "duration_mins",
-    "latitude", "longitude", "TMIN", "TMAX", "PRCP", "SNOW",
+    "latitude", "longitude", "TMIN", "TMAX", "PRCP", "SNOW", "cd",
 }
 RETRY_WAITS = (10, 30, 90, 180)
 TIMEOUT = 300
+UA = {"User-Agent": "Mozilla/5.0"}
 
 
 def norm_bbl(s: pd.Series) -> pd.Series:
@@ -91,13 +109,14 @@ def _coerce(df: pd.DataFrame) -> pd.DataFrame:
     return out
 
 
-def _get(url: str, params: dict | None = None) -> requests.Response:
+def _get(url: str, params: dict | None = None,
+         headers: dict | None = None) -> requests.Response:
     last_err: Exception | None = None
     for i, wait in enumerate((0, *RETRY_WAITS)):
         if wait:
             time.sleep(wait)
         try:
-            r = requests.get(url, params=params, timeout=TIMEOUT)
+            r = requests.get(url, params=params, headers=headers, timeout=TIMEOUT)
             if r.status_code == 503 or r.status_code >= 400:
                 if i < len(RETRY_WAITS):
                     last_err = requests.HTTPError(f"{r.status_code} {url}", response=r)
@@ -256,15 +275,85 @@ def meta(name: str) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def fetch_files(refresh: bool = False) -> Path:
+    """BOE 2025 시장 선거 ED 개표 CSV와 DCP 선거구 경계를 받는다. 이름은 elections."""
+    ELECTION_DIR.mkdir(parents=True, exist_ok=True)
+    csv_paths = {boro: ELECTION_DIR / f"mayor_2025_{boro}.csv" for boro in BOE_BOROS}
+    zip_path = ELECTION_DIR / f"nyed_{ED_VERSION}.zip"
+    extract_dir = ELECTION_DIR / f"nyed_{ED_VERSION}"
+    first_url = BOE.format(code=next(iter(BOE_BOROS.values())))
+    all_ready = all(p.exists() for p in csv_paths.values()) and zip_path.exists()
+    if all_ready and list(extract_dir.glob("**/nyed.shp")) and not refresh:
+        meta_path = EXT_DIR / "elections.meta.json"
+        if not meta_path.exists():
+            rows = sum(
+                sum(1 for _ in p.open(encoding="utf-8-sig")) for p in csv_paths.values())
+            meta_doc = {
+                "name": "elections",
+                "dataset": "NYC BOE 2025 General ED-level Mayor + DCP nyed_25c",
+                "url": first_url,
+                "period": "2025-11-04",
+                "rows": rows,
+                "fetched_at": datetime.now().strftime("%Y-%m-%d %H:%M"),
+            }
+            meta_path.write_text(
+                json.dumps(meta_doc, ensure_ascii=False, indent=1), encoding="utf-8")
+        return ELECTION_DIR
+
+    total_rows = 0
+    for boro, code in BOE_BOROS.items():
+        url = BOE.format(code=code)
+        dest = csv_paths[boro]
+        if dest.exists() and not refresh:
+            total_rows += sum(1 for _ in dest.open(encoding="utf-8-sig"))
+            continue
+        print(f"elections {boro}: 받는 중…")
+        r = _get(url, headers=UA)
+        dest.write_bytes(r.content)
+        n = sum(1 for _ in dest.open(encoding="utf-8-sig"))
+        total_rows += n
+        print(f"elections {boro}: {n:,}행 → {dest.name}")
+
+    if refresh or not zip_path.exists():
+        zip_url = DCP_ED.format(v=ED_VERSION)
+        print(f"elections nyed_{ED_VERSION}: 받는 중…")
+        r = _get(zip_url, headers=UA)
+        zip_path.write_bytes(r.content)
+    if refresh or not list(extract_dir.glob("**/nyed.shp")):
+        extract_dir.mkdir(parents=True, exist_ok=True)
+        with zipfile.ZipFile(zip_path) as zf:
+            zf.extractall(extract_dir)
+        shp = list(extract_dir.glob("**/nyed.shp"))
+        if not shp:
+            raise FileNotFoundError(f"nyed.shp 없음: {extract_dir}")
+        print(f"elections nyed_{ED_VERSION}: {shp[0]}")
+    total_rows = sum(sum(1 for _ in p.open(encoding="utf-8-sig")) for p in csv_paths.values())
+
+    meta_doc = {
+        "name": "elections",
+        "dataset": "NYC BOE 2025 General ED-level Mayor + DCP nyed_25c",
+        "url": first_url,
+        "period": "2025-11-04",
+        "rows": total_rows,
+        "fetched_at": datetime.now().strftime("%Y-%m-%d %H:%M"),
+    }
+    (EXT_DIR / "elections.meta.json").write_text(
+        json.dumps(meta_doc, ensure_ascii=False, indent=1), encoding="utf-8")
+    print(f"saved elections ({total_rows:,}행)")
+    return ELECTION_DIR
+
+
 def main(argv: list[str] | None = None) -> None:
     p = argparse.ArgumentParser(description="NYC 외부 자료 내려받기")
     p.add_argument("names", nargs="*", help="자료 이름(없으면 전부)")
     p.add_argument("--refresh", action="store_true", help="있어도 다시 받기")
     args = p.parse_args(argv)
-    names = args.names or [*DATASETS, "noaa_centralpark"]
+    names = args.names or [*DATASETS, "noaa_centralpark", "elections"]
     for name in names:
         if name == "noaa_centralpark":
             fetch_noaa(refresh=args.refresh)
+        elif name == "elections":
+            fetch_files(refresh=args.refresh)
         else:
             fetch_soda(name, refresh=args.refresh)
 

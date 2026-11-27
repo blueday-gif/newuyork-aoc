@@ -1,13 +1,15 @@
-"""@st.fragment 통계 체험: 작은 분모, 보고 편향."""
+"""@st.fragment 통계 체험: 작은 분모, 보고 편향, 이중차분."""
 from collections.abc import Callable
 from pathlib import Path
 
+import altair as alt
 import pandas as pd
 import streamlit as st
 
 import qlib
 
 _LAB_JSON = Path(__file__).resolve().parents[1] / "data" / "labs" / "small_denominator.json"
+_DID_JSON = Path(__file__).resolve().parents[1] / "data" / "labs" / "did_containerization.json"
 
 
 def render(lab_key: str, key: str) -> None:
@@ -20,6 +22,12 @@ def render(lab_key: str, key: str) -> None:
 @st.cache_data(ttl="1h", max_entries=2)
 def _small_denom_df(mtime: int) -> pd.DataFrame:
     return pd.DataFrame(qlib.lab("small_denominator")["rows"])
+
+
+@st.cache_data(ttl="1h", max_entries=2)
+def _did_dfs(mtime: int) -> tuple[pd.DataFrame, pd.DataFrame]:
+    data = qlib.lab("did_containerization")
+    return pd.DataFrame(data["monthly"]), pd.DataFrame(data["windows"])
 
 
 @st.fragment
@@ -170,7 +178,93 @@ def reporting_bias(key: str) -> None:
         )
 
 
+@st.fragment
+def did_containerization(key: str) -> None:
+    data = qlib.lab("did_containerization")
+    monthly, windows = _did_dfs(
+        _DID_JSON.stat().st_mtime_ns if _DID_JSON.exists() else 0)
+    groups = data["groups"]
+    label_t = groups["T"]["label"]
+    label_c = groups["C"]["label"]
+    policy = data["policy_date"]
+
+    st.markdown(
+        "2024년 11월 12일부터 1~9세대 건물은 쓰레기를 뚜껑 있는 통에 내놓아야 한다. "
+        "10세대 이상 건물은 아직 아니다. 두 집단의 쥐 목격 신고가 **각각 얼마나 변했는지** 빼 보면, "
+        "두 집단이 함께 겪은 변화(날씨, 311 이용 습관)를 지울 수 있다. "
+        "실제 311 자료다(웨스트 할렘·브루클린 2구역 제외)."
+    )
+
+    line = monthly.melt(id_vars="month", value_vars=["T", "C"],
+                        var_name="_g", value_name="세대 1,000개당 신고")
+    line["집단"] = line["_g"].map({"T": label_t, "C": label_c})
+    line["월"] = pd.to_datetime(line["month"] + "-01")
+    colors = {label_t: "#2457a7", label_c: "#e07b39"}
+    base = alt.Chart(line).mark_line(strokeWidth=2).encode(
+        x=alt.X("월:T", title=None),
+        y=alt.Y("세대 1,000개당 신고:Q", title="세대 1,000개당 신고"),
+        color=alt.Color("집단:N", scale=alt.Scale(
+            domain=list(colors), range=list(colors.values())),
+                        legend=alt.Legend(orient="top", title=None)),
+        tooltip=["월", "집단", "세대 1,000개당 신고"],
+    )
+    rule = alt.Chart(pd.DataFrame({"월": [pd.Timestamp(policy)]})).mark_rule(
+        strokeDash=[6, 4], color="#6b7a8f").encode(x="월:T")
+    with st.container(border=True):
+        st.markdown("**월별 세대 1,000개당 쥐 목격 신고**")
+        st.altair_chart((base + rule).properties(height=300),
+                        alt="월별 세대 1,000개당 쥐 목격 신고")
+
+    labels = windows["label"].tolist()
+    pre = st.select_slider("앞 기간", options=labels, value="2024", key=f"{key}_pre")
+    post = st.select_slider("뒤 기간", options=labels, value="2025", key=f"{key}_post")
+    naive = st.toggle("대조군 없이 전후만 비교", value=False, key=f"{key}_naive")
+
+    if labels.index(pre) >= labels.index(post):
+        st.info("뒤 기간을 앞 기간보다 나중으로 고르세요.")
+        return
+
+    w = windows.set_index("label")
+    t_pre, t_post = float(w.loc[pre, "T"]), float(w.loc[post, "T"])
+    c_pre, c_post = float(w.loc[pre, "C"]), float(w.loc[post, "C"])
+    d_t = t_post - t_pre
+    d_c = c_post - c_pre
+    did = d_t - d_c
+    ratio_change = (t_post / c_post) / (t_pre / c_pre) - 1 if c_pre and c_post and t_pre else float("nan")
+
+    with st.container(horizontal=True):
+        st.metric("1~9세대 변화", f"{d_t:+.2f}", border=True)
+        st.metric("10세대 이상 변화", f"{d_c:+.2f}", border=True)
+        if naive:
+            st.metric("전후 차이(대조군 없음)", f"{d_t:+.2f}", border=True)
+        else:
+            st.metric(
+                "이중차분", f"{did:+.2f}",
+                delta=f"{ratio_change * 100:+.1f}%",
+                delta_color="off",
+                border=True,
+            )
+
+    if naive:
+        st.caption("대조군 없이 보면 날씨·습관 변화까지 정책 효과로 잘못 센다.")
+    elif post != "2025":
+        st.caption(
+            "정책이 없던 해끼리 비교한 '가짜 정책' 시험이다. "
+            "0에 가까울수록 평행 추세 가정을 믿을 만하다."
+        )
+    elif pre == "2024" and post == "2025":
+        st.caption(
+            "정책 뒤 1~9세대 건물의 상대 비율이 약 19% 줄었다. "
+            "정책 전 해마다 바뀐 폭(+7%, −9%)보다 크지만, 그 흔들림만큼은 오차로 본다."
+        )
+
+    from components.edu_blocks import md_safe
+
+    st.caption(md_safe(data.get("notes", "")))
+
+
 LABS: dict[str, tuple[str, Callable[[str], None]]] = {
     "small_denominator": ("작은 분모의 함정", small_denominator),
     "reporting_bias": ("보고 편향 시뮬레이터", reporting_bias),
+    "did_containerization": ("이중차분: 쓰레기통 의무화와 쥐 신고", did_containerization),
 }

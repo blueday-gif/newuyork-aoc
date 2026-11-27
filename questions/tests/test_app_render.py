@@ -116,7 +116,47 @@ def test_labs_page():
     at.run()
     assert not at.exception
     titles = [s.value for s in at.main.subheader]
-    assert titles == ["작은 분모의 함정", "보고 편향 시뮬레이터"]
+    assert titles == [
+        "작은 분모의 함정",
+        "보고 편향 시뮬레이터",
+        "이중차분: 쓰레기통 의무화와 쥐 신고",
+    ]
+
+
+def _select_slider(at: AppTest, key: str):
+    for s in at.select_slider:
+        if s.key == key:
+            return s
+    raise AssertionError(f"select_slider not found: {key}")
+
+
+def test_did_lab_default():
+    at = AppTest.from_file(str(APP), default_timeout=60)
+    at.run()
+    at.switch_page("app_pages/labs.py")
+    at.run()
+    assert not at.exception
+    assert len(at.metric) >= 3
+    assert _metric(at, "이중차분").value == "-1.23"
+
+
+def test_did_lab_placebo():
+    at = AppTest.from_file(str(APP), default_timeout=60)
+    at.run()
+    at.switch_page("app_pages/labs.py")
+    at.run()
+    _select_slider(at, "page_did_containerization_pre").set_value("2022")
+    _select_slider(at, "page_did_containerization_post").set_value("2023")
+    at.run()
+    assert not at.exception
+    assert any("가짜 정책" in (c.value or "") for c in at.caption)
+
+    _select_slider(at, "page_did_containerization_pre").set_value("2025")
+    _select_slider(at, "page_did_containerization_post").set_value("2024")
+    at.run()
+    assert not at.exception
+    assert len(at.info) >= 1
+    assert any("뒤 기간을 앞 기간보다 나중으로 고르세요." in (i.value or "") for i in at.info)
 
 
 def test_joined_section():

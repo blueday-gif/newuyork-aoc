@@ -86,7 +86,7 @@ def test_content_extras(qdir):
             assert pk in papers, f"q{qid:03d}: papers.toml에 없는 키 {pk}"
             used.add(pk)
         if "lab" in c:
-            assert c["lab"] in {"small_denominator", "reporting_bias"}, f"q{qid:03d}: lab={c['lab']}"
+            assert c["lab"] in {"small_denominator", "reporting_bias", "did_containerization"}, f"q{qid:03d}: lab={c['lab']}"
         related = set(c.get("related", []))
         for rk in c.get("related_why", {}):
             assert int(rk) in related, f"q{qid:03d}: related_why 키 {rk}이 related에 없음"

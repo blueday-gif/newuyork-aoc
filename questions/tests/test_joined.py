@@ -11,7 +11,7 @@ from joined import points_to_geoid
 QDIR = Path(__file__).resolve().parents[1]
 JOINED = QDIR / "data" / "joined"
 ALLOWED_KINDS = {"bar", "barh", "line", "stack", "stackh", "group", "scatter"}
-JOINED_IDS = {7, 57, 58, 72, 75, 96, 97, 100}
+JOINED_IDS = {7, 17, 57, 58, 72, 75, 96, 97, 99, 100}
 SOURCE_KEYS = {"name", "dataset", "url", "period", "rows", "fetched_at"}
 DOC_KEYS = {"id", "computed_at", "sources", "metrics", "charts", "tables", "numbers"}
 

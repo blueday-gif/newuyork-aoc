@@ -1,4 +1,4 @@
-"""311과 외부 자료를 결합해 8개 문항의 결합 결과를 만든다 (Phase 3A).
+"""311과 외부 자료를 결합해 문항의 결합 결과를 만든다 (Phase 3A·3B).
 실행: py -3 questions/calc/joined.py [번호 ...]
 결과는 questions/data/joined/q###.json.
 """
@@ -14,7 +14,8 @@ import pandas as pd
 from scipy.stats import spearmanr
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import INC_Q, ROOT, category, load_311, records, tracts, with_tract  # noqa: E402
+from common import (BORO_KO, INC_Q, Q5, ROOT, category, load_311, records,  # noqa: E402
+                    tracts, with_tract)
 from fetch_ext import load_ext, meta, norm_bbl  # noqa: E402
 from part07 import HPD_KO, has_bbl  # noqa: E402
 from part10 import WEATHER, flood  # noqa: E402
@@ -656,18 +657,199 @@ def q100(df: pd.DataFrame, dt: pd.DataFrame) -> None:
     )
 
 
+# ── q017·q099 (선거 결합) ──────────────────────────────────────────
+
+def _tract_complaint_rate(dt: pd.DataFrame) -> pd.DataFrame:
+    """분석 대상 Tract의 1,000명당 민원. 반올림 전 값."""
+    t = tracts()
+    n = dt.groupby("GEOID").size().rename("n_comp")
+    out = t.merge(n, on="GEOID", how="left")
+    out["n_comp"] = out["n_comp"].fillna(0)
+    out["comp_per_1k"] = out["n_comp"] / out["total_pop"] * 1000
+    return out
+
+
+def _election_tract_frame(dt: pd.DataFrame, method: str = "units") -> pd.DataFrame:
+    """Tract 민원율 + 선거 배분. total < 100인 Tract는 득표율 NaN."""
+    import elections
+
+    base = _tract_complaint_rate(dt)
+    tv = elections.tract_votes(method=method)
+    m = base.merge(tv, on="GEOID", how="inner")
+    m["mamdani_share"] = np.where(m["total"] >= 100, m["mamdani"] / m["total"], np.nan)
+    m["votes_per_1k"] = m["total"] / m["total_pop"] * 1000
+    m["임차율 5분위"] = m["ren_q"].astype(str)
+    m["소득 5분위"] = m["inc_q"].astype(str)
+    return m
+
+
+def q017(df: pd.DataFrame, dt: pd.DataFrame) -> None:
+    import elections
+
+    m = _election_tract_frame(dt, method="units")
+    ed = elections.ed_votes()
+    votes_total = int(ed["total"].sum())
+    votes_mamdani = int(ed["mamdani"].sum())
+    city_share = votes_mamdani / votes_total if votes_total else float("nan")
+    dropped = int((m["total"] < 100).sum())
+    use = m[m["total"] >= 100].copy()
+
+    rho_raw, _ = spearmanr(use["mamdani_share"], use["comp_per_1k"])
+    rho_rent, _ = spearmanr(use["mamdani_share"], use["renter_rate"])
+    rho_raw, rho_rent = float(rho_raw), float(rho_rent)
+
+    rho_within: list[float] = []
+    chart1_rows = []
+    table_rows = []
+    for q in Q5:
+        g = use[use["ren_q"] == q]
+        if len(g) >= 2:
+            r, _ = spearmanr(g["mamdani_share"], g["comp_per_1k"])
+            r = float(r)
+        else:
+            r = float("nan")
+        rho_within.append(r)
+        mam_sum = float(g["mamdani"].sum())
+        tot_sum = float(g["total"].sum())
+        pop_sum = float(g["total_pop"].sum())
+        n_sum = float(g["n_comp"].sum())
+        share_pct = mam_sum / tot_sum * 100 if tot_sum else float("nan")
+        rate = n_sum / pop_sum * 1000 if pop_sum else float("nan")
+        chart1_rows += [
+            {"임차율 5분위": q, "지표": "맘다니 득표율(%)", "값": round(share_pct, 2)},
+            {"임차율 5분위": q, "지표": "1,000명당 민원(÷10)", "값": round(rate / 10, 2)},
+        ]
+        table_rows.append({
+            "임차율 5분위": q,
+            "Tract 수": int(len(g)),
+            "득표율(%)": round(share_pct, 1),
+            "1,000명당 민원": round(rate, 1),
+            "ρ(분위 안)": None if pd.isna(r) else round(r, 2),
+        })
+    rho_med = float(np.nanmedian(rho_within)) if rho_within else float("nan")
+
+    scatter = use.copy()
+    scatter["맘다니 득표율(%)"] = (scatter["mamdani_share"] * 100).round(2)
+    scatter["1,000명당 민원"] = scatter["comp_per_1k"].round(2)
+
+    save_joined(
+        17,
+        sources=[source("elections"), source("pluto_xy")],
+        metrics=[
+            {"label": "맘다니 득표율(시 전체)", "value": f"{city_share * 100:.1f}%",
+             "help": f"{votes_mamdani:,} / {votes_total:,}"},
+            {"label": "ρ: 득표율 × 1,000명당 민원(통제 없음)", "value": f"{rho_raw:.2f}"},
+            {"label": "ρ: 득표율 × 임차율", "value": f"{rho_rent:.2f}"},
+            {"label": "ρ: 임차율 5분위 안에서(중앙값)", "value": f"{rho_med:.2f}"},
+        ],
+        charts=[
+            {"title": "임차율 5분위별 득표율과 민원율", "kind": "group",
+             "x": "임차율 5분위", "color": "지표", "y": "값", "rows": chart1_rows,
+             "caption": "두 지표 모두 임차율을 따라 오른다. 공통 원인을 통제하지 않은 상관은 믿기 어렵다."},
+            {"title": "Tract별 맘다니 득표율과 민원율", "kind": "scatter",
+             "x": "맘다니 득표율(%)", "y": "1,000명당 민원", "color": "임차율 5분위",
+             "rows": records(scatter[["맘다니 득표율(%)", "1,000명당 민원", "임차율 5분위"]])},
+        ],
+        tables=[{"title": "임차율 5분위별 득표율·민원·상관", "rows": table_rows}],
+        numbers={
+            "rho_raw": round(rho_raw, 2),
+            "rho_rent": round(rho_rent, 2),
+            "rho_within": [None if pd.isna(x) else round(float(x), 2) for x in rho_within],
+            "n_tracts": int(len(use)),
+            "dropped_small_total": dropped,
+            "votes_total": votes_total,
+            "votes_mamdani": votes_mamdani,
+        },
+    )
+
+
+def q099(df: pd.DataFrame, dt: pd.DataFrame) -> None:
+    import elections
+
+    units = _election_tract_frame(dt, method="units")
+    area = _election_tract_frame(dt, method="area")
+    ed = elections.ed_votes()
+    votes_total = float(ed["total"].sum())
+    allocated = float(units["total"].sum())
+    share_allocated = allocated / votes_total if votes_total else float("nan")
+    area_votes = float((units["total"] * units["area_share"]).sum())
+    share_area = area_votes / allocated if allocated else float("nan")
+
+    w = elections.ed_tract_weights()
+    n_ed = int(ed["ed"].nunique())  # 표가 있는 ED만 센다
+    n_ed_area = int(w.loc[w["method"] == "area", "ed"].nunique())
+
+    both = units[["GEOID", "boro_acs", "mamdani_share", "total", "comp_per_1k", "votes_per_1k", "inc_q"]].merge(
+        area[["GEOID", "mamdani_share"]].rename(columns={"mamdani_share": "mamdani_share_area"}),
+        on="GEOID", how="inner")
+    both = both[both["total"] >= 100].copy()
+    both = both[both["mamdani_share"].notna() & both["mamdani_share_area"].notna()]
+    rho_methods, _ = spearmanr(both["mamdani_share"], both["mamdani_share_area"])
+    rho_methods = float(rho_methods)
+    both["diff_pp"] = (both["mamdani_share"] - both["mamdani_share_area"]) * 100
+    both["abs_diff_pp"] = both["diff_pp"].abs()
+    median_abs = float(both["abs_diff_pp"].median()) if len(both) else float("nan")
+
+    top = both.nlargest(10, "abs_diff_pp").copy()
+    top["자치구"] = top["boro_acs"].map(BORO_KO)
+    top["Tract"] = top.apply(
+        lambda r: f"{r['GEOID']} ({r['자치구']})", axis=1)
+    top["차이(%p)"] = top["abs_diff_pp"].round(2)
+
+    chart2_rows = []
+    for q in INC_Q:
+        g = units[units["inc_q"] == q]
+        pop = float(g["total_pop"].sum())
+        votes = float(g["total"].sum())
+        comps = float(g["n_comp"].sum())
+        v_rate = votes / pop * 1000 if pop else 0.0
+        c_rate = comps / pop * 1000 if pop else 0.0
+        chart2_rows += [
+            {"소득 5분위": q, "지표": "주민 1,000명당 표(÷2)", "값": round(v_rate / 2, 2)},
+            {"소득 5분위": q, "지표": "1,000명당 민원(÷2)", "값": round(c_rate / 2, 2)},
+        ]
+
+    save_joined(
+        99,
+        sources=[source("elections"), source("pluto_xy")],
+        metrics=[
+            {"label": "Tract로 옮긴 표", "value": f"{share_allocated * 100:.1f}%",
+             "help": f"{allocated:,.0f} / {votes_total:,.0f}"},
+            {"label": "면적으로 옮긴 표", "value": f"{share_area * 100:.1f}%"},
+            {"label": "ρ: 세대 배분 × 면적 배분 득표율", "value": f"{rho_methods:.2f}"},
+            {"label": "두 방법 득표율 차이(중앙값, %p)", "value": f"{median_abs:.2f}"},
+        ],
+        charts=[
+            {"title": "배분 방법 차이(|%p|) 상위 10 Tract", "kind": "barh",
+             "x": "차이(%p)", "y": "Tract",
+             "rows": records(top[["Tract", "차이(%p)"]]),
+             "caption": "차이는 소수 Tract에 몰려 있다. 사람이 고르게 살지 않는 선거구(공원·대단지가 낀 곳 등)에서는 면적 배분이 틀리기 쉽다."},
+            {"title": "소득 5분위별 주민 1,000명당 표와 민원", "kind": "group",
+             "x": "소득 5분위", "color": "지표", "y": "값", "rows": chart2_rows},
+        ],
+        numbers={
+            "share_allocated": round(share_allocated, 4),
+            "share_area": round(share_area, 4),
+            "rho_methods": round(rho_methods, 2),
+            "median_abs_diff_pp": round(median_abs, 2),
+            "n_ed": n_ed,
+            "n_ed_area": n_ed_area,
+        },
+    )
+
+
 # ── CLI ────────────────────────────────────────────────────────────
 
 FUNCS = {
-    7: "q007", 57: "q057", 58: "q058", 72: "q072",
-    75: "q075", 96: "q096", 97: "q097", 100: "q100",
+    7: "q007", 17: "q017", 57: "q057", 58: "q058", 72: "q072",
+    75: "q075", 96: "q096", 97: "q097", 99: "q099", 100: "q100",
 }
 
 
 def main(argv: list[str] | None = None) -> None:
     want = {int(a) for a in (argv if argv is not None else sys.argv[1:])} or set(FUNCS)
-    need_df = want & {7, 57, 58, 72, 75, 96, 97, 100}
-    need_dt = want & {97, 100}
+    need_df = want & {7, 17, 57, 58, 72, 75, 96, 97, 99, 100}
+    need_dt = want & {17, 97, 99, 100}
     df = load_311() if need_df else None
     dt = with_tract(df) if need_dt else None
 
@@ -679,12 +861,16 @@ def main(argv: list[str] | None = None) -> None:
         q096(df)
     if 7 in want:
         q007(df)
+    if 17 in want:
+        q017(df, dt)
     if 72 in want:
         q072(df)
     if 75 in want:
         q075(df)
     if 97 in want:
         q097(df, dt)
+    if 99 in want:
+        q099(df, dt)
     if 100 in want:
         q100(df, dt)
 
