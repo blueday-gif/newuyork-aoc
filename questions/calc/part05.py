@@ -37,7 +37,7 @@ def q049(df):
     night = h.loc[[22, 23, 0, 1, 2, 3, 4, 5]].sum() / h.sum() * 100
     save(49,
          metrics=[
-             {"label": "1위 시각", "value": f"밤 10시", "help": f"{h[22]:,}건"},
+             {"label": "1위 시각", "value": "밤 10시", "help": f"{h[22]:,}건"},
              {"label": "2위·3위", "value": "11시·자정", "help": f"{h[23]:,}건, {h[0]:,}건"},
              {"label": "밤 10시 ~ 새벽 6시 몫", "value": f"{night:.0f}%", "help": "하루 24시간 중 8시간"},
              {"label": "가장 조용한 시각", "value": f"{h.idxmin()}시", "help": f"{h.min():,}건"},
@@ -156,7 +156,8 @@ def q054(df):
          ],
          charts=[
              {"title": "특별한 날의 소음 민원", "kind": "barh", "x": "소음 민원", "y": "날", "rows": records(rows),
-              "caption": "1년 평균과 비교하면 새해 첫날은 평범해 보인다. 하지만 같은 계절(1월 평일 약 1,300건)과 비교하면 1.6배다. 무엇과 비교하느냐에 따라 '평범'과 '많음'이 갈린다."},
+              "caption": ("1년 평균과 비교하면 새해 첫날은 평범해 보인다. 하지만 같은 계절(1월 평일 약 1,300건)과 "
+                          "비교하면 1.6배다. 무엇과 비교하느냐에 따라 '평범'과 '많음'이 갈린다.")},
          ],
          tables=[{"title": "특별한 날", "rows": records(rows)}])
 
@@ -175,7 +176,8 @@ def q055(df):
          metrics=[
              {"label": "가장 많은 날", "value": t1.날짜.strftime("%Y-%m-%d"), "help": f"{int(t1['전체 민원']):,}건, {top['1위 유형과 몫'].iat[0]}"},
              {"label": "하루 평균", "value": f"{d['전체 민원'].mean():,.0f}건"},
-             {"label": "가장 적은 날", "value": low.날짜.iat[0].strftime("%Y-%m-%d"), "help": f"{int(low['전체 민원'].iat[0]):,}건. 자료가 21시부터만 있다(→ 89번)"},
+             {"label": "가장 적은 날", "value": low.날짜.iat[0].strftime("%Y-%m-%d"),
+              "help": f"{int(low['전체 민원'].iat[0]):,}건. 자료가 21시부터만 있다(→ 89번)"},
          ],
          charts=[
              {"title": "하루 전체 민원(12개월)", "kind": "line", "x": "날짜", "y": "전체 민원", "rows": records(d),
@@ -295,7 +297,10 @@ def q060(r):
               "rows": rows, "point": True,
               "caption": "주황 선(뒤)은 파랑 선(앞)보다 양 끝이 가운데로 당겨져 있다. 위는 내려오고 아래는 올라온다. 이것이 평균으로의 회귀다."},
          ],
-         tables=[{"title": "10분위별 중앙값 대비", "rows": records(pd.DataFrame(rows).pivot(index="앞 6개월 순위 10분위", columns="구분", values="중앙값 대비(배)").reset_index())}])
+         tables=[{"title": "10분위별 중앙값 대비",
+                  "rows": records(pd.DataFrame(rows).pivot(
+                      index="앞 6개월 순위 10분위", columns="구분", values="중앙값 대비(배)"
+                  ).reset_index())}])
 
 
 if __name__ == "__main__":

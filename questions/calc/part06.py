@@ -5,7 +5,6 @@
 import sys
 from pathlib import Path
 
-import numpy as np
 import pandas as pd
 from scipy.stats import chisquare
 
@@ -138,7 +137,9 @@ def q065(df):
          ],
          charts=[
              {"title": "같은 분에 같은 주소·유형으로 또 들어온 민원(유형별)", "kind": "barh", "x": "같은 분 반복", "y": "유형",
-              "rows": records(rows), "caption": "1분 안에 같은 주소에서 같은 유형이 또 들어오면 반복 신고로 추정했다. 여러 이웃의 동시 신고도 섞인다."},
+              "rows": records(rows),
+              "caption": ("1분 안에 같은 주소에서 같은 유형이 또 들어오면 반복 신고로 추정했다. "
+                          "여러 이웃의 동시 신고도 섞인다.")},
          ],
          tables=[{"title": "유형별 같은 분 반복", "rows": records(rows)}])
 
@@ -163,7 +164,8 @@ def q066(df):
          charts=[
              {"title": "넓이로 나눈 소음 민원(센서와 같은 기준)", "kind": "bar", "x": "자치구", "y": "㎢당 소음 민원",
               "alt_y": "1,000명당 소음 민원", "rows": records(rows), "sort": "-y",
-              "caption": "센서는 '사람 수'가 아니라 '자리'를 잰다. 넓이로 나누면 맨해튼이 압도적으로 1위가 된다. 세로축을 바꿔 사람 기준과 비교해 보자."},
+              "caption": ("센서는 '사람 수'가 아니라 '자리'를 잰다. 넓이로 나누면 맨해튼이 압도적으로 1위가 된다. "
+                          "세로축을 바꿔 사람 기준과 비교해 보자.")},
          ])
 
 

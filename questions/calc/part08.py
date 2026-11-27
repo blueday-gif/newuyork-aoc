@@ -119,7 +119,8 @@ def q081(df):
          ],
          charts=[
              {"title": "킥보드·자전거 관련 민원", "kind": "barh", "x": "건수", "y": "민원", "rows": records(rows),
-              "caption": "킥보드 유형은 공유 킥보드 사업 구역 안의 기기를 위한 칸이다. 개인 전기자전거가 보도를 막는 문제는 들어갈 칸이 마땅치 않다."},
+              "caption": ("킥보드 유형은 공유 킥보드 사업 구역 안의 기기를 위한 칸이다. "
+                          "개인 전기자전거가 보도를 막는 문제는 들어갈 칸이 마땅치 않다.")},
          ])
 
 
@@ -147,7 +148,9 @@ def q082(df):
          ],
          charts=[
              {"title": "유형별 처리시간 중앙값", "kind": "barh", "x": "중앙값(시간)", "y": "유형", "rows": records(rows),
-              "caption": "기관과 일의 성격이 속도를 정한다. 경찰이 지나가며 닫는 주차·소음은 몇 시간, 수리·점검이 필요한 가로등·쥐는 일주일이 넘는다. 나무는 중앙값은 3일이지만 평균은 2주로, 오래 걸리는 꼬리가 길다."},
+              "caption": ("기관과 일의 성격이 속도를 정한다. 경찰이 지나가며 닫는 주차·소음은 몇 시간, "
+                          "수리·점검이 필요한 가로등·쥐는 일주일이 넘는다. "
+                          "나무는 중앙값은 3일이지만 평균은 2주로, 오래 걸리는 꼬리가 길다.")},
          ],
          tables=[{"title": "유형별 처리시간", "rows": records(rows)}])
 
@@ -164,7 +167,8 @@ def q083(df):
     save(83,
          metrics=[
              {"label": "EDC 미종결", "value": "100%", "help": f"EDC 민원은 전부 '{edc.index[0]}'({edc.iat[0]:,}건)"},
-             {"label": "TLC 미종결", "value": f"{tlc.closed.isna().mean() * 100:.1f}%", "help": f"택시 민원 {tlc_open.get('Taxi Complaint', 0):.0f}% 미종결"},
+             {"label": "TLC 미종결", "value": f"{tlc.closed.isna().mean() * 100:.1f}%",
+              "help": f"택시 민원 {tlc_open.get('Taxi Complaint', 0):.0f}% 미종결"},
              {"label": "전체 미종결", "value": f"{df.closed.isna().mean() * 100:.1f}%"},
          ],
          charts=[
@@ -186,7 +190,8 @@ def q084(df):
     save(84,
          metrics=[
              {"label": "식당 위생 등급 자료", "value": "아직 없음", "help": "DOHMH Restaurant Inspection Results"},
-             {"label": "식당 민원", "value": f"{int((p == 'Food Establishment').sum()):,}건", "help": f"그중 쥐·벌레·쓰레기 {int(fe.민원.iat[0]):,}건"},
+             {"label": "식당 민원", "value": f"{int((p == 'Food Establishment').sum()):,}건",
+              "help": f"그중 쥐·벌레·쓰레기 {int(fe.민원.iat[0]):,}건"},
              {"label": "식중독 신고", "value": f"{len(fp):,}건", "help": f"3명 이상 {int((fp.detail.astype(str) == '3 or More').sum()):,}건"},
              {"label": "쥐 민원 중 3세대 이상 아파트", "value": f"{apt:.0f}%", "help": "'Rodent' 유형에는 식당 장소가 없다"},
          ],

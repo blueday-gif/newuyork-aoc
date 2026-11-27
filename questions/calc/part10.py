@@ -8,7 +8,7 @@ from pathlib import Path
 import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import (BORO_KO, INC_Q, ROOT, borough_pop, category, load_311, records,  # noqa: E402
+from common import (BORO_KO, INC_Q, ROOT, category, load_311, records,  # noqa: E402
                     save, tracts, with_tract)
 
 BOROS = list(BORO_KO)
@@ -42,9 +42,18 @@ def q095(df, dt):
          ])
 
 
-WEATHER = {"눈·얼음": lambda p, d: p == "Snow or Ice", "난방·온수": lambda p, d: p == "HEAT/HOT WATER",
-           "빗물받이 막힘·도로 침수": lambda p, d: p.isin(["Sewer", "Sewer Maintenance"]) & d.str.contains("Street Flooding|Flooding on Street|Catch Basin Clogged", case=False),
-           "소화전 열림": lambda p, d: p.isin(["Water System", "Water Maintenance"]) & d.str.contains("Hydrant Running", case=False)}
+WEATHER = {
+    "눈·얼음": lambda p, d: p == "Snow or Ice",
+    "난방·온수": lambda p, d: p == "HEAT/HOT WATER",
+    "빗물받이 막힘·도로 침수": lambda p, d: (
+        p.isin(["Sewer", "Sewer Maintenance"])
+        & d.str.contains("Street Flooding|Flooding on Street|Catch Basin Clogged", case=False)
+    ),
+    "소화전 열림": lambda p, d: (
+        p.isin(["Water System", "Water Maintenance"])
+        & d.str.contains("Hydrant Running", case=False)
+    ),
+}
 
 
 def q096(df):
@@ -57,7 +66,8 @@ def q096(df):
         peaks.append({"민원": lab, "가장 많은 날": s.idxmax().strftime("%Y-%m-%d"), "그날 건수": int(s.max()),
                       "하루 중앙값": int(s.median()), "최대 ÷ 중앙값": round(float(s.max() / max(s.median(), 1)), 0)})
     save(96,
-         metrics=[{"label": r["민원"], "value": f"{r['그날 건수']:,}건", "help": f"{r['가장 많은 날']}, 하루 중앙값의 {r['최대 ÷ 중앙값']:.0f}배"} for r in peaks],
+         metrics=[{"label": r["민원"], "value": f"{r['그날 건수']:,}건",
+                   "help": f"{r['가장 많은 날']}, 하루 중앙값의 {r['최대 ÷ 중앙값']:.0f}배"} for r in peaks],
          charts=[
              {"title": "날씨에 반응하는 민원(각자 가장 많은 날 = 100)", "kind": "line", "x": "날짜", "y": "최대 날=100", "color": "민원",
               "colors": {"눈·얼음": "#2457a7", "난방·온수": "#8e5cc4", "빗물받이 막힘·도로 침수": "#3a9d6e", "소화전 열림": "#e07b39"},
@@ -75,9 +85,14 @@ def q097():
     save(97,
          metrics=[
              {"label": "HPD 위반·보건국 점검 자료", "value": "아직 없음", "help": "BBL·좌표로 붙일 수 있다"},
-             {"label": "쥐: 점검에서 위반 발견(최하위→최상위)", "value": f"{rows[0]['점검에서 위반 발견(%)']:.0f}% → {rows[-1]['점검에서 위반 발견(%)']:.0f}%",
+             {"label": "쥐: 점검에서 위반 발견(최하위→최상위)",
+              "value": f"{rows[0]['점검에서 위반 발견(%)']:.0f}% → {rows[-1]['점검에서 위반 발견(%)']:.0f}%",
               "help": "39번, 311 결과문 대리 지표"},
-             {"label": "난방: '위반 발부' 비율", "value": " · ".join(f"{r[chr(39) + '위반' if False else '결과문 ' + chr(39) + '위반 발부' + chr(39) + ' 비율(%)']:.1f}" for r in d37["tables"][0]["rows"][:1]) + "% 안팎",
+             {"label": "난방: '위반 발부' 비율",
+              "value": " · ".join(
+                  f"{r[chr(39) + '위반' if False else '결과문 ' + chr(39) + '위반 발부' + chr(39) + ' 비율(%)']:.1f}"
+                  for r in d37["tables"][0]["rows"][:1]
+              ) + "% 안팎",
               "help": "37번. 히스패닉 비율 분위마다 거의 같다"},
          ],
          charts=[
@@ -141,7 +156,9 @@ def q100(df, dt, t):
              {"title": "하루 홍수 관련 민원", "kind": "line", "x": "날짜", "y": "홍수 관련 민원", "rows": records(d),
               "caption": "폭우가 온 날 솟는다. 7월 말 유형 이름이 바뀐 뒤에도 끊기지 않도록 옛·새 이름을 함께 셌다(→ 94번)."},
              {"title": "1년 내내 홍수 민원이 0건인 Tract 비율(소득 5분위)", "kind": "bar", "x": "소득 5분위", "y": "홍수 민원 0건인 Tract(%)",
-              "rows": records(rows), "caption": "0건이 '물이 차지 않는다'는 뜻인지 '신고하지 않는다'는 뜻인지는 센서와 위험 지도를 붙여야 가릴 수 있다."},
+              "rows": records(rows),
+              "caption": ("0건이 '물이 차지 않는다'는 뜻인지 '신고하지 않는다'는 뜻인지는 "
+                          "센서와 위험 지도를 붙여야 가릴 수 있다.")},
          ],
          tables=[{"title": "홍수 관련 민원이 가장 많은 날", "rows": records(top)}])
 

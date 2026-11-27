@@ -30,6 +30,10 @@ def rss_mb() -> float:
     return psutil.Process().memory_info().rss / 1e6
 
 
+def joined_qids() -> set[int]:
+    return {int(p.stem[1:]) for p in (QDIR / "data" / "joined").glob("q*.json")}
+
+
 def render(qid: int) -> dict:
     at = AppTest.from_file(str(APP), default_timeout=60)
     at.run()
@@ -49,6 +53,20 @@ def _slider(at: AppTest, key: str):
     raise KeyError(key)
 
 
+def _select_slider(at: AppTest, key: str):
+    for s in at.select_slider:
+        if s.key == key:
+            return s
+    raise KeyError(key)
+
+
+def _toggle(at: AppTest, key: str):
+    for s in at.toggle:
+        if s.key == key:
+            return s
+    raise KeyError(key)
+
+
 def measure_labs() -> list[dict]:
     """체험 위젯 조작 뒤 run() 한 번의 시간을 잰다."""
     rows = []
@@ -61,11 +79,11 @@ def measure_labs() -> list[dict]:
     _slider(at, "q74_min").set_value(500)
     t = time.perf_counter()
     at.run()
-    rows.append({"name": "작은 분모", "action": "최소 인구 → 500", "sec": time.perf_counter() - t})
+    rows.append({"name": "작은 분모", "action": "최소 인구 → 500", "sec": time.perf_counter() - t, "rss": rss_mb()})
     _slider(at, "q74_min").set_value(2000)
     t = time.perf_counter()
     at.run()
-    rows.append({"name": "작은 분모", "action": "최소 인구 → 2000", "sec": time.perf_counter() - t})
+    rows.append({"name": "작은 분모", "action": "최소 인구 → 2000", "sec": time.perf_counter() - t, "rss": rss_mb()})
 
     at = AppTest.from_file(str(APP), default_timeout=60)
     at.run()
@@ -75,8 +93,36 @@ def measure_labs() -> list[dict]:
     _slider(at, "q39_a_rate").set_value(40)
     t = time.perf_counter()
     at.run()
-    rows.append({"name": "보고 편향", "action": "A 신고율 → 40", "sec": time.perf_counter() - t})
+    rows.append({"name": "보고 편향", "action": "A 신고율 → 40", "sec": time.perf_counter() - t, "rss": rss_mb()})
+
+    at = AppTest.from_file(str(APP), default_timeout=60)
+    at.run()
+    at.switch_page("app_pages/question.py")
+    at.query_params["q"] = "15"
+    at.run()
+    _select_slider(at, "q15_pre").set_value("2022")
+    t = time.perf_counter()
+    at.run()
+    rows.append({"name": "이중차분", "action": "앞 기간 → 2022", "sec": time.perf_counter() - t, "rss": rss_mb()})
+    _select_slider(at, "q15_post").set_value("2023")
+    t = time.perf_counter()
+    at.run()
+    rows.append({"name": "이중차분", "action": "뒤 기간 → 2023", "sec": time.perf_counter() - t, "rss": rss_mb()})
+    _toggle(at, "q15_naive").set_value(True)
+    t = time.perf_counter()
+    at.run()
+    rows.append({"name": "이중차분", "action": "전후만 비교 켜기", "sec": time.perf_counter() - t, "rss": rss_mb()})
     return rows
+
+
+def measure_labs_page() -> dict:
+    """체험실 페이지 렌더링 한 번."""
+    at = AppTest.from_file(str(APP), default_timeout=60)
+    at.run()
+    at.switch_page("app_pages/labs.py")
+    t = time.perf_counter()
+    at.run()
+    return {"sec": time.perf_counter() - t, "exceptions": len(at.exception), "rss": rss_mb()}
 
 
 def ruff_count() -> str:
@@ -91,12 +137,21 @@ def ruff_count() -> str:
     return f"{sum(int(x.split()[0]) for x in lines if x.split()[0].isdigit())}건 (" + ", ".join(x.split()[1] for x in lines) + ")"
 
 
-def report(rows: list[dict], cold: float, rss0: float, rss_max: float, lab_rows: list[dict] | None = None) -> str:
+def report(
+    rows: list[dict],
+    cold: float,
+    rss0: float,
+    rss_max: float,
+    lab_rows: list[dict] | None = None,
+    labs_page: dict | None = None,
+) -> str:
     secs = sorted(r["sec"] for r in rows)
     p95 = secs[min(len(secs) - 1, round(0.95 * (len(secs) - 1)))]
     bad = [r for r in rows if r["exceptions"] or not r["header_ok"]]
     ok = sum(r["sec"] <= LIMIT_SEC for r in rows)
     slow = sorted(rows, key=lambda r: -r["sec"])[:10]
+    jids = joined_qids()
+    joined = [r for r in rows if r["qid"] in jids]
     out = [
         "# 질문 앱 성능 측정",
         "",
@@ -117,6 +172,17 @@ def report(rows: list[dict], cold: float, rss0: float, rss_max: float, lab_rows:
         f"| 콜드 스타트(첫 실행, import 포함) | {cold:.2f}초 | 참고 |",
         f"| 프로세스 RSS 시작 → 최대 | {rss0:.0f}MB → {rss_max:.0f}MB | {LIMIT_MB}MB 이하 ({'통과' if rss_max <= LIMIT_MB else '초과'}) |",
         f"| `ruff check questions` | {ruff_count()} | Phase 4에서 0건 |",
+    ]
+    if labs_page is not None:
+        out.append(
+            f"| 체험실 페이지 렌더링 | {labs_page['sec']:.2f}초 | {LIMIT_SEC:.0f}초 이내 |"
+        )
+    if joined:
+        out.append(
+            f"| 결합 결과 문항 렌더링 최대 | {max(r['sec'] for r in joined):.2f}초 ({len(joined)}개) | "
+            f"{LIMIT_SEC:.0f}초 이내 |"
+        )
+    out += [
         "",
         "렌더링 시간은 질문 페이지로 옮긴 뒤의 `run()` 한 번이다(목차 실행 제외). 브라우저 그리기 시간은 들어 있지 않다.",
         "한 프로세스에서 돌아 `st.cache_data`가 문항 사이에 공유된다. 문항별 JSON·toml은 처음 읽는 비용이 들어 있지만, "
@@ -147,6 +213,12 @@ def report(rows: list[dict], cold: float, rss0: float, rss_max: float, lab_rows:
             ],
             "",
         ]
+    out += [
+        "## 배포 점검",
+        "",
+        "(Claude가 배포 점검 뒤 채운다)",
+        "",
+    ]
     return "\n".join(out)
 
 
@@ -168,13 +240,20 @@ def main():
         flag = "" if r["exceptions"] == 0 and r["header_ok"] else "  <-- 확인"
         print(f"q{qid:03d} {r['sec']:.2f}s exc={r['exceptions']} rss={r['rss']:.0f}MB{flag}", flush=True)
     lab_rows = None
+    labs_page = None
+    rss_extra = []
     if args.labs:
         lab_rows = measure_labs()
         for r in lab_rows:
             flag = "" if r["sec"] <= LAB_LIMIT_SEC else "  <-- 확인"
             print(f"lab {r['name']} {r['action']} {r['sec']:.2f}s{flag}", flush=True)
-    rss_max = max(r["rss"] for r in rows)
-    text = report(rows, cold, rss0, rss_max, lab_rows=lab_rows)
+            rss_extra.append(r["rss"])
+        labs_page = measure_labs_page()
+        flag = "" if labs_page["exceptions"] == 0 and labs_page["sec"] <= LIMIT_SEC else "  <-- 확인"
+        print(f"labs_page {labs_page['sec']:.2f}s exc={labs_page['exceptions']}{flag}", flush=True)
+        rss_extra.append(labs_page["rss"])
+    rss_max = max([r["rss"] for r in rows] + rss_extra)
+    text = report(rows, cold, rss0, rss_max, lab_rows=lab_rows, labs_page=labs_page)
     if args.out:
         args.out.parent.mkdir(parents=True, exist_ok=True)
         args.out.write_text(text, encoding="utf-8")

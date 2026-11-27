@@ -181,7 +181,8 @@ def q074(df):
     top_st["1,000명당"] = top_st["1,000명당"].round(0)
     save(74,
          metrics=[
-             {"label": "민원율 1위 Tract", "value": f"{top['1,000명당'].iat[0]:,.0f}건", "help": f"인구 {int(top.인구.iat[0])}명, 민원 {int(top.민원.iat[0]):,}건"},
+             {"label": "민원율 1위 Tract", "value": f"{top['1,000명당'].iat[0]:,.0f}건",
+              "help": f"인구 {int(top.인구.iat[0])}명, 민원 {int(top.민원.iat[0]):,}건"},
              {"label": "인구 1,000명 미만 Tract", "value": f"{(a.total_pop < 1000).sum()}개", "help": "분석에서 뺐다"},
              {"label": "분석 대상 중앙값", "value": f"{st.rate.median():,.0f}건", "help": "1,000명당"},
          ],
@@ -209,7 +210,8 @@ def q075(df):
          ],
          charts=[
              {"title": "주거 관련 장소 유형 표기 상위 10", "kind": "barh", "x": "민원", "y": "주거 관련 장소 유형", "rows": records(rr),
-              "caption": "'3+ Family Apt. Building'과 '3+ Family Apartment Building'처럼 같은 뜻이 다른 이름으로 들어온다. 311 열만으로는 건물 종류를 깨끗하게 가르기 어렵다."},
+              "caption": ("'3+ Family Apt. Building'과 '3+ Family Apartment Building'처럼 "
+                          "같은 뜻이 다른 이름으로 들어온다. 311 열만으로는 건물 종류를 깨끗하게 가르기 어렵다.")},
          ],
          tables=[{"title": "장소 유형 상위 15", "rows": records(top)}])
 
@@ -230,7 +232,8 @@ def q076(df, bp):
          charts=[
              {"title": "자치구별 불법 개조 의심 민원", "kind": "bar", "x": "자치구", "y": "10만 명당 불법 개조 민원", "alt_y": "민원",
               "rows": records(rows), "sort": "-y",
-              "caption": "지하실·차고를 몰래 주거로 바꾸거나 한 집을 여러 칸으로 쪼갠 경우다. 체납·저당 정보와 겹치면 위험 건물을 더 잘 고를 수 있다."},
+              "caption": ("지하실·차고를 몰래 주거로 바꾸거나 한 집을 여러 칸으로 쪼갠 경우다. "
+                          "체납·저당 정보와 겹치면 위험 건물을 더 잘 고를 수 있다.")},
          ],
          tables=[{"title": "불법 개조 세부 유형", "rows": records(dd)}])
 

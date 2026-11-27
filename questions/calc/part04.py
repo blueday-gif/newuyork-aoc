@@ -114,7 +114,10 @@ def q036(dt, t):
               "caption": "선 하나가 소득 분위 하나. 가장 옅은 선(소득 최하위)만 오른쪽 끝에서 크게 튄다."},
          ],
          tables=[{"title": "소득 × 히스패닉 비율(임차가구 1,000가구당)", "rows": records(grid.reset_index())},
-                 {"title": "칸마다 Tract 수", "rows": records(pd.DataFrame(rows).pivot(index="소득 5분위", columns="히스패닉 비율 5분위", values="Tract 수").reindex(INC_Q)[Q5].reset_index())}])
+                 {"title": "칸마다 Tract 수",
+                  "rows": records(pd.DataFrame(rows).pivot(
+                      index="소득 5분위", columns="히스패닉 비율 5분위", values="Tract 수"
+                  ).reindex(INC_Q)[Q5].reset_index())}])
 
 
 def q037(dt, t):
@@ -126,14 +129,17 @@ def q037(dt, t):
                          "결과문 '위반 발부' 비율(%)": share.round(1).values})
     save(37,
          metrics=[
-             {"label": "난방 민원: 히스패닉 최상위 ÷ 최하위", "value": f"{rate.iat[-1] / rate.iat[0]:.1f}배", "help": "임차가구당, 2025-11 ~ 2026-05"},
+             {"label": "난방 민원: 히스패닉 최상위 ÷ 최하위",
+              "value": f"{rate.iat[-1] / rate.iat[0]:.1f}배", "help": "임차가구당, 2025-11 ~ 2026-05"},
              {"label": "'위반 발부' 비율: 최하위", "value": f"{share.iat[0]:.1f}%"},
              {"label": "'위반 발부' 비율: 최상위", "value": f"{share.iat[-1]:.1f}%"},
          ],
          charts=[
              {"title": "신고 1건이 위반으로 이어지는 비율(대리 지표)", "kind": "bar", "x": "히스패닉 비율 5분위",
               "y": "결과문 '위반 발부' 비율(%)", "alt_y": "임차가구 1,000가구당 난방 민원", "rows": records(rows),
-              "caption": "신고 1건이 '위반 발부'로 닫히는 비율은 분위마다 거의 같다(약 5%). 신고가 2배 많은 곳은 확인된 위반도 대략 2배라는 뜻이고, 신고가 '과잉'이라는 흔적은 없다. 과소신고 판정에는 HPD 위반 기록 전체가 필요하다(→ 7번)."},
+              "caption": ("신고 1건이 '위반 발부'로 닫히는 비율은 분위마다 거의 같다(약 5%). "
+                          "신고가 2배 많은 곳은 확인된 위반도 대략 2배라는 뜻이고, 신고가 '과잉'이라는 흔적은 없다. "
+                          "과소신고 판정에는 HPD 위반 기록 전체가 필요하다(→ 7번).")},
          ],
          tables=[{"title": "히스패닉 비율 5분위", "rows": records(rows)}])
 
@@ -182,7 +188,9 @@ def q039(dt):
          ],
          charts=[
              {"title": "신고가 점검으로 이어졌을 때 위반이 나온 비율", "kind": "bar", "x": "소득 5분위", "y": "점검에서 위반 발견(%)",
-              "rows": records(rows), "caption": "가난한 동네의 신고일수록 점검에서 실제 위반이 더 자주 나온다면, 신고는 적어도 문제는 크다는 뜻이다."},
+              "rows": records(rows),
+              "caption": ("가난한 동네의 신고일수록 점검에서 실제 위반이 더 자주 나온다면, "
+                          "신고는 적어도 문제는 크다는 뜻이다.")},
              {"title": "쥐 민원은 어떻게 닫혔나", "kind": "barh", "x": "비율(%)", "y": "결과", "rows": records(mix)},
          ],
          tables=[{"title": "소득 5분위", "rows": records(rows)}])
@@ -233,7 +241,8 @@ def channel_mix(dt, by, order):
 def q041(dt):
     mj = channel_mix(dt, "major", MAJOR_ORDER).rename(columns={"major": "과반 집단"})
     inc = channel_mix(dt, "inc_q", INC_Q).rename(columns={"inc_q": "소득 5분위"})
-    ph = lambda m, col, k: m[(m.경로 == "전화") & (m[col] == k)]["비율(%)"].iat[0]
+    def ph(m, col, k):
+        return m[(m.경로 == "전화") & (m[col] == k)]["비율(%)"].iat[0]
     colors = {"전화": "#e07b39", "온라인(웹)": "#2457a7", "모바일 앱": "#9fb3d1"}
     save(41,
          metrics=[
@@ -336,9 +345,13 @@ def q045(dt, t):
          charts=[
              {"title": "자치구마다 소득 5분위를 따로 나눈 민원율(이상치 주소 제외)", "kind": "line", "x": "자치구 안 소득 5분위",
               "y": "1,000명당 민원", "color": "자치구", "rows": rows, "point": True,
-              "caption": "다른 자치구는 오른쪽으로 내려가거나 평평한데, 브루클린만 오른쪽으로 올라간다. 655 E 230th St(4.7만 건)는 브롱크스 최하위 칸 하나를 크게 부풀려서 뺐다."},
+              "caption": ("다른 자치구는 오른쪽으로 내려가거나 평평한데, 브루클린만 오른쪽으로 올라간다. "
+                          "655 E 230th St(4.7만 건)는 브롱크스 최하위 칸 하나를 크게 부풀려서 뺐다.")},
          ],
-         tables=[{"title": "자치구 × 자치구 안 소득 5분위", "rows": records(df.pivot(index="자치구", columns="자치구 안 소득 5분위", values="1,000명당 민원")[Q5].reset_index())}])
+         tables=[{"title": "자치구 × 자치구 안 소득 5분위",
+                  "rows": records(df.pivot(
+                      index="자치구", columns="자치구 안 소득 5분위", values="1,000명당 민원"
+                  )[Q5].reset_index())}])
 
 
 def q046(t):
@@ -351,7 +364,8 @@ def q046(t):
          metrics=[
              {"label": "ACS 두 시점", "value": "아직 없음", "help": "2015–2019 5개년을 더 받아야 '변화'를 잴 수 있다"},
              {"label": "저소득(Q1–Q2) Tract", "value": f"{len(low):,}개"},
-             {"label": "그 안의 소음 민원 격차", "value": f"{low.소음.quantile(0.75) / low.소음.quantile(0.25):.1f}배", "help": "상위 25% ÷ 하위 25%"},
+             {"label": "그 안의 소음 민원 격차",
+              "value": f"{low.소음.quantile(0.75) / low.소음.quantile(0.25):.1f}배", "help": "상위 25% ÷ 하위 25%"},
          ],
          charts=[
              {"title": "저소득 동네끼리도 소음 민원은 크게 다르다", "kind": "group", "x": "자치구", "y": "1,000명당 소음 민원",

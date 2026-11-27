@@ -10,8 +10,8 @@ import pandas as pd
 from scipy.stats import spearmanr
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import (BORO_KO, INC_Q, Q5, ROOT, borough_pop, category, load_311, records,  # noqa: E402
-                    save, tract_rates, tracts, with_tract)
+from common import (BORO_KO, Q5, ROOT, borough_pop, category, load_311, records,  # noqa: E402
+                    save, tract_rates, with_tract)
 
 BOROS = list(BORO_KO)
 HOT = "655 EAST 230 STREET"
@@ -89,7 +89,9 @@ def q087(t):
          metrics=[
              {"label": "임차율 × 민원율", "value": f"{rho(tt.renter_rate, tt.rate):.2f}", "help": "시 전체 Tract"},
              {"label": "임차율 × 인구 밀도", "value": f"{rho(tt.renter_rate, tt.density):.2f}"},
-             {"label": "밀도를 맞춘 뒤(5분위 안)", "value": f"{min(w['임차율 × 민원율 상관'] for w in within):.2f} ~ {max(w['임차율 × 민원율 상관'] for w in within):.2f}"},
+             {"label": "밀도를 맞춘 뒤(5분위 안)",
+              "value": (f"{min(w['임차율 × 민원율 상관'] for w in within):.2f} ~ "
+                        f"{max(w['임차율 × 민원율 상관'] for w in within):.2f}")},
          ],
          charts=[
              {"title": "공통 원인 후보: 임차율·민원율과 함께 움직이는 변수", "kind": "group", "x": "변수", "y": "Spearman 상관", "color": "구분",
@@ -119,7 +121,9 @@ def q088(df):
          charts=[
              {"title": "월별 민원(각자 가장 많은 달 = 100)", "kind": "line", "x": "월", "y": "최대 달=100", "color": "민원",
               "colors": {"아이스크림 트럭 소음": "#e07b39", "불법 불꽃놀이": "#c94f6d", "난방·온수": "#2457a7"}, "rows": records(long),
-              "point": True, "caption": "아이스크림은 4–6월, 불꽃놀이는 7월 한 달에 솟아 '둘 다 여름'인데도 상관이 약하다. 반대로 아이스크림과 난방은 서로 아무 관계도 없지만 계절 때문에 강하게 반대로 움직인다(−0.86)."},
+              "point": True,
+              "caption": ("아이스크림은 4–6월, 불꽃놀이는 7월 한 달에 솟아 '둘 다 여름'인데도 상관이 약하다. "
+                          "반대로 아이스크림과 난방은 서로 아무 관계도 없지만 계절 때문에 강하게 반대로 움직인다(−0.86).")},
          ],
          tables=[{"title": "월별 건수", "rows": records(m.rename_axis("월").reset_index())}])
 
@@ -144,15 +148,15 @@ def q089(df):
 
 
 def q090():
-    l = pd.read_csv(ROOT / "outputs" / "tables" / "plan02_lisa.csv", dtype={"GEOID": str})
-    n = len(l)
-    raw = (l.lisa_p < 0.05).sum()
-    fdr = (l.lisa_p_fdr < 0.05).sum()
+    lisa = pd.read_csv(ROOT / "outputs" / "tables" / "plan02_lisa.csv", dtype={"GEOID": str})
+    n = len(lisa)
+    raw = (lisa.lisa_p < 0.05).sum()
+    fdr = (lisa.lisa_p_fdr < 0.05).sum()
     exp = n * 0.05
     rows = pd.DataFrame([{"기준": "우연히 '유의'할 것으로 기대되는 수(5%)", "Tract 수": round(exp)},
                          {"기준": "보정 전 p < 0.05", "Tract 수": int(raw)},
                          {"기준": "FDR 보정 후 q < 0.05", "Tract 수": int(fdr)}])
-    hist = pd.cut(l.lisa_p, np.arange(0, 1.05, 0.05), right=False).value_counts().sort_index()
+    hist = pd.cut(lisa.lisa_p, np.arange(0, 1.05, 0.05), right=False).value_counts().sort_index()
     hrows = pd.DataFrame({"p값 구간": [f"{iv.left:.2f}–{iv.right:.2f}" for iv in hist.index], "Tract 수": hist.values})
     save(90,
          metrics=[
@@ -162,7 +166,9 @@ def q090():
          ],
          charts=[
              {"title": "보정 전후 '유의'한 Tract 수", "kind": "barh", "x": "Tract 수", "y": "기준", "rows": records(rows),
-              "caption": "보정 전 278개는 우연 기대치(약 110개)의 2.5배라 무언가 있어 보인다. 하지만 2,195번 검정을 했으니 개별 Tract 하나하나를 '유의'하다고 말할 근거는 약하다. FDR로 보정하면 0개가 남는다."},
+              "caption": ("보정 전 278개는 우연 기대치(약 110개)의 2.5배라 무언가 있어 보인다. "
+                          "하지만 2,195번 검정을 했으니 개별 Tract 하나하나를 '유의'하다고 말할 근거는 약하다. "
+                          "FDR로 보정하면 0개가 남는다.")},
              {"title": "Tract별 LISA p값 분포", "kind": "bar", "x": "p값 구간", "y": "Tract 수", "rows": records(hrows),
               "caption": "진짜 효과가 많다면 맨 왼쪽(0–0.05)에 크게 몰린다. 여기서는 크게 몰리지 않는다."},
          ])
@@ -193,9 +199,9 @@ def q092(t):
     qc = pd.cut(r, q_edges, labels=lab, include_lowest=True).value_counts().reindex(lab)
     ec = pd.cut(r, e_edges, labels=lab, include_lowest=True).value_counts().reindex(lab)
     rows = []
-    for l in lab:
-        rows.append({"색 칸": l, "구간 나누기": "5분위(같은 개수)", "Tract 수": int(qc[l])})
-        rows.append({"색 칸": l, "구간 나누기": "같은 간격", "Tract 수": int(ec[l])})
+    for label in lab:
+        rows.append({"색 칸": label, "구간 나누기": "5분위(같은 개수)", "Tract 수": int(qc[label])})
+        rows.append({"색 칸": label, "구간 나누기": "같은 간격", "Tract 수": int(ec[label])})
     save(92,
          metrics=[
              {"label": "가장 진한 칸: 5분위", "value": f"{int(qc[lab[-1]])}개 Tract", "help": f"{q_edges[4]:,.0f}건 이상"},
@@ -205,7 +211,8 @@ def q092(t):
          charts=[
              {"title": "구간 나누기 방식에 따라 칸마다 들어가는 Tract 수", "kind": "group", "x": "색 칸", "y": "Tract 수", "color": "구간 나누기",
               "colors": {"5분위(같은 개수)": "#2457a7", "같은 간격": "#e07b39"}, "rows": rows,
-              "caption": "5분위는 칸마다 같은 수의 동네를 칠한다. 같은 간격은 대부분을 연한 칸에 넣고 소수만 진하게 칠한다. 같은 자료로 '빨간 동네' 지도가 전혀 달라진다."},
+              "caption": ("5분위는 칸마다 같은 수의 동네를 칠한다. 같은 간격은 대부분을 연한 칸에 넣고 소수만 진하게 칠한다. "
+                          "같은 자료로 '빨간 동네' 지도가 전혀 달라진다.")},
          ])
 
 
@@ -256,7 +263,9 @@ def q094(df):
          ],
          charts=[
              {"title": "같은 해 안에서 바뀐 유형 이름(하수도)", "kind": "line", "x": "월", "y": "민원", "color": "유형", "rows": records(sew),
-              "point": True, "caption": "옛 이름의 선이 갑자기 끊기고 새 이름의 선이 이어받는다. 옛 이름만 세면 '하수도 민원이 사라졌다'는 오보가 된다."},
+              "point": True,
+              "caption": ("옛 이름의 선이 갑자기 끊기고 새 이름의 선이 이어받는다. "
+                          "옛 이름만 세면 '하수도 민원이 사라졌다'는 오보가 된다.")},
          ],
          tables=[{"title": "옛 이름과 새 이름의 월별 건수", "rows": records(r.pivot(index="월", columns="유형", values="민원").reset_index())}])
 

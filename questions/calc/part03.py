@@ -8,7 +8,7 @@ from pathlib import Path
 import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import (BORO_KO, INC_Q, ROOT, Q5, acs, borough_pop, category, load_311,  # noqa: E402
+from common import (BORO_KO, INC_Q, ROOT, borough_pop, category, load_311,  # noqa: E402
                     records, save, tracts, with_tract)
 
 BOROS = list(BORO_KO)
@@ -41,7 +41,9 @@ def q025(dt):
          charts=[
              {"title": "민원 구성: 히스패닉 비율 최상위 동네 vs 시 전체", "kind": "group", "x": "분야", "y": "비중(%)",
               "color": "구분", "colors": {"히스패닉 비율 최상위 20% Tract": "#2457a7", "시 전체(분석 Tract)": "#b9c4d4"},
-              "rows": rows, "caption": "NY-14 자체가 아니라, NY-14와 인구 구성이 비슷한 동네의 모습이다. 경계를 붙이면 이 자리에 실제 선거구가 들어간다."},
+              "rows": rows,
+              "caption": ("NY-14 자체가 아니라, NY-14와 인구 구성이 비슷한 동네의 모습이다. "
+                          "경계를 붙이면 이 자리에 실제 선거구가 들어간다.")},
          ])
 
 
@@ -96,8 +98,11 @@ def q027(df):
          ],
          charts=[
              {"title": "선거구 51곳의 민원 1위 유형", "kind": "barh", "x": "선거구 수", "y": "1위 유형", "rows": records(cnt)},
-             {"title": "선거구별 민원 건수", "kind": "barh", "x": "민원", "y": "선거구 이름", "rows": records(t[["선거구 이름", "민원", "자치구", "1위 유형"]]),
-              "height": 1050, "caption": "건수다. 선거구 인구가 비슷하게(약 17만 명) 짜여 있어 대략 비교할 수 있지만, 정확한 비교에는 선거구 인구가 필요하다."},
+             {"title": "선거구별 민원 건수", "kind": "barh", "x": "민원", "y": "선거구 이름",
+              "rows": records(t[["선거구 이름", "민원", "자치구", "1위 유형"]]),
+              "height": 1050,
+              "caption": ("건수다. 선거구 인구가 비슷하게(약 17만 명) 짜여 있어 대략 비교할 수 있지만, "
+                          "정확한 비교에는 선거구 인구가 필요하다.")},
          ],
          tables=[{"title": "선거구 성적표", "rows": records(t[["선거구", "자치구", "민원", "이상치 주소 제외", "1위 유형", "1위 비중(%)"]])}])
 
@@ -132,7 +137,8 @@ def q029(df):
          metrics=[
              {"label": "불법주차 민원", "value": f"{len(ip):,}건"},
              {"label": "버스 관련 세부 유형", "value": f"{int(b.민원.sum()):,}건", "help": "무단 버스 정차, 정류장 표지 등"},
-             {"label": "'버스 전용차로 막음' 유형", "value": "없음", "help": "이 자료에는 전용차로 세부 유형이 없다. 전용차로 위반은 주로 카메라로 단속된다"},
+             {"label": "'버스 전용차로 막음' 유형", "value": "없음",
+              "help": "이 자료에는 전용차로 세부 유형이 없다. 전용차로 위반은 주로 카메라로 단속된다"},
          ],
          charts=[
              {"title": "불법주차 세부 유형 상위 12개", "kind": "barh", "x": "민원", "y": "세부 유형", "rows": records(det),
