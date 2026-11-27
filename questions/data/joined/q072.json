@@ -1,0 +1,109 @@
+{
+ "id": 72,
+ "computed_at": "2026-11-27 12:22",
+ "sources": [
+  {
+   "name": "hpd_violations",
+   "dataset": "wvxf-dwi5",
+   "url": "https://data.cityofnewyork.us/resource/wvxf-dwi5.csv?%24select=violationid%2Cbbl%2Cbin%2Cclass%2Cinspectiondate%2Cnovissueddate%2Cnovdescription%2Crentimpairing%2Clatitude%2Clongitude&%24order=violationid&%24limit=50000&%24offset=0&%24where=%28inspectiondate+between+%272024-11-01T00%3A00%3A00%27+and+%272026-10-31T23%3A59%3A59%27%29+and+inspectiondate+between+%272024-11-01T00%3A00%3A00%27+and+%272024-11-30T23%3A59%3A59%27",
+   "period": "2024-11-01~2026-10-31",
+   "rows": 1865451,
+   "fetched_at": "2026-11-27 12:18"
+  },
+  {
+   "name": "pluto",
+   "dataset": "64uk-42ks",
+   "url": "https://data.cityofnewyork.us/resource/64uk-42ks.csv?%24select=bbl%2Cborocode%2Cbldgclass%2Clanduse%2Cunitsres%2Cunitstotal%2Cyearbuilt%2Cnumfloors%2Cbct2020&%24order=bbl&%24limit=50000&%24offset=0&%24where=unitsres+%3E+0",
+   "period": "최신판",
+   "rows": 767749,
+   "fetched_at": "2026-11-27 11:40"
+  }
+ ],
+ "metrics": [
+  {
+   "label": "PLUTO 세대 수가 붙은 건물",
+   "value": "95.7%",
+   "help": "57,527 / 60,094동"
+  },
+  {
+   "label": "6가지 이상 건물의 세대당 이전 위반",
+   "value": "0.68"
+  },
+  {
+   "label": "1가지 건물의 세대당 이전 위반",
+   "value": "0.14"
+  },
+  {
+   "label": "배율",
+   "value": "5.0배",
+   "help": "ikrar.dev는 12~44배라고 보고했다(기간·정의가 다르다)"
+  }
+ ],
+ "charts": [
+  {
+   "title": "민원 유형 수별 세대당 신고 이전 1년 위반",
+   "kind": "bar",
+   "x": "민원 유형 수",
+   "y": "세대당 이전 위반",
+   "rows": [
+    {
+     "민원 유형 수": "1가지",
+     "세대당 이전 위반": 0.14
+    },
+    {
+     "민원 유형 수": "2–3가지",
+     "세대당 이전 위반": 0.21
+    },
+    {
+     "민원 유형 수": "4–5가지",
+     "세대당 이전 위반": 0.3
+    },
+    {
+     "민원 유형 수": "6가지 이상",
+     "세대당 이전 위반": 0.68
+    }
+   ],
+   "caption": "311 기간(2025-11~) 이전 1년의 위반이다. '신고 → 점검 → 위반'의 행정 순환을 피하려고 시간을 앞으로 뺐다."
+  }
+ ],
+ "tables": [
+  {
+   "title": "민원 유형 수별 이전 위반",
+   "rows": [
+    {
+     "민원 유형 수": "1가지",
+     "건물 수": 21673,
+     "세대 수 합": 387655,
+     "이전 위반 합": 52476,
+     "세대당 이전 위반": 0.14,
+     "C등급 비율(%)": 30.3
+    },
+    {
+     "민원 유형 수": "2–3가지",
+     "건물 수": 14969,
+     "세대 수 합": 376166,
+     "이전 위반 합": 77315,
+     "세대당 이전 위반": 0.21,
+     "C등급 비율(%)": 33.6
+    },
+    {
+     "민원 유형 수": "4–5가지",
+     "건물 수": 8052,
+     "세대 수 합": 268133,
+     "이전 위반 합": 81520,
+     "세대당 이전 위반": 0.3,
+     "C등급 비율(%)": 34.7
+    },
+    {
+     "민원 유형 수": "6가지 이상",
+     "건물 수": 12833,
+     "세대 수 합": 759278,
+     "이전 위반 합": 514733,
+     "세대당 이전 위반": 0.68,
+     "C등급 비율(%)": 35.1
+    }
+   ]
+  }
+ ],
+ "numbers": {}
+}

@@ -1,6 +1,6 @@
 concepts = ["weather_join", "moving_average", "heat_season"]
 related = [56, 58, 4]
-join_status = "방법만 정리함. NOAA 센트럴파크 일별 최저기온을 아직 받지 않았다."
+join_status = "결합함(2026-11-27). NOAA 센트럴파크 일별 최저기온을 붙였다. 0°C 미만인 날의 하루 난방 민원 중앙값은 0~10°C인 날의 1.7배이고, 최저기온과의 순위 상관은 −0.78이다. 아래 '결합 결과'에 있다."
 
 background = """
 #### 질문

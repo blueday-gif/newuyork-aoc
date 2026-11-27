@@ -6,6 +6,11 @@ import qlib
 from components.labs import render as render_lab_widget
 
 
+def md_safe(text: str) -> str:
+    """마크다운이 ~를 취소선으로 읽지 않게 이스케이프한다."""
+    return text.replace("~", r"\~")
+
+
 def render_header(qid: int, q: dict, part: dict, c: dict) -> None:
     with st.container(horizontal=True, vertical_alignment="center", gap="small"):
         st.badge(f"[{q['tag']}] {qlib.TAG_HELP[q['tag']]}", color=qlib.TAG_COLOR[q["tag"]])
@@ -14,7 +19,7 @@ def render_header(qid: int, q: dict, part: dict, c: dict) -> None:
     with st.container(border=True):
         st.markdown(q["answer"] or "_원문에 답이 없다._")
     if c.get("join_status"):
-        st.info(c["join_status"], title="결합 진행 상태", icon=":material/merge:")
+        st.info(md_safe(c["join_status"]), title="결합 진행 상태", icon=":material/merge:")
 
 
 def render_concept_chips(keys: list[str], concepts: dict) -> None:
@@ -42,11 +47,34 @@ def render_stats(qid: int, part_no: int, s: dict) -> None:
                                          key=f"y_{qid}_{i}", label_visibility="collapsed") or spec["y"]
             st.altair_chart(qlib.chart(spec, y), alt=spec["title"])
             if spec.get("caption"):
-                st.caption(spec["caption"])
+                st.caption(md_safe(spec["caption"]))
     for t in s["tables"]:
         with st.expander(t["title"], icon=":material/table:"):
             st.dataframe(pd.DataFrame(t["rows"]), hide_index=True, alt=t["title"])
     st.caption(f"계산: `questions/calc/part{part_no:02d}.py` · {s['computed_at']} · 원본 {s['source']}")
+
+
+def render_joined(qid: int, j: dict) -> None:
+    st.subheader("결합 결과", divider="gray")
+    st.caption(md_safe("합친 자료: " + " · ".join(
+        f"{s['name']}({s['dataset']}, {s['period']}, {s['rows']:,}행)" for s in j["sources"])))
+    with st.container(horizontal=True):
+        for m in j["metrics"]:
+            st.metric(m["label"], m["value"], help=m.get("help"), border=True)
+    for i, spec in enumerate(j["charts"]):
+        with st.container(border=True):
+            st.markdown(f"**{spec['title']}**")
+            y = spec["y"]
+            if spec.get("alt_y"):
+                y = st.segmented_control("세로축", [spec["y"], spec["alt_y"]], default=spec["y"],
+                                         key=f"jy_{qid}_{i}", label_visibility="collapsed") or spec["y"]
+            st.altair_chart(qlib.chart(spec, y), alt=spec["title"])
+            if spec.get("caption"):
+                st.caption(md_safe(spec["caption"]))
+    for t in j.get("tables") or []:
+        with st.expander(t["title"], icon=":material/table:"):
+            st.dataframe(pd.DataFrame(t["rows"]), hide_index=True, alt=t["title"])
+    st.caption(md_safe(f"계산: questions/calc/joined.py · {j['computed_at']}"))
 
 
 def render_lab(qid: int, lab_key: str) -> None:
@@ -56,7 +84,7 @@ def render_lab(qid: int, lab_key: str) -> None:
 
 def render_markdown_section(title: str, md: str) -> None:
     st.subheader(title, divider="gray")
-    st.markdown(md)
+    st.markdown(md_safe(md))
 
 
 def render_concepts(keys: list[str], concepts: dict) -> None:
@@ -65,14 +93,14 @@ def render_concepts(keys: list[str], concepts: dict) -> None:
         card = concepts.get(k)
         if not card:
             continue
-        with st.expander(f"**{card['title']}** — {card['summary']}", icon=":material/lightbulb:"):
-            st.markdown(card["body"])
+        with st.expander(f"**{card['title']}** — {md_safe(card['summary'])}", icon=":material/lightbulb:"):
+            st.markdown(md_safe(card["body"]))
             st.page_link("app_pages/concepts.py", label="개념 사전에서 보기", icon=":material/menu_book:")
 
 
 def render_caveats(md: str) -> None:
     st.subheader("주의할 점", divider="gray")
-    st.warning(md, icon=":material/warning:")
+    st.warning(md_safe(md), icon=":material/warning:")
 
 
 def render_sources(sources: list[dict]) -> None:
@@ -90,16 +118,17 @@ def render_paper_bridge(keys: list[str], papers: dict) -> None:
             if i:
                 st.divider()
             finding = " ".join(str(p["finding"]).split())
-            st.markdown(f"**{p['title']}**")
-            st.caption(p["who"])
-            st.markdown(
+            st.markdown(f"**{md_safe(p['title'])}**")
+            st.caption(md_safe(p["who"]))
+            st.markdown(md_safe(
                 f"- **물은 것**: {p['question']}\n"
                 f"- **합친 자료**: {p['data']}\n"
                 f"- **방법**: {p['method']}\n"
                 f"- **결과**: {finding}\n"
                 f"- **이 프로젝트와 다른 점**: {p['differs']}"
-            )
-        st.caption("요약 출처: 뉴욕시_311_민원데이터_해외연구사례_종합.docx(2026-11-26). 원문 수치는 다시 확인하지 않았다.")
+            ))
+        st.caption(md_safe(
+            "요약 출처: 뉴욕시_311_민원데이터_해외연구사례_종합.docx(2026-11-26). 원문 수치는 다시 확인하지 않았다."))
 
 
 def render_next(qid: int, related: list[int], why: dict, qs: dict) -> None:

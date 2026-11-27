@@ -2,7 +2,7 @@ concepts = ["reported_vs_occurred", "underreporting", "sensor_vs_report", "taxon
 related = [96, 39, 97, 1]
 related_why = { 96 = "날씨 흔적이 311에 남는 방식", 39 = "신고가 적은 곳이 문제가 적은 곳은 아니다", 97 = "311 밖의 독립 자료로 신고를 검증하는 다른 예", 1 = "기상 사건 직후 민원이 몰리는 모양" }
 papers = ["bayflood_2025"]
-join_status = "방법만 정리함. FloodNet 센서 수위와 FEMA 홍수 위험 지도를 아직 붙이지 않았다."
+join_status = "결합함(2026-11-27). 조수 영향이 없는 FloodNet 센서 429개를 Tract에 붙였다. 센서가 침수를 잡은 660건(센서-날짜) 중 같은 Tract에서 그날이나 다음 날 311 침수 민원이 있었던 경우는 29.8%뿐이다. FEMA 홍수 위험 지도는 아직 붙이지 않았다."
 
 background = """
 #### BayFlood 연구

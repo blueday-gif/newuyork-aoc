@@ -88,6 +88,16 @@ def stats(qid: int) -> dict | None:
     return _stats(qid, _mtime(QDIR / "data" / f"q{qid:03d}.json"))
 
 
+@st.cache_data(ttl="1h", max_entries=50)
+def _joined(qid: int, mtime: int) -> dict | None:
+    path = QDIR / "data" / "joined" / f"q{qid:03d}.json"
+    return json.loads(path.read_text(encoding="utf-8")) if path.exists() else None
+
+
+def joined(qid: int) -> dict | None:
+    return _joined(qid, _mtime(QDIR / "data" / "joined" / f"q{qid:03d}.json"))
+
+
 def status(qid: int) -> str:
     """문항 페이지가 얼마나 채워졌나: 완성 / 해설만 / 통계만 / 원문만"""
     c, s = (QDIR / "content" / f"q{qid:03d}.toml").exists(), (QDIR / "data" / f"q{qid:03d}.json").exists()

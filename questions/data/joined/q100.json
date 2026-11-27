@@ -1,0 +1,90 @@
+{
+ "id": 100,
+ "computed_at": "2026-11-27 12:24",
+ "sources": [
+  {
+   "name": "floodnet_sensors",
+   "dataset": "kb2e-tjy3",
+   "url": "https://data.cityofnewyork.us/resource/kb2e-tjy3.csv?%24select=sensor_id%2Csensor_name%2Cdate_installed%2Cdate_removed%2Ctidally_influenced%2Cborough%2Clatitude%2Clongitude&%24order=sensor_id&%24limit=50000&%24offset=0",
+   "period": "전체",
+   "rows": 496,
+   "fetched_at": "2026-11-27 11:30"
+  },
+  {
+   "name": "floodnet_events",
+   "dataset": "aq7i-eu5q",
+   "url": "https://data.cityofnewyork.us/resource/aq7i-eu5q.csv?%24select=sensor_id%2Cflood_start_time%2Cflood_end_time%2Cmax_depth_inches%2Cduration_mins&%24order=sensor_id%2Cflood_start_time&%24limit=50000&%24offset=0&%24where=flood_start_time+between+%272025-11-01T00%3A00%3A00%27+and+%272026-10-31T23%3A59%3A59%27",
+   "period": "2025-11-01~2026-10-31",
+   "rows": 1752,
+   "fetched_at": "2026-11-27 11:30"
+  }
+ ],
+ "metrics": [
+  {
+   "label": "분석한 센서",
+   "value": "429개",
+   "help": "조수 영향 센서 제외"
+  },
+  {
+   "label": "센서가 잡은 침수(센서-날짜)",
+   "value": "660건"
+  },
+  {
+   "label": "311 신고가 함께 있었던 비율",
+   "value": "29.8%"
+  },
+  {
+   "label": "12인치 이상 침수의 신고 비율",
+   "value": "63.5%"
+  }
+ ],
+ "charts": [
+  {
+   "title": "침수 깊이별 311 신고가 함께 있었던 비율",
+   "kind": "bar",
+   "x": "침수 깊이",
+   "y": "311 신고 있음(%)",
+   "rows": [
+    {
+     "침수 깊이": "4인치 미만",
+     "311 신고 있음(%)": 18.8
+    },
+    {
+     "침수 깊이": "4–12인치",
+     "311 신고 있음(%)": 50.3
+    },
+    {
+     "침수 깊이": "12인치 이상",
+     "311 신고 있음(%)": 63.5
+    }
+   ],
+   "caption": "센서가 물을 잡은 날, 같은 Tract에서 아무도 신고하지 않은 경우가 '보이지 않는 침수'다. 센서 위치와 민원 위치가 같은 거리는 아니다."
+  }
+ ],
+ "tables": [
+  {
+   "title": "침수 깊이별 신고 동반",
+   "rows": [
+    {
+     "침수 깊이": "4인치 미만",
+     "센서-날짜": 451,
+     "신고 있음": 85,
+     "비율(%)": 18.8
+    },
+    {
+     "침수 깊이": "4–12인치",
+     "센서-날짜": 157,
+     "신고 있음": 79,
+     "비율(%)": 50.3
+    },
+    {
+     "침수 깊이": "12인치 이상",
+     "센서-날짜": 52,
+     "신고 있음": 33,
+     "비율(%)": 63.5
+    }
+   ]
+  }
+ ],
+ "numbers": {}
+}

@@ -41,6 +41,9 @@ edu_blocks.render_concept_chips(c.get("concepts", []), CONCEPTS)
 state.mark_visited(qid, c.get("concepts", []))
 if s:
     edu_blocks.render_stats(qid, q["part"], s)
+j = qlib.joined(qid)
+if j:
+    edu_blocks.render_joined(qid, j)
 if c.get("lab"):
     edu_blocks.render_lab(qid, c["lab"])
 if not c:

@@ -1,6 +1,6 @@
 concepts = ["weather_join", "reported_vs_occurred", "proxy"]
 related = [57, 56]
-join_status = "방법만 정리함. NOAA 일별 기온(열대야 표시)을 아직 붙이지 않았다."
+join_status = "결합함(2026-11-27). 6~8월 열대야(최저기온 20°C 초과)는 42일이었다. 정전 민원은 열대야에 1.4배였지만 소화전 열림 민원은 차이가 없었다(1.0배). 소화전은 밤 기온보다 낮 최고기온을 더 따른다(→ 96번)."
 
 background = """
 #### 질문

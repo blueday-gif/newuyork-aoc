@@ -117,3 +117,14 @@ def test_labs_page():
     assert not at.exception
     titles = [s.value for s in at.main.subheader]
     assert titles == ["작은 분모의 함정", "보고 편향 시뮬레이터"]
+
+
+def test_joined_section():
+    at = open_question(97)
+    assert not at.exception
+    titles = [s.value for s in at.main.subheader]
+    assert "결합 결과" in titles
+    at1 = open_question(1)
+    assert not at1.exception
+    titles1 = [s.value for s in at1.main.subheader]
+    assert "결합 결과" not in titles1

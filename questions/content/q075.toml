@@ -1,7 +1,7 @@
 concepts = ["data_join", "bbl", "taxonomy_change", "compare_like"]
 related = [16, 20, 72]
 papers = ["moda_illegal_conversion"]
-join_status = "방법만 정리함. PLUTO(건물 용도·세대 수·건축연도)를 아직 붙이지 않았다."
+join_status = "결합함(2026-11-27). BBL로 PLUTO 주거 필지를 붙였다(BBL이 있는 민원의 84.7%). 100세대당 주거환경 민원은 10–49세대 건물이 가장 많고 1–2세대와 100세대 이상이 적다. 1–2세대 건물은 자가 거주가 많아 HPD 주거 민원이 덜 나올 수 있으니 규모 효과로만 읽으면 안 된다."
 
 background = """
 #### 질문
