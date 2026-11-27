@@ -3,6 +3,7 @@ import geopandas as gpd
 import numpy as np
 import pandas as pd
 import streamlit as st
+from altair.utils.data import to_values
 
 from dash_common import BOROUGH_SHORT, MAP_PATH
 
@@ -136,8 +137,9 @@ else:
         ),
     )
 
+# GeoDataFrame을 그대로 넘기면 Streamlit이 geometry를 WKT 문자열로 바꿔 폴리곤이 안 그려진다.
 chart = (
-    alt.Chart(view)
+    alt.Chart(to_values(view))
     .mark_geoshape(stroke="white", strokeWidth=0.15)
     .encode(
         color=color,
