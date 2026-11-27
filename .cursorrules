@@ -1,0 +1,27 @@
+# Cursor CLI 실행 규칙 (NYC 311 질문 앱)
+
+1. 명세 준수
+   - 코드를 쓰기 전에 루트의 `SPEC.md`를 읽는다. 적힌 파일 경로, 함수 시그니처, 완료 조건을 그대로 따른다.
+   - `SPEC.md`의 "파일 담당" 표에서 Cursor 담당인 파일만 만들거나 고친다. 표에 없는 파일이 필요하면 고치지 말고 보고한다.
+   - 다음 파일은 고치지 않는다: `CLAUDE.md`, `.cursorrules`, `SPEC.md`, `docs/`, `dashboard/`, `analysis/`, `reports/stories/`, `outputs/`, `scripts/`.
+
+2. 통계 무결성
+   - 인구 1,000명 미만 Tract 제외 기준, 결측·음수 처리시간 처리, 분야 분류(`category_map.csv`)를 바꾸지 않는다.
+   - `questions/content/*.toml`의 해설·주의할 점 문구와 `questions/meta/concepts.toml` 본문을 바꾸지 않는다. 키 추가처럼 명세에 적힌 변경만 한다.
+   - 리팩토링 전후로 `questions/data/q###.json`의 수치가 바뀌면 안 된다.
+
+3. 성능 원칙
+   - 앱 코드(`questions/app.py`, `app_pages/`, `components/`, `qlib.py`, `state.py`)에서 311 원본이나 `data/processed/*.parquet`를 읽지 않는다. 앱은 `questions/data/`, `questions/content/`, `questions/meta/`만 읽는다.
+   - `@st.cache_data`에는 `ttl`과 `max_entries`를 적는다.
+   - 슬라이더·선택에 반응하는 체험 영역은 `@st.fragment`로 감싼다.
+   - 차트는 `qlib.chart`(Altair)를 쓴다. 새 라이브러리(plotly, h3, duckdb 등)를 앱에 들이지 않는다.
+
+4. 경로와 환경
+   - 새 코드에 절대 경로를 쓰지 않는다. 위치는 `Path(__file__)` 기준으로 잡고, 311 원본은 환경 변수 `NY311_RAW`로 받는다.
+   - Python은 `py -3`(3.14)로 실행하고 `-I`를 붙이지 않는다.
+   - 배포용 `questions/requirements.txt`에는 앱 실행에 꼭 필요한 패키지만 넣는다. 테스트·린트 도구는 `questions/requirements-dev.txt`에 넣는다.
+
+5. 브랜치와 보고
+   - `questions-app`에서 `feat/phase-N` 브랜치를 만들어 작업한다. `main`이나 `questions-app`에 직접 커밋하지 않는다. 푸시하지 않는다.
+   - 작업이 끝나면 다음을 그대로 보고한다: `py -3 -m pytest questions/tests -q` 출력, `py -3 -m ruff check questions` 출력(건수), 벤치마크 출력, 바꾼 파일 목록.
+   - 실패한 테스트를 지우거나 건너뛰게 바꿔서 통과시키지 않는다. 기준 수치가 맞지 않으면 멈추고 보고한다.
