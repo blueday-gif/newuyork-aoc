@@ -13,6 +13,7 @@ pages = [
     st.Page("app_pages/question.py", title="질문 보기", icon=":material/help:", url_path="q"),
     st.Page("app_pages/concepts.py", title="개념 사전", icon=":material/menu_book:", url_path="concepts"),
     st.Page("app_pages/labs.py", title="체험실", icon=":material/science:", url_path="labs"),
+    st.Page("app_pages/talks.py", title="발표후보", icon=":material/co_present:", url_path="talks"),
 ]
 pg = st.navigation(pages)
 pg.run()

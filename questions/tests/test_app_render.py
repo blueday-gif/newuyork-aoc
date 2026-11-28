@@ -123,6 +123,21 @@ def test_labs_page():
     ]
 
 
+def test_talks_page():
+    """발표후보: Ramphal 재현. 기준 수치(7월÷겨울 Q1 1.68, Q4 1.29, 격차 1.30)와 그림 2개."""
+    at = AppTest.from_file(str(APP), default_timeout=60)
+    at.run()
+    at.switch_page("app_pages/talks.py")
+    at.run()
+    assert not at.exception
+    assert _metric(at, "7월 ÷ 겨울: 저소득(Q1)").value == "1.68배"
+    assert _metric(at, "7월 ÷ 겨울: 고소득(Q4)").value == "1.29배"
+    assert _metric(at, "격차(Q1 ÷ Q4)").value == "1.30배"
+    assert _metric(at, "자치구별 계절 허용 시 격차").value == "1.07배"
+    assert len(at.get("image")) == 2
+    assert [s.value for s in at.main.subheader][0].startswith("소음 불평등과 계절성")
+
+
 def _select_slider(at: AppTest, key: str):
     for s in at.select_slider:
         if s.key == key:
