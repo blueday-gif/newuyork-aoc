@@ -79,6 +79,24 @@ st.dataframe(table(key, "08_sensitivity.csv"), hide_index=True, column_config={
     **{c: st.column_config.NumberColumn(format="%.2f") for c in ["Q1 여름÷겨울", "Q4 여름÷겨울", "Q1÷Q4"]},
 })
 
+if "long_title" in t:
+    st.subheader(t["long_title"], divider="gray")
+    st.caption(t["long_note"])
+    lg = pd.read_csv(RDIR / "out" / "ramphal_long" / "05_growth_2019_2020_main.csv", encoding="utf-8-sig")
+    st.dataframe(lg, hide_index=True, column_config={
+        c: st.column_config.NumberColumn(format="%.1f") for c in lg.columns if lg[c].dtype.kind == "f"})
+    with st.container(horizontal=True):
+        st.metric("2019→2020 증가율: 저소득(Q1)", f"{lg.loc[0, '2019→2020 증가율(%)']:.0f}%", border=True,
+                  help="논문 +103%")
+        st.metric("2019→2020 증가율: 고소득(Q4)", f"{lg.loc[3, '2019→2020 증가율(%)']:.0f}%", border=True,
+                  help="논문 +50%")
+    st.image(str(RDIR / "out" / "ramphal_long" / "chart3_july_2010_2026.png"),
+             caption="7월 소음 민원, 소득 4분위별(2010~2026.10). 2014년 자료 체계 변화, 2020 음영 표시.")
+    tabA, tabB, tabC = st.tabs(["관측한 것", "말할 수 있는 것", "한계"])
+    tabA.markdown(t["long_observed"])
+    tabB.markdown(t["long_can_say"])
+    tabC.markdown(t["long_limits"])
+
 st.subheader("예상 질문", divider="gray")
 for qa in t["qa"]:
     with st.expander(qa["q"]):

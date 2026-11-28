@@ -134,7 +134,7 @@ def test_talks_page():
     assert _metric(at, "7월 ÷ 겨울: 고소득(Q4)").value == "1.29배"
     assert _metric(at, "격차(Q1 ÷ Q4)").value == "1.30배"
     assert _metric(at, "자치구별 계절 허용 시 격차").value == "1.07배"
-    assert len(at.get("image")) == 2
+    assert len(at.get("image")) == 3
     assert [s.value for s in at.main.subheader][0].startswith("소음 불평등과 계절성")
 
 
